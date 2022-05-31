@@ -1,6 +1,13 @@
 project(editor)
 
+find_package(glm REQUIRED)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_executable(editor src/main.cpp)
+add_executable(editor
+		src/Layer.cpp
+		src/LayerTemplate.cpp
+		src/Level.cpp
+		src/main.cpp
+		src/Tilemap.cpp)
