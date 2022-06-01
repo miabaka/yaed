@@ -14,6 +14,8 @@ public:
 
 	const std::string &name() const;
 
+	const std::vector<std::shared_ptr<Layer>> &layers() const;
+
 private:
 	std::string _name;
 	int _skinIndex;

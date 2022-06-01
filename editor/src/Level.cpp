@@ -12,3 +12,7 @@ int Level::skinIndex() const {
 const std::string &Level::name() const {
 	return _name;
 }
+
+const std::vector<std::shared_ptr<Layer>> &Level::layers() const {
+	return _layers;
+}
