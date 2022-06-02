@@ -13,8 +13,9 @@ add_executable(editor
         src/core/Level.cpp
         src/core/Tilemap.cpp
         src/core/World.cpp
-        src/core/WorldFormat.cpp
-        src/core/WorldFormatInfo.cpp
+        src/core/formats/WorldFormat.cpp
+        src/core/formats/WorldFormatInfo.cpp
+        src/core/formats/WorldFormatManager.cpp
         src/exporters/TreasureHunterWorldExporter.cpp
         src/games/TreasureHunterGame.cpp
         src/importers/TreasureHunterWorldImporter.cpp

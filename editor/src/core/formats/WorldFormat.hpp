@@ -4,8 +4,8 @@
 #include <set>
 #include <unordered_set>
 
-#include "BaseWorldExporter.hpp"
-#include "IWorldImporter.hpp"
+#include "../BaseWorldExporter.hpp"
+#include "../IWorldImporter.hpp"
 #include "WorldFormatInfo.hpp"
 
 class WorldFormat {
