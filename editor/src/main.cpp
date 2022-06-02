@@ -22,6 +22,7 @@ int main() {
 	Editor editor;
 
 	std::shared_ptr<World> world = editor.openWorld("data/0.thp");
+	editor.saveWorldAs(world, "exported.thp");
 
 	for (auto &level: world->levels()) {
 		std::printf("Level %s\n\n", level->name().c_str());

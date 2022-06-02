@@ -5,12 +5,12 @@
 #include <set>
 #include <unordered_map>
 
-#include "games/GameManager.hpp"
-#include "games/IGame.hpp"
+#include "game/GameManager.hpp"
+#include "game/IGame.hpp"
 #include "IWorldImporter.hpp"
 #include "BaseWorldExporter.hpp"
 #include "World.hpp"
-#include "formats/WorldFormatManager.hpp"
+#include "format/WorldFormatManager.hpp"
 
 class BaseEditor {
 public:

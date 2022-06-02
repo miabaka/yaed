@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../core/games/KnownGame.hpp"
+#include "../core/game/KnownGame.hpp"
 
 class TreasureHunterGame : public KnownGame {
 public:

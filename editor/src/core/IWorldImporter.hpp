@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "games/GameManager.hpp"
+#include "game/GameManager.hpp"
 #include "World.hpp"
 
 class IWorldImporter {

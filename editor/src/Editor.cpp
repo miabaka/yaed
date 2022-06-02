@@ -8,7 +8,7 @@ Editor::Editor() {
 	auto thGame = std::make_shared<TreasureHunterGame>();
 	gameManager().registerGame(thGame);
 
-	WorldFormat &thpFormat = worldFormatManager().registerWorldFormat("sth_thp", {"Treasure Hunter Pack", "thp"});
+	WorldFormat &thpFormat = worldFormatManager().registerFormat("sth_thp", {"Treasure Hunter Pack", "thp"});
 
 	auto thpImporter = std::make_shared<TreasureHunterWorldImporter>();
 	thpFormat.setImporter(thpImporter);

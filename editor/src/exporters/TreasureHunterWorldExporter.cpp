@@ -11,6 +11,6 @@ std::set<std::string> TreasureHunterWorldExporter::supportedGamesIds() const {
 	return {"sth"};
 }
 
-void TreasureHunterWorldExporter::save(const World &world, const fs::path &path) const {
+void TreasureHunterWorldExporter::save(const World &world, const std::filesystem::path &path) const {
 
 }

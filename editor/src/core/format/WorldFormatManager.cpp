@@ -1,6 +1,6 @@
 #include "WorldFormatManager.hpp"
 
-WorldFormat &WorldFormatManager::registerWorldFormat(const std::string &id, const WorldFormatInfo &formatInfo) {
+WorldFormat &WorldFormatManager::registerFormat(const std::string &id, const WorldFormatInfo &formatInfo) {
 	auto format = std::make_shared<WorldFormat>(formatInfo);
 
 	bool inserted = _worldFormats.insert({id, format}).second;
@@ -44,6 +44,15 @@ WorldFormatManager::findExportersForWorld(std::shared_ptr<const World> world) co
 }
 
 std::shared_ptr<BaseWorldExporter>
-WorldFormatManager::findExporterByImporter(std::shared_ptr<const IWorldImporter>) const {
+WorldFormatManager::findAssociatedExporter(std::shared_ptr<const IWorldImporter> importer) const {
+	for (auto &[_, format]: _worldFormats) {
+		std::shared_ptr<IWorldImporter> currentImporter = format->importer();
+
+		if (!(currentImporter && currentImporter == importer))
+			continue;
+
+		return format->exporter();
+	}
+
 	return {};
 }
