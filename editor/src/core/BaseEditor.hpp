@@ -16,9 +16,9 @@ class BaseEditor {
 public:
 	virtual ~BaseEditor() = default;
 
-	WorldFormatManager &worldFormatManager();
+	GameManager &gameManager();
 
-	void registerGame(std::shared_ptr<IGame> game);
+	WorldFormatManager &worldFormatManager();
 
 	std::shared_ptr<World> openWorld(const std::filesystem::path &path);
 

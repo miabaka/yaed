@@ -2,12 +2,12 @@
 
 #include <stdexcept>
 
-WorldFormatManager &BaseEditor::worldFormatManager() {
-	return _worldFormatManager;
+GameManager &BaseEditor::gameManager() {
+	return _gameManager;
 }
 
-void BaseEditor::registerGame(std::shared_ptr<IGame> game) {
-	_gameManager.registerGame(std::move(game));
+WorldFormatManager &BaseEditor::worldFormatManager() {
+	return _worldFormatManager;
 }
 
 std::shared_ptr<World> BaseEditor::openWorld(const std::filesystem::path &path) {
