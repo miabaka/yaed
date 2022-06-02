@@ -8,7 +8,7 @@ const std::string &TreasureHunterWorldExporter::name() const {
     return name;
 }
 
-std::set<std::string> TreasureHunterWorldExporter::supportedGamesIds() const {
+std::set<std::string> TreasureHunterWorldExporter::supportedGameIds() const {
     return {"sth"};
 }
 

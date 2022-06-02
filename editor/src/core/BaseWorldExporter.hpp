@@ -10,7 +10,7 @@ public:
 
 	virtual const std::string &name() const = 0;
 
-	virtual std::set<std::string> supportedGamesIds() const = 0;
+	virtual std::set<std::string> supportedGameIds() const = 0;
 
 	bool gameIsSupported(const std::string &id) const;
 
