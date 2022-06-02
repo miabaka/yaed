@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 
+#include "games/GameManager.hpp"
 #include "World.hpp"
 
 class IWorldImporter {
@@ -14,5 +15,5 @@ public:
 
 	virtual bool probe(const std::filesystem::path &path) const = 0;
 
-	virtual std::shared_ptr<World> import(const std::filesystem::path &path) const = 0;
+	virtual std::shared_ptr<World> import(const std::filesystem::path &path, const GameManager &gameManager) const = 0;
 };

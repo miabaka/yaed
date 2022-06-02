@@ -1,6 +1,7 @@
 #include "BaseEditor.hpp"
 
 #include <stdexcept>
+#include <utility>
 
 WorldFormat &BaseEditor::registerWorldFormat(const std::string &id, const WorldFormatInfo &formatInfo) {
 	auto format = std::make_shared<WorldFormat>(formatInfo);
@@ -14,7 +15,7 @@ WorldFormat &BaseEditor::registerWorldFormat(const std::string &id, const WorldF
 }
 
 void BaseEditor::registerGame(std::shared_ptr<IGame> game) {
-
+	_gameManager.registerGame(std::move(game));
 }
 
 std::shared_ptr<IWorldImporter> BaseEditor::findImporterForFile(const std::filesystem::path &path) const {
@@ -34,5 +35,5 @@ std::shared_ptr<World> BaseEditor::openWorld(const std::filesystem::path &path) 
 	if (!importer)
 		throw std::runtime_error("Can't find suitable importer for '" + path.string() + '\'');
 
-	return importer->import(path);
+	return importer->import(path, _gameManager);
 }

@@ -3,6 +3,7 @@
 #include "IGame.hpp"
 
 class UnknownGame : public IGame {
+public:
 	explicit UnknownGame(std::string id);
 
 	bool known() const override;

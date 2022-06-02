@@ -4,7 +4,8 @@
 #include <memory>
 #include <unordered_map>
 
-#include "IGame.hpp"
+#include "games/GameManager.hpp"
+#include "games/IGame.hpp"
 #include "World.hpp"
 #include "WorldFormat.hpp"
 #include "WorldFormatInfo.hpp"
@@ -23,4 +24,5 @@ public:
 
 private:
 	std::unordered_map<std::string, std::shared_ptr<WorldFormat>> _worldFormats;
+	GameManager _gameManager;
 };

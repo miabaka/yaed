@@ -8,5 +8,5 @@ public:
 
 	bool probe(const std::filesystem::path &path) const override;
 
-	std::shared_ptr<World> import(const std::filesystem::path &path) const override;
+	std::shared_ptr<World> import(const std::filesystem::path &path, const GameManager &gameManager) const override;
 };
