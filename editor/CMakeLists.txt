@@ -17,8 +17,8 @@ add_executable(editor
         src/core/format/WorldFormat.cpp
         src/core/format/WorldFormatInfo.cpp
         src/core/format/WorldFormatManager.cpp
-        src/exporters/TreasureHunterWorldExporter.cpp
-        src/games/TreasureHunterGame.cpp
-        src/importers/TreasureHunterWorldImporter.cpp
+        src/exporter/TreasureHunterWorldExporter.cpp
+        src/game/TreasureHunterGame.cpp
+        src/importer/TreasureHunterWorldImporter.cpp
         src/Editor.cpp
         src/main.cpp)

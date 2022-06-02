@@ -1,8 +1,8 @@
 #include "Editor.hpp"
 
-#include "games/TreasureHunterGame.hpp"
-#include "importers/TreasureHunterWorldImporter.hpp"
-#include "exporters/TreasureHunterWorldExporter.hpp"
+#include "game/TreasureHunterGame.hpp"
+#include "importer/TreasureHunterWorldImporter.hpp"
+#include "exporter/TreasureHunterWorldExporter.hpp"
 
 Editor::Editor() {
 	auto thGame = std::make_shared<TreasureHunterGame>();
