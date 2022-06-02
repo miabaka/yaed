@@ -32,14 +32,40 @@ std::shared_ptr<World> BaseEditor::openWorld(const std::filesystem::path &path) 
 
 	world->setCustomData(std::move(customData));
 
+	_worlds.insert(world);
+
 	return world;
 }
 
-void BaseEditor::saveWorldAs(std::shared_ptr<const World> world, const std::filesystem::path &path) const {
+void BaseEditor::saveWorld(std::shared_ptr<const World> world) const {
 	auto &customData = world->customData<EditorWorldData>();
 
 	if (!customData.exporter)
 		return;
 
+	customData.exporter->save(*world, customData.path);
+}
+
+void BaseEditor::saveWorldAs(
+		std::shared_ptr<World> world, const std::filesystem::path &path,
+		std::shared_ptr<BaseWorldExporter> exporter) const {
+	auto &customData = world->customData<EditorWorldData>();
+
+	if (exporter)
+		customData.exporter = exporter;
+
+	if (!customData.exporter)
+		return;
+
 	customData.exporter->save(*world, path);
+	customData.path = path;
+}
+
+void BaseEditor::closeWorld(std::shared_ptr<World> world) {
+	auto it = _worlds.find(world);
+
+	if (it == _worlds.end())
+		return;
+
+	_worlds.erase(it);
 }
