@@ -30,7 +30,8 @@ void TreasureHunterWorldExporter::save(const World &world, const std::filesystem
 
     static_assert(std::is_same<Tilemap::tile_t, uint16_t>());
 
-    for (const auto &layer : level->layers()) {
+    for (auto i = level->layers().rbegin(); i != level->layers().rend(); i++) {
+      const auto &layer = *i;
       const auto &tilemap = layer->tilemap();
       file.write(reinterpret_cast<const char *>(tilemap.data()), sizeof(Tilemap::tile_t) * tilemap.tileCount());
     }
