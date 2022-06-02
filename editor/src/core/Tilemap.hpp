@@ -27,6 +27,7 @@ public:
 	glm::ivec2 size() const;
 
 	tile_t *data() noexcept;
+  const tile_t *data() const noexcept;
 
 	Tilemap::tile_t operator()(int x, int y) const;
 

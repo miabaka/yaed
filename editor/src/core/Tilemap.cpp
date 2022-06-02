@@ -34,3 +34,7 @@ Tilemap::tile_t Tilemap::operator()(int x, int y) const {
 
 	return _tiles[y * _size.x + x];
 }
+
+const Tilemap::tile_t *Tilemap::data() const noexcept {
+  return _tiles.data();
+}
