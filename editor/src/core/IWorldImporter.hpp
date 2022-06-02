@@ -8,6 +8,8 @@
 
 class IWorldImporter {
 public:
+	virtual ~IWorldImporter() = default;
+
 	virtual const std::string &name() const = 0;
 
 	virtual bool probe(const std::filesystem::path &path) const = 0;

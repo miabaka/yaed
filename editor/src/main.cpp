@@ -1,17 +1,5 @@
-#include <iostream>
-
-#include "Tilemap.hpp"
+#include "core/Tilemap.hpp"
 #include "Editor.hpp"
-#include "importers/TreasureHunterWorldImporter.hpp"
-
-namespace fs = std::filesystem;
-
-static void setupGameSupport(Editor &editor) {
-	WorldFormat &format = editor.registerWorldFormat("sth_thp", {"Treasure Hunter Pack", "thp"});
-
-	auto importer = std::make_shared<TreasureHunterWorldImporter>();
-	format.registerImporter(importer);
-}
 
 static void printTilemap(const Tilemap &map) {
 	glm::ivec2 size = map.size();
@@ -32,7 +20,6 @@ static void printTilemap(const Tilemap &map) {
 
 int main() {
 	Editor editor;
-	setupGameSupport(editor);
 
 	std::shared_ptr<World> world = editor.openWorld("data/0.thp");
 

@@ -2,18 +2,18 @@ project(editor)
 
 find_package(glm REQUIRED)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-
 add_executable(editor
+        src/core/BaseEditor.cpp
+        src/core/KnownGame.cpp
+        src/core/Layer.cpp
+        src/core/LayerTemplate.cpp
+        src/core/Level.cpp
+        src/core/Tilemap.cpp
+        src/core/UnknownGame.cpp
+        src/core/World.cpp
+        src/core/WorldFormat.cpp
+        src/core/WorldFormatInfo.cpp
+        src/games/TreasureHunterGame.cpp
         src/importers/TreasureHunterWorldImporter.cpp
         src/Editor.cpp
-        src/Game.cpp
-        src/Layer.cpp
-        src/LayerTemplate.cpp
-        src/Level.cpp
-        src/main.cpp
-        src/Tilemap.cpp
-        src/World.cpp
-        src/WorldFormat.cpp
-        src/WorldFormatInfo.cpp)
+        src/main.cpp)

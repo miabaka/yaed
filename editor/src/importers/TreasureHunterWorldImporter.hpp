@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../IWorldImporter.hpp"
+#include "../core/IWorldImporter.hpp"
 
 class TreasureHunterWorldImporter : public IWorldImporter {
 public:
@@ -11,5 +11,5 @@ public:
 	std::shared_ptr<World> import(const std::filesystem::path &path) const override;
 
 private:
-	std::string _name = "TreasureHunterWorldImporter";
+	const std::string _name = "TreasureHunterWorldImporter";
 };
