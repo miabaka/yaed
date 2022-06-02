@@ -9,7 +9,4 @@ public:
 	bool probe(const std::filesystem::path &path) const override;
 
 	std::shared_ptr<World> import(const std::filesystem::path &path) const override;
-
-private:
-	const std::string _name = "TreasureHunterWorldImporter";
 };

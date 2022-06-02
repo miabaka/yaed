@@ -8,7 +8,8 @@ namespace fs = std::filesystem;
 static const char THP_MAGIC[] = {'T', 'H', '\0', '\0'};
 
 const std::string &TreasureHunterWorldImporter::name() const {
-	return _name;
+	static std::string name = "TreasureHunterWorldImporter";
+	return name;
 }
 
 bool TreasureHunterWorldImporter::probe(const fs::path &path) const {
