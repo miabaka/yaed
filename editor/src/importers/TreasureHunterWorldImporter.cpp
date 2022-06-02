@@ -80,7 +80,7 @@ uint32_t CrappyTestBinaryReader::read() {
 	return (d << 24) | (c << 16) | (b << 8) | a;
 }
 
-std::shared_ptr<World> TreasureHunterWorldImporter::import(const fs::path &path, const GameManager &gameManager) const {
+std::shared_ptr<World> TreasureHunterWorldImporter::load(const fs::path &path, const GameManager &gameManager) const {
 	auto mainLayerTemplate = std::make_shared<LayerTemplate>("Main");
 	auto gemLayerTemplate = std::make_shared<LayerTemplate>("Gems");
 

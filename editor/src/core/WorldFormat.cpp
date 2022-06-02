@@ -7,10 +7,18 @@ const WorldFormatInfo &WorldFormat::info() const {
 	return _info;
 }
 
-const std::unordered_set<std::shared_ptr<IWorldImporter>> &WorldFormat::importers() const {
-	return _importers;
+std::shared_ptr<IWorldImporter> WorldFormat::importer() const {
+	return _importer;
 }
 
-void WorldFormat::registerImporter(std::shared_ptr<IWorldImporter> importer) {
-	_importers.insert(importer);
+std::shared_ptr<BaseWorldExporter> WorldFormat::exporter() const {
+	return _exporter;
+}
+
+void WorldFormat::setImporter(std::shared_ptr<IWorldImporter> importer) {
+	_importer = std::move(importer);
+}
+
+void WorldFormat::setExporter(std::shared_ptr<BaseWorldExporter> exporter) {
+	_exporter = std::move(exporter);
 }

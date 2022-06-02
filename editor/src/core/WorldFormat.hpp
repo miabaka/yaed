@@ -1,9 +1,10 @@
 #pragma once
 
 #include <memory>
+#include <set>
 #include <unordered_set>
 
-#include "IWorldExporter.hpp"
+#include "BaseWorldExporter.hpp"
 #include "IWorldImporter.hpp"
 #include "WorldFormatInfo.hpp"
 
@@ -13,13 +14,16 @@ public:
 
 	const WorldFormatInfo &info() const;
 
-	const std::unordered_set<std::shared_ptr<IWorldImporter>> &importers() const;
+	std::shared_ptr<IWorldImporter> importer() const;
 
-	void registerImporter(std::shared_ptr<IWorldImporter> importer);
+	std::shared_ptr<BaseWorldExporter> exporter() const;
 
-	void registerExporter(std::shared_ptr<IWorldExporter> exporter) {}
+	void setImporter(std::shared_ptr<IWorldImporter> importer);
+
+	void setExporter(std::shared_ptr<BaseWorldExporter> exporter);
 
 private:
 	WorldFormatInfo _info;
-	std::unordered_set<std::shared_ptr<IWorldImporter>> _importers;
+	std::shared_ptr<IWorldImporter> _importer;
+	std::shared_ptr<BaseWorldExporter> _exporter;
 };

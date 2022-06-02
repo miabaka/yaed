@@ -2,6 +2,7 @@
 
 #include "games/TreasureHunterGame.hpp"
 #include "importers/TreasureHunterWorldImporter.hpp"
+#include "exporters/TreasureHunterWorldExporter.hpp"
 
 Editor::Editor() {
 	auto thGame = std::make_shared<TreasureHunterGame>();
@@ -10,5 +11,8 @@ Editor::Editor() {
 	WorldFormat &thpFormat = registerWorldFormat("sth_thp", {"Treasure Hunter Pack", "thp"});
 
 	auto thpImporter = std::make_shared<TreasureHunterWorldImporter>();
-	thpFormat.registerImporter(thpImporter);
+	thpFormat.setImporter(thpImporter);
+
+	auto thpExporter = std::make_shared<TreasureHunterWorldExporter>();
+	thpFormat.setExporter(thpExporter);
 }

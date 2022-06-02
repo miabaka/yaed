@@ -7,6 +7,7 @@ add_executable(editor
         src/core/games/KnownGame.cpp
         src/core/games/UnknownGame.cpp
         src/core/BaseEditor.cpp
+        src/core/BaseWorldExporter.cpp
         src/core/Layer.cpp
         src/core/LayerTemplate.cpp
         src/core/Level.cpp
@@ -14,6 +15,7 @@ add_executable(editor
         src/core/World.cpp
         src/core/WorldFormat.cpp
         src/core/WorldFormatInfo.cpp
+        src/exporters/TreasureHunterWorldExporter.cpp
         src/games/TreasureHunterGame.cpp
         src/importers/TreasureHunterWorldImporter.cpp
         src/Editor.cpp
