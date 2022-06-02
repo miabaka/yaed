@@ -81,10 +81,11 @@ uint32_t CrappyTestBinaryReader::read() {
 }
 
 std::shared_ptr<World> TreasureHunterWorldImporter::load(const fs::path &path, const GameManager &gameManager) const {
-	auto mainLayerTemplate = std::make_shared<LayerTemplate>("Main");
-	auto gemLayerTemplate = std::make_shared<LayerTemplate>("Gems");
-
 	std::shared_ptr<IGame> game = gameManager.findGameById("sth");
+
+	std::shared_ptr<const LayerTemplate> mainLayerTemplate = game->findLayerTemplateById("main");
+	std::shared_ptr<const LayerTemplate> gemLayerTemplate = game->findLayerTemplateById("gems");
+
 	auto world = std::make_shared<World>(game, path.filename().string());
 
 	std::vector<char> data;

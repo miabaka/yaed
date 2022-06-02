@@ -12,6 +12,8 @@ public:
 
 	const std::string &name() const override;
 
+	std::shared_ptr<const LayerTemplate> findLayerTemplateById(const std::string &id) const override;
+
 private:
 	std::string _id;
 };
