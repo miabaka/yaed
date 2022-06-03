@@ -1,6 +1,7 @@
 project(editor)
 
 find_package(glm REQUIRED)
+find_package(glfw3 REQUIRED)
 
 add_executable(editor
         src/core/format/WorldFormat.cpp
@@ -28,3 +29,5 @@ add_executable(editor
         src/world_factory/TreasureHunterWorldFactory.cpp
         src/Editor.cpp
         src/main.cpp)
+
+target_link_libraries(editor PRIVATE glm glfw gl3w)
