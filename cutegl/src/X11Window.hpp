@@ -5,6 +5,7 @@
 #pragma once
 
 #include "IWindow.hpp"
+#include "X11Platform.hpp" // for Xlib
 
 namespace CuteGL::X11 {
     class X11Window;
@@ -19,10 +20,14 @@ namespace CuteGL::X11 {
     };
 
     class X11Window : public IWindow {
-    public:
-        X11Window();
+        ::X11::Window wnd;
+        ::GLX::GLXWindow glx;
+        ::X11::Display *dpy;
 
-        ~X11Window() override = default;
+    public:
+        X11Window(::X11::Display *dpy);
+
+        ~X11Window() override;
 
         void setSize(glm::uvec2 size) override;
 
