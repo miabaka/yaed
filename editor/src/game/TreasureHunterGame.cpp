@@ -137,4 +137,6 @@ void TreasureHunterGame::setupPaletteTemplate() {
 			.brush("Gem 6", Tile_Gem5)
 			.submitGroup()
 			.collect();
+
+	setPaletteTemplate(paletteTemplate);
 }

@@ -12,6 +12,10 @@ const std::string &KnownGame::name() const {
 	return _name;
 }
 
+std::shared_ptr<const PaletteTemplate> KnownGame::paletteTemplate() const {
+	return _paletteTemplate;
+}
+
 std::shared_ptr<const LayerTemplate> KnownGame::findLayerTemplateById(const std::string &id) const {
 	const auto it = _layerTemplates.find(id);
 
@@ -27,4 +31,8 @@ KnownGame::KnownGame(std::string id, std::string name)
 
 void KnownGame::addLayerTemplate(const std::string &id, std::shared_ptr<LayerTemplate> layerTemplate) {
 	_layerTemplates.insert({id, std::move(layerTemplate)});
+}
+
+void KnownGame::setPaletteTemplate(std::shared_ptr<PaletteTemplate> paletteTemplate) {
+	_paletteTemplate = std::move(paletteTemplate);
 }

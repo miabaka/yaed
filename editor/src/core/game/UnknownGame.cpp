@@ -16,6 +16,10 @@ const std::string &UnknownGame::name() const {
 	return name;
 }
 
+std::shared_ptr<const PaletteTemplate> UnknownGame::paletteTemplate() const {
+	return {};
+}
+
 std::shared_ptr<const LayerTemplate> UnknownGame::findLayerTemplateById(const std::string &id) const {
 	return std::make_shared<LayerTemplate>(id);
 }
