@@ -17,5 +17,7 @@ namespace CuteGL::X11 {
     public:
         X11Platform();
         ~X11Platform() override;
+
+        std::unique_ptr<IWindow> createWindow() override;
     };
 }
