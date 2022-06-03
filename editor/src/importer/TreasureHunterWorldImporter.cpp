@@ -36,7 +36,7 @@ public:
 
 	template<typename T>
 	void readArrayInto(size_t count, T *data) {
-		for (typeof(count) i = 0; i < count; i++)
+		while (count--)
 			*(data++) = read<T>();
 	}
 
@@ -108,9 +108,9 @@ TreasureHunterWorldImporter::load(
 
 	reader.skip(4);
 
-	auto levelCount = reader.read<uint32_t>();
+	auto levelCount = std::min(reader.read<uint32_t>(), 1'000u);
 
-	for (typeof(levelCount) i = 0; i < levelCount; i++) {
+	for (int i = 0; i < levelCount; i++) {
 		auto skinIndex = reader.read<uint16_t>();
 
 		reader.skip(14);
