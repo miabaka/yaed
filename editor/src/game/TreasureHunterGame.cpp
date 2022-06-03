@@ -2,51 +2,55 @@
 
 #include "../core/PaletteTemplateBuilder.hpp"
 
-enum Tile {
-	Tile_Air = 0,
+namespace Tile {
 
-	Tile_Ground = 1,
-	Tile_AltGround = 2,
-	Tile_Concrete = 3,
-	Tile_Ice = 4,
-	Tile_Hole = 5,
-	Tile_Ladder = 6,
-	Tile_HiddenLadder = 7,
-	Tile_Rope = 8,
-	Tile_HiddenExit = 9,
-	Tile_LockedExit = 10,
+enum {
+	Air = 0,
 
-	Tile_Hero = 11,
+	Ground = 1,
+	AltGround = 2,
+	Concrete = 3,
+	Ice = 4,
+	Hole = 5,
+	Ladder = 6,
+	HiddenLadder = 7,
+	Rope = 8,
+	HiddenExit = 9,
+	LockedExit = 10,
 
-	Tile_TeleportIn0 = 12,
-	Tile_TeleportInE = 26,
+	Hero = 11,
 
-	Tile_TeleportOut0 = 27,
-	Tile_TeleportOutE = 41,
+	TeleportIn0 = 12,
+	TeleportInE = 26,
 
-	Tile_MonsterSpawn0 = 142,
-	Tile_MonsterSpawn3 = 145,
+	TeleportOut0 = 27,
+	TeleportOutE = 41,
 
-	Tile_SecondMonsterSpawn0 = 146,
-	Tile_SecondMonsterSpawn9 = 155,
+	MonsterSpawn0 = 142,
+	MonsterSpawn3 = 145,
 
-	Tile_SecondMonsterRespawn0 = 156,
-	Tile_SecondMonsterRespawn9 = 165,
+	SecondMonsterSpawn0 = 146,
+	SecondMonsterSpawn9 = 155,
 
-	Tile_KeyItem = 268,
-	Tile_TrapItem = 269,
-	Tile_BombItem = 271,
-	TIle_FakeHeroItem = 272,
+	SecondMonsterRespawn0 = 156,
+	SecondMonsterRespawn9 = 165,
 
-	Tile_Gem0 = 373,
-	Tile_Gem1 = 374,
-	Tile_Gem2 = 375,
-	Tile_Gem3 = 376,
-	Tile_Gem4 = 377,
-	Tile_Gem5 = 378,
+	KeyItem = 268,
+	TrapItem = 269,
+	BombItem = 271,
+	FakeHeroItem = 272,
 
-	Tile_Bonus = 483
+	Gem0 = 373,
+	Gem1 = 374,
+	Gem2 = 375,
+	Gem3 = 376,
+	Gem4 = 377,
+	Gem5 = 378,
+
+	Bonus = 483
 };
+
+} // namespace Tile
 
 TreasureHunterGame::TreasureHunterGame()
 		: KnownGame("sth", "Snowy: Treasure Hunter") {
@@ -56,38 +60,38 @@ TreasureHunterGame::TreasureHunterGame()
 
 void TreasureHunterGame::setupLayerTemplates() {
 	std::set<Tilemap::tile_t> mainTiles = {
-			Tile_Air,
-			Tile_Ground,
-			Tile_AltGround,
-			Tile_Concrete,
-			Tile_Ice,
-			Tile_Hole,
-			Tile_Ladder,
-			Tile_HiddenLadder,
-			Tile_Rope,
-			Tile_HiddenExit,
-			Tile_LockedExit,
-			Tile_Hero,
-			Tile_TeleportIn0,
-			Tile_TeleportOut0,
-			Tile_MonsterSpawn0,
-			Tile_SecondMonsterSpawn0,
-			Tile_SecondMonsterRespawn0,
-			Tile_KeyItem,
-			Tile_TrapItem,
-			Tile_BombItem,
-			TIle_FakeHeroItem,
-			Tile_Bonus
+			Tile::Air,
+			Tile::Ground,
+			Tile::AltGround,
+			Tile::Concrete,
+			Tile::Ice,
+			Tile::Hole,
+			Tile::Ladder,
+			Tile::HiddenLadder,
+			Tile::Rope,
+			Tile::HiddenExit,
+			Tile::LockedExit,
+			Tile::Hero,
+			Tile::TeleportIn0,
+			Tile::TeleportOut0,
+			Tile::MonsterSpawn0,
+			Tile::SecondMonsterSpawn0,
+			Tile::SecondMonsterRespawn0,
+			Tile::KeyItem,
+			Tile::TrapItem,
+			Tile::BombItem,
+			Tile::FakeHeroItem,
+			Tile::Bonus
 	};
 
 	std::set<Tilemap::tile_t> gemTiles = {
-			Tile_Air,
-			Tile_Gem0,
-			Tile_Gem1,
-			Tile_Gem2,
-			Tile_Gem3,
-			Tile_Gem4,
-			Tile_Gem5
+			Tile::Air,
+			Tile::Gem0,
+			Tile::Gem1,
+			Tile::Gem2,
+			Tile::Gem3,
+			Tile::Gem4,
+			Tile::Gem5
 	};
 
 	addLayerTemplate("main", std::make_shared<LayerTemplate>("Main", std::move(mainTiles)));
@@ -97,44 +101,44 @@ void TreasureHunterGame::setupLayerTemplates() {
 void TreasureHunterGame::setupPaletteTemplate() {
 	std::shared_ptr<PaletteTemplate> paletteTemplate = PaletteTemplate::builder()
 			.beginGroup("Common")
-			.brush("Air", Tile_Air)
-			.brush("Hero", Tile_Hero)
-			.brush("Bonus", Tile_Bonus)
+			.brush("Air", Tile::Air)
+			.brush("Hero", Tile::Hero)
+			.brush("Bonus", Tile::Bonus)
 			.submitGroup()
 			.beginGroup("Blocks")
-			.brush("Ground", Tile_Ground)
-			.brush("Alt Ground", Tile_AltGround)
-			.brush("Concrete", Tile_Concrete)
-			.brush("Ice", Tile_Ice)
-			.brush("Hole", Tile_Hole)
-			.brush("Ladder", Tile_Ladder)
-			.brush("Hidden Ladder", Tile_HiddenLadder)
-			.brush("Rope", Tile_Rope)
-			.brush("Hidden Exit", Tile_HiddenExit)
-			.brush("Locked Exit", Tile_LockedExit)
+			.brush("Ground", Tile::Ground)
+			.brush("Alt Ground", Tile::AltGround)
+			.brush("Concrete", Tile::Concrete)
+			.brush("Ice", Tile::Ice)
+			.brush("Hole", Tile::Hole)
+			.brush("Ladder", Tile::Ladder)
+			.brush("Hidden Ladder", Tile::HiddenLadder)
+			.brush("Rope", Tile::Rope)
+			.brush("Hidden Exit", Tile::HiddenExit)
+			.brush("Locked Exit", Tile::LockedExit)
 			.submitGroup()
 			.beginGroup("Objects")
-			.brush("Teleport In", {Tile_TeleportIn0, Tile_TeleportInE})
-			.brush("Teleport Out", {Tile_TeleportOut0, Tile_TeleportOutE})
+			.brush("Teleport In", {Tile::TeleportIn0, Tile::TeleportInE})
+			.brush("Teleport Out", {Tile::TeleportOut0, Tile::TeleportOutE})
 			.submitGroup()
 			.beginGroup("Monsters")
-			.brush("Monster", {Tile_MonsterSpawn0, Tile_MonsterSpawn3})
-			.brush("Monster 2", {Tile_SecondMonsterSpawn0, Tile_SecondMonsterSpawn9})
-			.brush("Monster 2 Respawn", {Tile_SecondMonsterRespawn0, Tile_SecondMonsterRespawn9})
+			.brush("Monster", {Tile::MonsterSpawn0, Tile::MonsterSpawn3})
+			.brush("Monster 2", {Tile::SecondMonsterSpawn0, Tile::SecondMonsterSpawn9})
+			.brush("Monster 2 Respawn", {Tile::SecondMonsterRespawn0, Tile::SecondMonsterRespawn9})
 			.submitGroup()
 			.beginGroup("Items")
-			.brush("Key", Tile_KeyItem)
-			.brush("Trap", Tile_TrapItem)
-			.brush("Bomb", Tile_BombItem)
-			.brush("Fake Hero", TIle_FakeHeroItem)
+			.brush("Key", Tile::KeyItem)
+			.brush("Trap", Tile::TrapItem)
+			.brush("Bomb", Tile::BombItem)
+			.brush("Fake Hero", Tile::FakeHeroItem)
 			.submitGroup()
 			.beginGroup("Gems")
-			.brush("Gem", Tile_Gem0)
-			.brush("Gem 2", Tile_Gem1)
-			.brush("Gem 3", Tile_Gem2)
-			.brush("Gem 4", Tile_Gem3)
-			.brush("Gem 5", Tile_Gem4)
-			.brush("Gem 6", Tile_Gem5)
+			.brush("Gem", Tile::Gem0)
+			.brush("Gem 2", Tile::Gem1)
+			.brush("Gem 3", Tile::Gem2)
+			.brush("Gem 4", Tile::Gem3)
+			.brush("Gem 5", Tile::Gem4)
+			.brush("Gem 6", Tile::Gem5)
 			.submitGroup()
 			.collect();
 
