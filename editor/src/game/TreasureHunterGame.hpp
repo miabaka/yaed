@@ -5,4 +5,9 @@
 class TreasureHunterGame : public KnownGame {
 public:
 	TreasureHunterGame();
+
+private:
+	void setupLayerTemplates();
+
+	void setupPaletteTemplate();
 };

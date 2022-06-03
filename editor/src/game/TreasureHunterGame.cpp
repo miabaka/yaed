@@ -1,5 +1,7 @@
 #include "TreasureHunterGame.hpp"
 
+#include "../core/PaletteTemplateBuilder.hpp"
+
 enum Tile {
 	Tile_Air = 0,
 
@@ -65,6 +67,15 @@ enum Tile {
 	Tile_SecondMonsterSpawn9 = 155,
 
 	Tile_SecondMonsterRespawn0 = 156,
+	Tile_SecondMonsterRespawn1 = 157,
+	Tile_SecondMonsterRespawn2 = 158,
+	Tile_SecondMonsterRespawn3 = 159,
+	Tile_SecondMonsterRespawn4 = 160,
+	Tile_SecondMonsterRespawn5 = 161,
+	Tile_SecondMonsterRespawn6 = 162,
+	Tile_SecondMonsterRespawn7 = 163,
+	Tile_SecondMonsterRespawn8 = 164,
+	Tile_SecondMonsterRespawn9 = 165,
 
 	Tile_KeyItem = 268,
 	Tile_TrapItem = 269,
@@ -83,6 +94,11 @@ enum Tile {
 
 TreasureHunterGame::TreasureHunterGame()
 		: KnownGame("sth", "Snowy: Treasure Hunter") {
+	setupLayerTemplates();
+	setupPaletteTemplate();
+}
+
+void TreasureHunterGame::setupLayerTemplates() {
 	std::set<Tilemap::tile_t> mainTiles = {
 			Tile_Air,
 			Tile_Ground,
@@ -120,4 +136,49 @@ TreasureHunterGame::TreasureHunterGame()
 
 	addLayerTemplate("main", std::make_shared<LayerTemplate>("Main", std::move(mainTiles)));
 	addLayerTemplate("gems", std::make_shared<LayerTemplate>("Gems", std::move(gemTiles)));
+}
+
+void TreasureHunterGame::setupPaletteTemplate() {
+	std::shared_ptr<PaletteTemplate> paletteTemplate = PaletteTemplate::builder()
+			.beginGroup("Common")
+			.brush("Air", Tile_Air)
+			.brush("Hero", Tile_Hero)
+			.brush("Bonus", Tile_Bonus)
+			.submitGroup()
+			.beginGroup("Blocks")
+			.brush("Ground", Tile_Ground)
+			.brush("Alt Ground", Tile_AltGround)
+			.brush("Concrete", Tile_Concrete)
+			.brush("Ice", Tile_Ice)
+			.brush("Hole", Tile_Hole)
+			.brush("Ladder", Tile_Ladder)
+			.brush("Hidden Ladder", Tile_HiddenLadder)
+			.brush("Rope", Tile_Rope)
+			.brush("Hidden Exit", Tile_HiddenExit)
+			.brush("Locked Exit", Tile_LockedExit)
+			.submitGroup()
+			.beginGroup("Objects")
+			.brush("Teleport In", {Tile_TeleportIn0, Tile_TeleportInE})
+			.brush("Teleport Out", {Tile_TeleportOut0, Tile_TeleportOutE})
+			.submitGroup()
+			.beginGroup("Monsters")
+			.brush("Monster", {Tile_MonsterSpawn0, Tile_MonsterSpawn3})
+			.brush("Monster 2", {Tile_SecondMonsterSpawn0, Tile_SecondMonsterSpawn9})
+			.brush("Monster 2 Respawn", {Tile_SecondMonsterRespawn0, Tile_SecondMonsterRespawn9})
+			.submitGroup()
+			.beginGroup("Items")
+			.brush("Key", Tile_KeyItem)
+			.brush("Trap", Tile_TrapItem)
+			.brush("Bomb", Tile_BombItem)
+			.brush("Fake Hero", TIle_FakeHeroItem)
+			.submitGroup()
+			.beginGroup("Gems")
+			.brush("Gem", Tile_Gem0)
+			.brush("Gem 2", Tile_Gem1)
+			.brush("Gem 3", Tile_Gem2)
+			.brush("Gem 4", Tile_Gem3)
+			.brush("Gem 5", Tile_Gem4)
+			.brush("Gem 6", Tile_Gem5)
+			.submitGroup()
+			.collect();
 }
