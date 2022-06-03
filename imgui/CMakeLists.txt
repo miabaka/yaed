@@ -1,7 +1,5 @@
 project(imgui)
 
-find_package(glfw3 REQUIRED)
-
 add_library(imgui STATIC
         src/imgui_impl_glfw.cpp
         src/imgui_impl_opengl3.cpp

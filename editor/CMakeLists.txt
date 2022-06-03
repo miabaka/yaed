@@ -1,8 +1,5 @@
 project(editor)
 
-find_package(glm REQUIRED)
-find_package(glfw3 REQUIRED)
-
 add_executable(editor
         src/core/format/WorldFormat.cpp
         src/core/format/WorldFormatInfo.cpp
