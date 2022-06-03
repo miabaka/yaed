@@ -1,37 +1,77 @@
-#include "core/Tilemap.hpp"
-#include "Editor.hpp"
+#define GLFW_INCLUDE_NONE
 
-static void printTilemap(const Tilemap &map) {
-	glm::ivec2 size = map.size();
+#include <GLFW/glfw3.h>
+#include <GL/gl3w.h>
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_glfw.h>
+#include <imgui/imgui_impl_opengl3.h>
 
-	for (int y = 0; y < size.y; y++) {
-		for (int x = 0; x < size.x; x++) {
-			Tilemap::tile_t tile = map(x, y);
-
-			if (tile)
-				std::printf("%03hx ", tile);
-			else
-				std::printf("... ");
-		}
-
-		std::putchar('\n');
-	}
-}
+#include "EditorApplication.hpp"
 
 int main() {
-	Editor editor;
+	glfwInit();
 
-	std::shared_ptr<World> world = editor.openWorld("data/0.thp");
-	editor.saveWorldAs(world, "exported.thp");
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	for (auto &level: world->levels()) {
-		std::printf("Level %s\n\n", level->name().c_str());
+	GLFWwindow *window = glfwCreateWindow(1280, 720, "Ayaya! Ayaya!", nullptr, nullptr);
 
-		for (auto &layer: level->layers()) {
-			printTilemap(layer->tilemap());
-			std::putchar('\n');
+	glfwMakeContextCurrent(window);
+	glfwSwapInterval(1);
+
+	gl3wInit();
+
+	ImGui::CreateContext();
+
+	{
+		ImGuiIO &io = ImGui::GetIO();
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+	}
+
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init("#version 330 core");
+
+	{
+		EditorApplication app;
+
+		while (true) {
+			glfwPollEvents();
+
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
+
+			if (!app.update(glfwWindowShouldClose(window)))
+				break;
+
+			ImGui::Render();
+
+			glClear(GL_COLOR_BUFFER_BIT);
+
+			app.render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+			{
+				GLFWwindow *previousContext = glfwGetCurrentContext();
+
+				ImGui::UpdatePlatformWindows();
+				ImGui::RenderPlatformWindowsDefault();
+
+				glfwMakeContextCurrent(previousContext);
+			}
+
+			glfwSwapBuffers(window);
 		}
 	}
+
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+
+	ImGui::DestroyContext();
+
+	glfwTerminate();
 
 	return 0;
 }

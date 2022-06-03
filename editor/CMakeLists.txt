@@ -25,6 +25,7 @@ add_executable(editor
         src/importer/TreasureHunterWorldImporter.cpp
         src/world_factory/TreasureHunterWorldFactory.cpp
         src/Editor.cpp
+        src/EditorApplication.cpp
         src/main.cpp)
 
 target_link_libraries(editor PRIVATE glm glfw gl3w imgui)
