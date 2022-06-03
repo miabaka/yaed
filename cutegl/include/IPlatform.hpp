@@ -6,10 +6,14 @@
 
 #include <memory>
 
+#include "IWindow.hpp"
+
 namespace CuteGL {
     struct IPlatform {
         virtual ~IPlatform() = default;
 
         static std::unique_ptr<IPlatform> create();
+
+        virtual std::unique_ptr<IWindow> createWindow() = 0;
     };
 }

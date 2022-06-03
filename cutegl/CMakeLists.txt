@@ -1,6 +1,6 @@
 project(cutegl)
 
-add_library(cutegl STATIC src/IPlatform.cpp)
+add_library(cutegl STATIC src/IPlatform.cpp include/IWindow.hpp)
 target_include_directories(cutegl PUBLIC include)
 
 if(UNIX)
