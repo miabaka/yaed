@@ -30,4 +30,4 @@ add_executable(editor
         src/Editor.cpp
         src/main.cpp)
 
-target_link_libraries(editor PRIVATE glm glfw gl3w)
+target_link_libraries(editor PRIVATE glm glfw gl3w imgui)
