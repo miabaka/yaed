@@ -10,7 +10,7 @@
 
 class World {
 public:
-	explicit World(std::shared_ptr<IGame> game, std::string name = "Unnamed");
+	explicit World(std::shared_ptr<IGame> game, std::string name);
 
 	const std::string &name() const;
 

@@ -17,13 +17,21 @@ WorldFormatManager &BaseEditor::worldFormatManager() {
 	return _worldFormatManager;
 }
 
+WorldFactoryManager &BaseEditor::worldFactoryManager() {
+	return _worldFactoryManager;
+}
+
+std::shared_ptr<World> BaseEditor::createWorld(const std::string &factoryId, const std::string &name) {
+	return _worldFactoryManager.findFactoryById(factoryId)->createWorld(_gameManager, name);
+}
+
 std::shared_ptr<World> BaseEditor::openWorld(const std::filesystem::path &path) {
 	std::shared_ptr<IWorldImporter> importer = _worldFormatManager.findImporterForFile(path);
 
 	if (!importer)
 		throw std::runtime_error("Can't find suitable importer for '" + path.string() + '\'');
 
-	std::shared_ptr<World> world = importer->load(path, _gameManager);
+	std::shared_ptr<World> world = importer->load(path, _gameManager, _worldFactoryManager);
 
 	auto customData = std::make_unique<EditorWorldData>();
 

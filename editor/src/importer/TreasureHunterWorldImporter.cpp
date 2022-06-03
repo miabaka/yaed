@@ -80,13 +80,13 @@ uint32_t CrappyTestBinaryReader::read() {
 	return (d << 24) | (c << 16) | (b << 8) | a;
 }
 
-std::shared_ptr<World> TreasureHunterWorldImporter::load(const fs::path &path, const GameManager &gameManager) const {
-	std::shared_ptr<IGame> game = gameManager.findGameById("sth");
+std::shared_ptr<World>
+TreasureHunterWorldImporter::load(
+		const std::filesystem::path &path, const GameManager &gameManager,
+		const WorldFactoryManager &worldFactoryManager) const {
+	std::shared_ptr<IWorldFactory> worldFactory = worldFactoryManager.findFactoryById("sth");
 
-	std::shared_ptr<const LayerTemplate> mainLayerTemplate = game->findLayerTemplateById("main");
-	std::shared_ptr<const LayerTemplate> gemLayerTemplate = game->findLayerTemplateById("gems");
-
-	auto world = std::make_shared<World>(game, path.filename().string());
+	auto world = worldFactory->createWorld(gameManager, path.filename().string());
 
 	std::vector<char> data;
 
@@ -120,20 +120,22 @@ std::shared_ptr<World> TreasureHunterWorldImporter::load(const fs::path &path, c
 				reader.read<uint16_t>()
 		};
 
+		if (size != glm::ivec2(40, 30))
+			throw std::runtime_error("Wrong level dimensions");
+
 		auto name = std::to_string(i + 1);
 
-		auto mainLayer = std::make_shared<Layer>(mainLayerTemplate, size);
-		auto gemLayer = std::make_shared<Layer>(gemLayerTemplate, size);
+		auto level = worldFactory->createLevel(gameManager, name, skinIndex);
 
-		Tilemap &mainLayerMap = mainLayer->tilemap();
-		Tilemap &gemLayerMap = gemLayer->tilemap();
+		Tilemap &gemLayerMap = level->layers()[0]->tilemap();
+		Tilemap &mainLayerMap = level->layers()[1]->tilemap();
 
 		static_assert(std::is_same<Tilemap::tile_t, uint16_t>());
 
 		reader.readArrayInto(mainLayerMap.tileCount(), mainLayerMap.data());
 		reader.readArrayInto(gemLayerMap.tileCount(), gemLayerMap.data());
 
-		world->addLevel(std::make_shared<Level>(name, skinIndex, std::vector{gemLayer, mainLayer}));
+		world->addLevel(level);
 	}
 
 	return world;
