@@ -22,7 +22,13 @@ WorldFactoryManager &BaseEditor::worldFactoryManager() {
 }
 
 std::shared_ptr<World> BaseEditor::createWorld(const std::string &factoryId, const std::string &name) {
-	return _worldFactoryManager.findFactoryById(factoryId)->createWorld(_gameManager, name);
+	std::shared_ptr<World> world =
+			_worldFactoryManager.findFactoryById(factoryId)->createWorld(_gameManager, name);
+
+	auto customData = std::make_unique<EditorWorldData>();
+	world->setCustomData(std::move(customData));
+
+	return world;
 }
 
 std::shared_ptr<World> BaseEditor::openWorld(const std::filesystem::path &path) {
