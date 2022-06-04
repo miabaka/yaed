@@ -20,6 +20,6 @@ std::shared_ptr<const IGame> World::game() const {
 	return _game;
 }
 
-void World::setCustomData(std::unique_ptr<ICustomWorldData> customData) {
+void World::setCustomData(std::unique_ptr<ICustomData> customData) {
 	_customData = std::move(customData);
 }

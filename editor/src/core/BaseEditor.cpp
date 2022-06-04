@@ -4,7 +4,7 @@
 
 namespace fs = std::filesystem;
 
-struct EditorWorldData : public ICustomWorldData {
+struct EditorWorldData : public ICustomData {
 	fs::path path;
 	std::shared_ptr<BaseWorldExporter> exporter;
 };

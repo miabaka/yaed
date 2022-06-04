@@ -6,7 +6,7 @@
 
 #include "game/IGame.hpp"
 #include "Level.hpp"
-#include "ICustomWorldData.hpp"
+#include "ICustomData.hpp"
 
 class World {
 public:
@@ -30,11 +30,11 @@ public:
 		return *dynamic_cast<T *>(_customData.get());
 	}
 
-	void setCustomData(std::unique_ptr<ICustomWorldData> customData);
+	void setCustomData(std::unique_ptr<ICustomData> customData);
 
 private:
 	std::string _name;
 	std::vector<std::shared_ptr<Level>> _levels;
 	std::shared_ptr<IGame> _game;
-	std::unique_ptr<ICustomWorldData> _customData;
+	std::unique_ptr<ICustomData> _customData;
 };
