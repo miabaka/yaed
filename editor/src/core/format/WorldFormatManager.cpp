@@ -56,3 +56,7 @@ WorldFormatManager::findAssociatedExporter(std::shared_ptr<const IWorldImporter>
 
 	return {};
 }
+
+const std::unordered_map<std::string, std::shared_ptr<WorldFormat>> &WorldFormatManager::formats() const {
+	return _worldFormats;
+}

@@ -20,6 +20,8 @@ public:
 
 	std::shared_ptr<BaseWorldExporter> findAssociatedExporter(std::shared_ptr<const IWorldImporter> importer) const;
 
+	const std::unordered_map<std::string, std::shared_ptr<WorldFormat>> &formats() const;
+
 private:
 	std::unordered_map<std::string, std::shared_ptr<WorldFormat>> _worldFormats;
 };

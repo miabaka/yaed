@@ -5,6 +5,8 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
+#include <fmt/core.h>
+#include <cute/dialogs/core.hpp>
 
 #include "EditorApplication.hpp"
 
@@ -30,20 +32,13 @@ int main() {
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 	}
 
+	ImGui::StyleColorsLight();
+
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 330 core");
 
 	{
 		EditorApplication editor;
-
-		try { editor.openWorld("data/packs/kids/0.thp"); } catch (const std::exception &) {}
-		try { editor.openWorld("data/packs/kids/1.thp"); } catch (const std::exception &) {}
-		try { editor.openWorld("data/packs/kids/2.thp"); } catch (const std::exception &) {}
-		try { editor.openWorld("data/packs/kids/3.thp"); } catch (const std::exception &) {}
-		try { editor.openWorld("data/packs/standard/0.thp"); } catch (const std::exception &) {}
-		try { editor.openWorld("data/packs/standard/1.thp"); } catch (const std::exception &) {}
-		try { editor.openWorld("data/packs/standard/2.thp"); } catch (const std::exception &) {}
-		try { editor.openWorld("data/packs/standard/3.thp"); } catch (const std::exception &) {}
 
 		while (true) {
 			glfwPollEvents();

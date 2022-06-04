@@ -1,10 +1,83 @@
 #include "EditorApplication.hpp"
 
+#include <filesystem>
+
 #include <fmt/format.h>
 #include <imgui/imgui.h>
 #include <imgui/imgui_stdlib.h>
+#include <cute/dialogs/core.hpp>
+
+namespace fs = std::filesystem;
+
+using cute::dialogs::IFileDialog;
+
+EditorApplication::EditorApplication()
+		: _dialogProvider(cute::dialogs::createDialogProvider()) {}
 
 bool EditorApplication::update(bool shouldClose) {
+	if (ImGui::BeginMainMenuBar()) {
+		if (ImGui::BeginMenu("File")) {
+			ImGui::MenuItem("New...", "ctrl+n");
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Open...", "ctrl+o"))
+				openWorld();
+
+			if (ImGui::BeginMenu("Open Recent")) {
+				ImGui::MenuItem("Clear Recently Opened");
+				ImGui::EndMenu();
+			}
+
+			ImGui::Separator();
+
+			ImGui::MenuItem("Save", "ctrl+s");
+			ImGui::MenuItem("Save As...", "ctrl+shift+s");
+			ImGui::MenuItem("Save All", "ctrl+alt+s");
+
+			ImGui::Separator();
+
+			ImGui::MenuItem("Close", "ctrl+w");
+
+			ImGui::Separator();
+
+			ImGui::MenuItem("Exit");
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Window")) {
+			ImGui::MenuItem("Restore Default Layout");
+
+			ImGui::Separator();
+
+			ImGui::MenuItem("Inspector", {}, true);
+			ImGui::MenuItem("Layers", {}, true);
+			ImGui::MenuItem("Palette", {}, true);
+			ImGui::MenuItem("Viewport", {}, true);
+			ImGui::MenuItem("World Tree", {}, true);
+#ifndef NDEBUG
+			ImGui::Separator();
+
+			if (ImGui::BeginMenu("Dear ImGui")) {
+				ImGui::MenuItem("Demo", nullptr, false);
+				ImGui::MenuItem("Metrics/Debugger", nullptr, false);
+				ImGui::MenuItem("Style Editor", nullptr, false);
+
+				ImGui::EndMenu();
+			}
+#endif
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Help")) {
+			ImGui::MenuItem("About");
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMainMenuBar();
+	}
+
 	if (ImGui::Begin("World Tree")) {
 		const int defaultNodeFlags =
 				ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanAvailWidth
@@ -139,4 +212,22 @@ std::shared_ptr<Level> EditorApplication::selectedLevelForInspector() {
 
 void EditorApplication::selectLevelForInspector(std::shared_ptr<Level> level) {
 	_selectedLevelForInspector = level;
+}
+
+void EditorApplication::openWorld() {
+	std::unique_ptr<IFileDialog> dialog = _dialogProvider->createFileDialog(IFileDialog::Type::Open);
+
+	for (const auto &[_, format]: worldFormatManager().formats()) {
+		const WorldFormatInfo &info = format->info();
+		dialog->addExtensionFilter(info.name(), "*." + info.fileExtension());
+	}
+
+	dialog->addExtensionFilter(L"All files", "*.*");
+
+	const fs::path selectedPath = dialog->show();
+
+	if (selectedPath.empty())
+		return;
+
+	BaseEditor::openWorld(selectedPath);
 }

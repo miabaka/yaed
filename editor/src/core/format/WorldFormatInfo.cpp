@@ -4,10 +4,10 @@ WorldFormatInfo::WorldFormatInfo(std::string name, std::string fileExtension)
 		: _name(std::move(name)),
 		  _fileExtension(std::move(fileExtension)) {}
 
-const std::string &WorldFormatInfo::getFileExtension() const {
+const std::string &WorldFormatInfo::fileExtension() const {
 	return _fileExtension;
 }
 
-const std::string &WorldFormatInfo::getName() const {
+const std::string &WorldFormatInfo::name() const {
 	return _name;
 }
