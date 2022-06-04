@@ -4,8 +4,13 @@
 
 #include "X11Window.hpp"
 
+#include <locale>
+#include <codecvt>
+
 using namespace CuteGL::X11;
 using namespace CuteGL;
+
+using ConvertUtf8 = std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>;
 
 static struct {
     bool initialized;
@@ -124,27 +129,30 @@ IWindow::DecorationMode X11Window::getDecorations() const {
 }
 
 void X11Window::setTitle(std::wstring_view title) {
+    ConvertUtf8 cvt;
 
+    ::X11::XStoreName(dpy, wnd, cvt.to_bytes(title.data()).c_str());
 }
 
 void X11Window::setVisible(bool visible) {
-
+    if (visible) ::X11::XMapWindow(dpy, wnd);
+    else ::X11::XUnmapWindow(dpy, wnd);
 }
 
 bool X11Window::shouldClose() const {
-    return false;
+    return _shouldClose;
 }
 
 void X11Window::setShouldClose(bool shouldClose) {
-
+    _shouldClose = shouldClose;
 }
 
 int X11Window::getSwapInterval() const {
-    return 0;
+    return _swapInterval;
 }
 
 void X11Window::setSwapInterval(int interval) {
-
+    _swapInterval = interval;
 }
 
 std::unique_ptr<IWindowContext> X11Window::createContext() {

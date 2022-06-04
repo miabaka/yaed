@@ -26,6 +26,8 @@ namespace CuteGL::X11 {
 
         static void initGlobals(::X11::Display *dpy);
 
+        bool _shouldClose;
+        int _swapInterval;
     public:
         X11Window(::X11::Display *dpy);
 
