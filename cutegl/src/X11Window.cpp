@@ -16,6 +16,7 @@ static struct {
     bool initialized;
 
     ::X11::Atom motifWmHints;
+    ::GLX::PFNGLXSWAPINTERVALEXTPROC glXSwapInterval;
 } globalData = { .initialized = false };
 
 X11Context::X11Context(const X11Window &wnd) {
@@ -32,6 +33,9 @@ void X11Context::makeCurrent() {
 
 void X11Window::initGlobals(::X11::Display *dpy) {
     globalData.motifWmHints = ::X11::XInternAtom(dpy, "_MOTIF_WM_HINTS", True);
+
+    globalData.glXSwapInterval = (::GLX::PFNGLXSWAPINTERVALEXTPROC)
+            ::GLX::glXGetProcAddress((const ::GLX::GLubyte *) ("glXSwapIntervalEXT"));
 
     globalData.initialized = true;
 }
@@ -153,6 +157,7 @@ int X11Window::getSwapInterval() const {
 
 void X11Window::setSwapInterval(int interval) {
     _swapInterval = interval;
+    globalData.glXSwapInterval(dpy, glx, interval);
 }
 
 std::unique_ptr<IWindowContext> X11Window::createContext() {
@@ -160,5 +165,5 @@ std::unique_ptr<IWindowContext> X11Window::createContext() {
 }
 
 void X11Window::swapBuffers() {
-
+    ::GLX::glXSwapBuffers(dpy, glx);
 }
