@@ -11,6 +11,7 @@ add_executable(editor
         src/core/BaseWorldExporter.cpp
         src/core/Brush.cpp
         src/core/BrushGroup.cpp
+        src/core/CustomDataContainer.cpp
         src/core/Layer.cpp
         src/core/LayerTemplate.cpp
         src/core/Level.cpp

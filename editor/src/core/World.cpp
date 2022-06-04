@@ -19,7 +19,3 @@ void World::addLevel(const std::shared_ptr<Level> &level) {
 std::shared_ptr<const IGame> World::game() const {
 	return _game;
 }
-
-void World::setCustomData(std::unique_ptr<ICustomData> customData) {
-	_customData = std::move(customData);
-}

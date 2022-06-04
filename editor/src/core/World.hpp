@@ -5,10 +5,10 @@
 #include <vector>
 
 #include "game/IGame.hpp"
+#include "CustomDataContainer.hpp"
 #include "Level.hpp"
-#include "ICustomData.hpp"
 
-class World {
+class World : public CustomDataContainer {
 public:
 	explicit World(std::shared_ptr<IGame> game, std::string name);
 
@@ -20,21 +20,8 @@ public:
 
 	std::shared_ptr<const IGame> game() const;
 
-	template<typename T>
-	T &customData() {
-		return *dynamic_cast<T *>(_customData.get());
-	}
-
-	template<typename T>
-	const T &customData() const {
-		return *dynamic_cast<T *>(_customData.get());
-	}
-
-	void setCustomData(std::unique_ptr<ICustomData> customData);
-
 private:
 	std::string _name;
 	std::vector<std::shared_ptr<Level>> _levels;
 	std::shared_ptr<IGame> _game;
-	std::unique_ptr<ICustomData> _customData;
 };
