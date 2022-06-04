@@ -17,18 +17,26 @@ static struct {
 
     ::X11::Atom motifWmHints;
     ::GLX::PFNGLXSWAPINTERVALEXTPROC glXSwapInterval;
+    ::GLX::PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttrib;
 } globalData = { .initialized = false };
 
-X11Context::X11Context(const X11Window &wnd) {
+X11Context::X11Context(const X11Window &wnd) : dpy(wnd.dpy), wnd(wnd.glx) {
+    static constexpr const int ctxAttribs[] = {
+            GLX_CONTEXT_MAJOR_VERSION_ARB, 3, // fixme: maybe pass GL version in params?
+            GLX_CONTEXT_MINOR_VERSION_ARB, 3,
+            GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
+            None
+    };
 
+    glx = globalData.glXCreateContextAttrib(dpy, wnd.fbCfg, nullptr, true, ctxAttribs);
 }
 
 X11Context::~X11Context() {
-
+    ::GLX::glXDestroyContext(dpy, glx);
 }
 
 void X11Context::makeCurrent() {
-
+    ::GLX::glXMakeContextCurrent(dpy, wnd, wnd, glx);
 }
 
 void X11Window::initGlobals(::X11::Display *dpy) {
@@ -36,6 +44,9 @@ void X11Window::initGlobals(::X11::Display *dpy) {
 
     globalData.glXSwapInterval = (::GLX::PFNGLXSWAPINTERVALEXTPROC)
             ::GLX::glXGetProcAddress((const ::GLX::GLubyte *) ("glXSwapIntervalEXT"));
+
+    globalData.glXCreateContextAttrib = (::GLX::PFNGLXCREATECONTEXTATTRIBSARBPROC)
+            ::GLX::glXGetProcAddress((const ::GLX::GLubyte *) ("glXCreateContextAttribsARB"));
 
     globalData.initialized = true;
 }
@@ -63,8 +74,8 @@ X11Window::X11Window(::X11::Display *dpy) : dpy(dpy) {
     auto root = RootWindow(dpy, screen);
 
     int fbCfgCount;
-    auto fbCfg = ::GLX::glXChooseFBConfig(dpy, screen, fbCfgAttribs, &fbCfgCount);
-    auto visual = ::GLX::glXGetVisualFromFBConfig(dpy, *fbCfg);
+    fbCfg = *::GLX::glXChooseFBConfig(dpy, screen, fbCfgAttribs, &fbCfgCount);
+    auto visual = ::GLX::glXGetVisualFromFBConfig(dpy, fbCfg);
 
     auto colormap = ::X11::XCreateColormap(dpy, root, visual->visual, AllocNone); // fixme: i guess AllocNone should be fine, but who knows?
 
@@ -82,7 +93,7 @@ X11Window::X11Window(::X11::Display *dpy) : dpy(dpy) {
             visual->visual,
             CWColormap | CWEventMask, &attrs);
 
-    glx = ::GLX::glXCreateWindow(dpy, *fbCfg, wnd, nullptr);
+    glx = ::GLX::glXCreateWindow(dpy, fbCfg, wnd, nullptr);
 }
 
 X11Window::~X11Window() {

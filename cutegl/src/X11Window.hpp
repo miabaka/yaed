@@ -11,6 +11,10 @@ namespace CuteGL::X11 {
     class X11Window;
 
     class X11Context : public IWindowContext {
+        ::X11::Display *dpy;
+        ::GLX::GLXContext glx;
+        ::GLX::GLXWindow wnd;
+
     public:
         explicit X11Context(X11Window const &wnd);
 
@@ -24,10 +28,14 @@ namespace CuteGL::X11 {
         ::GLX::GLXWindow glx;
         ::X11::Display *dpy;
 
+        ::GLX::GLXFBConfig fbCfg;
+
         static void initGlobals(::X11::Display *dpy);
 
         bool _shouldClose;
         int _swapInterval;
+
+        friend class X11Context; // fixme: don't think this is good practice; don't kill me pls >.<
     public:
         X11Window(::X11::Display *dpy);
 
