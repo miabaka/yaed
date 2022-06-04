@@ -51,7 +51,7 @@ void X11Window::initGlobals(::X11::Display *dpy) {
     globalData.initialized = true;
 }
 
-X11Window::X11Window(::X11::Display *dpy) : dpy(dpy) {
+X11Window::X11Window(::X11::Display *dpy) : dpy(dpy), _shouldClose(false), _swapInterval(0) {
     if (!globalData.initialized) X11Window::initGlobals(dpy);
 
     static constexpr const int defaultX = 0, defaultY = 0, defaultW = 1024, defaultH = 768;
