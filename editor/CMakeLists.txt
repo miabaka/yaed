@@ -15,12 +15,12 @@ add_executable(editor
         src/core/Layer.cpp
         src/core/LayerTemplate.cpp
         src/core/Level.cpp
+        src/core/LevelSkin.cpp
         src/core/PaletteTemplate.cpp
         src/core/PaletteTemplateBuilder.cpp
         src/core/Tilemap.cpp
         src/core/World.cpp
         src/core/WorldFactoryManager.cpp
-        src/core/WorldManager.cpp
         src/exporter/TreasureHunterWorldExporter.cpp
         src/game/TreasureHunterGame.cpp
         src/importer/TreasureHunterWorldImporter.cpp

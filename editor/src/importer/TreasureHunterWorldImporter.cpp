@@ -3,6 +3,8 @@
 #include <cstring>
 #include <fstream>
 
+#include "../core/game/BaseGame.hpp"
+
 namespace fs = std::filesystem;
 
 static const char THP_MAGIC[] = {'T', 'H', '\0', '\0'};
@@ -84,9 +86,10 @@ std::shared_ptr<World>
 TreasureHunterWorldImporter::load(
 		const std::filesystem::path &path, const GameManager &gameManager,
 		const WorldFactoryManager &worldFactoryManager) const {
+	std::shared_ptr<BaseGame> game = gameManager.findGameById("sth");
 	std::shared_ptr<IWorldFactory> worldFactory = worldFactoryManager.findFactoryById("sth");
 
-	auto world = worldFactory->createWorld(gameManager, path.filename().string());
+	std::shared_ptr<World> world = worldFactory->createWorld(gameManager, path.filename().string());
 
 	std::vector<char> data;
 
@@ -111,7 +114,7 @@ TreasureHunterWorldImporter::load(
 	auto levelCount = std::min(reader.read<uint32_t>(), 1'000u);
 
 	for (int i = 0; i < levelCount; i++) {
-		auto skinIndex = reader.read<uint16_t>();
+		std::shared_ptr<LevelSkin> skin = game->findLevelSkinById(reader.read<uint16_t>());
 
 		reader.skip(14);
 
@@ -125,7 +128,7 @@ TreasureHunterWorldImporter::load(
 
 		auto name = std::to_string(i + 1);
 
-		auto level = worldFactory->createLevel(gameManager, name, skinIndex);
+		auto level = worldFactory->createLevel(gameManager, name, skin);
 
 		Tilemap &gemLayerMap = level->layers()[0]->tilemap();
 		Tilemap &mainLayerMap = level->layers()[1]->tilemap();
@@ -136,6 +139,7 @@ TreasureHunterWorldImporter::load(
 		reader.readArrayInto(gemLayerMap.tileCount(), gemLayerMap.data());
 
 		world->addLevel(level);
+		level->setWorld(world);
 	}
 
 	return world;

@@ -9,5 +9,6 @@ class TreasureHunterWorldFactory : public IWorldFactory {
 
 	std::shared_ptr<World> createWorld(const GameManager &gameManager, std::string name) override;
 
-	std::shared_ptr<Level> createLevel(const GameManager &gameManager, std::string name, int skinIndex) override;
+	std::shared_ptr<Level>
+	createLevel(const GameManager &gameManager, std::string name, std::shared_ptr<LevelSkin> skin) override;
 };

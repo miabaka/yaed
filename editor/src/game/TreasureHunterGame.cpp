@@ -3,7 +3,6 @@
 #include "../core/PaletteTemplateBuilder.hpp"
 
 namespace Tile {
-
 enum {
 	Air = 0,
 
@@ -49,12 +48,20 @@ enum {
 
 	Bonus = 483
 };
+}
 
-} // namespace Tile
+namespace Skin {
+enum {
+	MummiesTreasures = 0,
+	CyclopsOnGuard = 1,
+	NorthernLegends = 2
+};
+};
 
 TreasureHunterGame::TreasureHunterGame()
 		: KnownGame("sth", "Snowy: Treasure Hunter") {
 	setupLayerTemplates();
+	setupLevelSkins();
 	setupPaletteTemplate();
 }
 
@@ -96,6 +103,12 @@ void TreasureHunterGame::setupLayerTemplates() {
 
 	addLayerTemplate("main", std::make_shared<LayerTemplate>("Main", std::move(mainTiles)));
 	addLayerTemplate("gems", std::make_shared<LayerTemplate>("Gems", std::move(gemTiles)));
+}
+
+void TreasureHunterGame::setupLevelSkins() {
+	addLevelSkin(std::make_shared<LevelSkin>(Skin::MummiesTreasures, "Mummies' Treasures"));
+	addLevelSkin(std::make_shared<LevelSkin>(Skin::CyclopsOnGuard, "Cyclops on Guard!"));
+	addLevelSkin(std::make_shared<LevelSkin>(Skin::NorthernLegends, "Northern Legends"));
 }
 
 void TreasureHunterGame::setupPaletteTemplate() {

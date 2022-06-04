@@ -1,6 +1,7 @@
 #include "BaseEditor.hpp"
 
 #include <stdexcept>
+#include <algorithm>
 
 namespace fs = std::filesystem;
 
@@ -19,6 +20,10 @@ WorldFormatManager &BaseEditor::worldFormatManager() {
 
 WorldFactoryManager &BaseEditor::worldFactoryManager() {
 	return _worldFactoryManager;
+}
+
+const std::vector<std::shared_ptr<World>> &BaseEditor::worlds() const {
+	return _worlds;
 }
 
 std::shared_ptr<World> BaseEditor::createWorld(const std::string &factoryId, const std::string &name) {
@@ -45,8 +50,7 @@ std::shared_ptr<World> BaseEditor::openWorld(const std::filesystem::path &path) 
 	customData->exporter = _worldFormatManager.findAssociatedExporter(importer);
 
 	world->setCustomData(std::move(customData));
-
-	_worlds.insert(world);
+	_worlds.push_back(world);
 
 	return world;
 }
@@ -76,10 +80,18 @@ void BaseEditor::saveWorldAs(
 }
 
 void BaseEditor::closeWorld(std::shared_ptr<World> world) {
-	auto it = _worlds.find(world);
+	auto it = std::find(_worlds.begin(),  _worlds.end(), world);
 
 	if (it == _worlds.end())
 		return;
 
 	_worlds.erase(it);
+}
+
+std::shared_ptr<Level> BaseEditor::selectedLevel() {
+	return _selectedLevel.lock();
+}
+
+void BaseEditor::selectLevel(std::shared_ptr<Level> level) {
+	_selectedLevel = level;
 }

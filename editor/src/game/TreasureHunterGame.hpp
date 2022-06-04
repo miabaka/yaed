@@ -13,5 +13,7 @@ private:
 
 	void setupLayerTemplates();
 
+	void setupLevelSkins();
+
 	void setupPaletteTemplate();
 };

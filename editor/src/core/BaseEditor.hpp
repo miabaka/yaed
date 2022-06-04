@@ -2,14 +2,15 @@
 
 #include <filesystem>
 #include <memory>
-#include <set>
+#include <vector>
 #include <unordered_map>
 
 #include "format/WorldFormatManager.hpp"
 #include "game/GameManager.hpp"
-#include "game/IGame.hpp"
+#include "game/BaseGame.hpp"
 #include "IWorldImporter.hpp"
 #include "BaseWorldExporter.hpp"
+#include "Level.hpp"
 #include "World.hpp"
 #include "WorldFactoryManager.hpp"
 
@@ -23,6 +24,8 @@ public:
 
 	WorldFactoryManager &worldFactoryManager();
 
+	const std::vector<std::shared_ptr<World>> &worlds() const;
+
 	std::shared_ptr<World> createWorld(const std::string &factoryId, const std::string &name = "Unnamed");
 
 	std::shared_ptr<World> openWorld(const std::filesystem::path &path);
@@ -35,9 +38,14 @@ public:
 
 	void closeWorld(std::shared_ptr<World> world);
 
+	std::shared_ptr<Level> selectedLevel();
+
+	void selectLevel(std::shared_ptr<Level> level);
+
 private:
 	GameManager _gameManager;
 	WorldFormatManager _worldFormatManager;
 	WorldFactoryManager _worldFactoryManager;
-	std::set<std::shared_ptr<World>> _worlds;
+	std::vector<std::shared_ptr<World>> _worlds;
+	std::weak_ptr<Level> _selectedLevel;
 };

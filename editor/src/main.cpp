@@ -34,7 +34,16 @@ int main() {
 	ImGui_ImplOpenGL3_Init("#version 330 core");
 
 	{
-		EditorApplication app;
+		EditorApplication editor;
+
+		try { editor.openWorld("data/packs/kids/0.thp"); } catch (const std::exception &) {}
+		try { editor.openWorld("data/packs/kids/1.thp"); } catch (const std::exception &) {}
+		try { editor.openWorld("data/packs/kids/2.thp"); } catch (const std::exception &) {}
+		try { editor.openWorld("data/packs/kids/3.thp"); } catch (const std::exception &) {}
+		try { editor.openWorld("data/packs/standard/0.thp"); } catch (const std::exception &) {}
+		try { editor.openWorld("data/packs/standard/1.thp"); } catch (const std::exception &) {}
+		try { editor.openWorld("data/packs/standard/2.thp"); } catch (const std::exception &) {}
+		try { editor.openWorld("data/packs/standard/3.thp"); } catch (const std::exception &) {}
 
 		while (true) {
 			glfwPollEvents();
@@ -43,14 +52,16 @@ int main() {
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
-			if (!app.update(glfwWindowShouldClose(window)))
+			ImGui::DockSpaceOverViewport();
+
+			if (!editor.update(glfwWindowShouldClose(window)))
 				break;
 
 			ImGui::Render();
 
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			app.render();
+			editor.render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 			{
