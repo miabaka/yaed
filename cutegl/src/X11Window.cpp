@@ -57,23 +57,23 @@ X11Window::X11Window(::X11::Display *dpy) : dpy(dpy) {
     auto fbCfg = ::GLX::glXChooseFBConfig(dpy, screen, fbCfgAttribs, &fbCfgCount);
     auto visual = ::GLX::glXGetVisualFromFBConfig(dpy, *fbCfg);
 
-    auto colormap = ::X11::XCreateColormap(dpy, root, visual, AllocNone); // fixme: i guess AllocNone should be fine, but who knows?
+    auto colormap = ::X11::XCreateColormap(dpy, root, visual->visual, AllocNone); // fixme: i guess AllocNone should be fine, but who knows?
 
     ::X11::XSetWindowAttributes attrs = {
-        .colormap = colormap,
         .event_mask = ButtonPressMask | ButtonReleaseMask |
-                KeyPressMask | KeyReleaseMask |
-                VisibilityChangeMask | ExposureMask
+                      KeyPressMask | KeyReleaseMask |
+                      VisibilityChangeMask | ExposureMask,
+        .colormap = colormap
     };
 
     wnd = ::X11::XCreateWindow(
             dpy, root,
             defaultX, defaultY, defaultW, defaultH, 0,
             CopyFromParent, InputOutput,
-            visual,
+            visual->visual,
             CWColormap | CWEventMask, &attrs);
 
-    glx = ::GLX::glXCreateWindow(dpy, fbCfg, wnd, nullptr);
+    glx = ::GLX::glXCreateWindow(dpy, *fbCfg, wnd, nullptr);
 }
 
 X11Window::~X11Window() {
