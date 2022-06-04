@@ -5,14 +5,15 @@
 #include <fmt/format.h>
 #include <imgui/imgui.h>
 #include <imgui/imgui_stdlib.h>
-#include <cute/dialogs/core.hpp>
+#include <cute/dialogs/CuteDialogs.hpp>
 
 namespace fs = std::filesystem;
 
+using cute::dialogs::CuteDialogs;
 using cute::dialogs::IFileDialog;
 
 EditorApplication::EditorApplication()
-		: _dialogProvider(cute::dialogs::createDialogProvider()) {}
+		: _dialogProvider(CuteDialogs::createDialogProvider()) {}
 
 bool EditorApplication::update(bool shouldClose) {
 	if (ImGui::BeginMainMenuBar()) {

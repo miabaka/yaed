@@ -5,6 +5,9 @@
 
 namespace cute::dialogs {
 
-std::unique_ptr<IDialogProvider> createDialogProvider();
+class CuteDialogs {
+public:
+	static std::unique_ptr<IDialogProvider> createDialogProvider();
+};
 
 } // namespace cute::dialogs

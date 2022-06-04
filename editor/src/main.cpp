@@ -5,8 +5,6 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
-#include <fmt/core.h>
-#include <cute/dialogs/core.hpp>
 
 #include "EditorApplication.hpp"
 
