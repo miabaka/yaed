@@ -61,10 +61,13 @@ namespace CuteGL::X11 {
     class X11Platform : public IPlatform {
         ::X11::Display *dpy;
 
+        bool keys[(std::size_t) CuteGL::Key::MaxValue] {false};
     public:
         X11Platform();
         ~X11Platform() override;
 
         std::unique_ptr<IWindow> createWindow() override;
+
+        bool isKeyPressed(Key key) override;
     };
 }
