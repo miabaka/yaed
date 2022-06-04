@@ -7,6 +7,12 @@
 using namespace CuteGL::X11;
 using namespace CuteGL;
 
+static struct {
+    bool initialized;
+
+    ::X11::Atom motifWmHints;
+} globalData = { .initialized = false };
+
 X11Context::X11Context(const X11Window &wnd) {
 
 }
@@ -19,7 +25,15 @@ void X11Context::makeCurrent() {
 
 }
 
+void X11Window::initGlobals(::X11::Display *dpy) {
+    globalData.motifWmHints = ::X11::XInternAtom(dpy, "_MOTIF_WM_HINTS", True);
+
+    globalData.initialized = true;
+}
+
 X11Window::X11Window(::X11::Display *dpy) : dpy(dpy) {
+    if (!globalData.initialized) X11Window::initGlobals(dpy);
+
     static constexpr const int defaultX = 0, defaultY = 0, defaultW = 1024, defaultH = 768;
 
     static constexpr const int fbCfgAttribs[] = {
@@ -68,11 +82,41 @@ X11Window::~X11Window() {
 }
 
 void X11Window::setSize(glm::uvec2 size) {
-
+    ::X11::XResizeWindow(dpy, wnd, size.x, size.y);
 }
 
 void X11Window::setDecorations(IWindow::DecorationMode mode) {
+    using Decorations = ::X11::MotifWMHints::Decorations;
+    using Functions   = ::X11::MotifWMHints::Functions;
+    using Flags       = ::X11::MotifWMHints::Flags;
 
+    static const Functions defaultFns =
+            Functions::Close | Functions::Resize | Functions::Maximize |
+            Functions::Minimize | Functions::Move;
+
+    ::X11::MotifWMHints hints {
+        .flags = Flags::Functions | Flags::Decorations,
+        .functions = defaultFns,
+        .decorations = Decorations::Nothing,
+        .inputMode = 0, .state = 0
+    };
+
+    switch (mode) {
+        case IWindow::DecorationMode::Default:
+            hints.decorations |= Decorations::Resize | Decorations::Minimize | Decorations::Maximize |
+                    Decorations::Title | Decorations::Menu;
+        case IWindow::DecorationMode::NoCaption:
+            hints.decorations |= Decorations::Border;
+        case IWindow::DecorationMode::Undecorated:
+            break;
+    }
+
+    ::X11::XChangeProperty(
+            dpy, wnd,
+            globalData.motifWmHints, globalData.motifWmHints,
+            32,
+            PropModeReplace,
+            (unsigned char *) &hints, 5);
 }
 
 IWindow::DecorationMode X11Window::getDecorations() const {

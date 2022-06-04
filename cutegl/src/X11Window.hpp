@@ -24,6 +24,8 @@ namespace CuteGL::X11 {
         ::GLX::GLXWindow glx;
         ::X11::Display *dpy;
 
+        static void initGlobals(::X11::Display *dpy);
+
     public:
         X11Window(::X11::Display *dpy);
 

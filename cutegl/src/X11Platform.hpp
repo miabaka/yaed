@@ -6,8 +6,10 @@
 
 #include "IPlatform.hpp"
 
-extern "C" namespace X11 {
+namespace X11 {
+    extern "C" {
 #include "X11/Xlib.h"
+    }
 
     struct MotifWMHints {
         enum class Flags : unsigned long {
@@ -38,15 +40,20 @@ extern "C" namespace X11 {
         unsigned long state; // fixme: wut is this field?
     };
 
-#define OR(t, base) inline t operator|(t a, t b) { return static_cast<t>(static_cast<base>(a) | static_cast<base>(b)); }
+#define OR(t, base) \
+    inline t operator|(t a, t b) { return static_cast<t>(static_cast<base>(a) | static_cast<base>(b)); } \
+    inline t operator|=(t &a, t b) { return a = a | b; }
     OR(MotifWMHints::Flags, unsigned long)
     OR(MotifWMHints::Functions, unsigned long)
     OR(MotifWMHints::Decorations, unsigned long)
 #undef OR
 }
 
-extern "C" namespace GLX {
+namespace GLX {
+    extern "C" {
+        using namespace ::X11;
 #include "GL/glx.h"
+    }
 }
 
 namespace CuteGL::X11 {
