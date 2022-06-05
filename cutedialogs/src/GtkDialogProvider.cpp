@@ -3,6 +3,8 @@
 //
 
 #include "GtkDialogProvider.hpp"
+
+#include <gtk/gtk.h>
 #include "GtkFileDialog.hpp"
 
 using namespace cute::dialogs;

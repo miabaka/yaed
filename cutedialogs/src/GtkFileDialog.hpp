@@ -4,18 +4,14 @@
 
 #pragma once
 
-#include "cute/dialogs/IFileDialog.hpp"
-
-#include <gtk-3.0//gtk/gtk.h>
+#include <gtk/gtk.h>
+#include <cute/dialogs/IFileDialog.hpp>
 
 namespace cute::dialogs {
 
 class GtkFileDialog : public IFileDialog {
-    GtkWidget *dialog;
-
-    std::filesystem::path getPath(int result);
 public:
-    GtkFileDialog(Type type);
+    explicit GtkFileDialog(Type type);
 
     ~GtkFileDialog() override = default;
 
@@ -27,7 +23,12 @@ public:
 
     std::filesystem::path show() override;
 
-    std::filesystem::path showForMultiple() override;
+    std::vector<std::filesystem::path> showForMultiple() override;
+
+private:
+    GtkWidget *_dialog;
+
+    std::filesystem::path getPath(int result);
 };
 
 }

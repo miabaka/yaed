@@ -14,8 +14,10 @@ elseif(UNIX)
     find_package(PkgConfig REQUIRED)
 
     pkg_check_modules(GTK REQUIRED gtk+-3.0)
-    target_include_directories(cutedialogs PRIVATE ${GTK_INCLUDE_DIRS})
-    target_link_libraries(cutedialogs PRIVATE ${GTK_LIBRARIES})
+    pkg_check_modules(GLIB REQUIRED glibmm-2.4)
+
+    target_include_directories(cutedialogs PRIVATE ${GTK_INCLUDE_DIRS} ${GLIB_INCLUDE_DIRS})
+    target_link_libraries(cutedialogs PRIVATE ${GTK_LIBRARIES} ${GLIB_LIBRARIES})
 
     target_compile_definitions(cutedialogs PRIVATE CUTE_DIALOGS_IMPL_GTK)
     target_sources(cutedialogs PRIVATE
