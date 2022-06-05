@@ -6,6 +6,8 @@
 
 #include <locale>
 #include <codecvt>
+#include <unordered_map>
+#include <set>
 
 using namespace CuteGL::X11;
 using namespace CuteGL;
@@ -79,10 +81,12 @@ X11Window::X11Window(::X11::Display *dpy) : dpy(dpy), _shouldClose(false), _swap
 
     auto colormap = ::X11::XCreateColormap(dpy, root, visual->visual, AllocNone); // fixme: i guess AllocNone should be fine, but who knows?
 
+    eventMask = ButtonPressMask | ButtonReleaseMask |
+            KeyPressMask | KeyReleaseMask |
+            VisibilityChangeMask | ExposureMask;
+
     ::X11::XSetWindowAttributes attrs = {
-        .event_mask = ButtonPressMask | ButtonReleaseMask |
-                      KeyPressMask | KeyReleaseMask |
-                      VisibilityChangeMask | ExposureMask,
+        .event_mask = eventMask,
         .colormap = colormap
     };
 
@@ -180,9 +184,50 @@ void X11Window::swapBuffers() {
 }
 
 void X11Window::handleEvents() {
+    ::X11::XSelectInput(dpy, wnd, eventMask);
 
+    ::X11::XEvent evt;
+
+#define K(s, k) { #s, {Key::k} }
+#define K2(s, t) { #s, {Key::t} }, { #t, {Key::t} }
+
+    // only those which can be matched by string only
+    std::unordered_map<std::string, std::set<Key>> key_strings = {
+            { " ", {Key::Space} },
+            K(\t, Tab), K(\n, Enter), K(`, Grave), K(~, Tilde), K(@, At),
+            { "\"", {Key::DoubleQuote} },
+            K(#, Hash), K(№, Numero), K($, Dollar), K(;, Semicolon), K(%, Percent),
+            K(^, Circumflex), K(:, Colon), K(&, Ampersand), K(?, Question), K(*, Asterisk),
+            { "(", {Key::ParenLeft} }, { ")", {Key::ParenRight} },
+            K(-, Hyphen), K(_, LowHyphen), K(+, Plus), K(=, Equal), K([, SquareLeft),
+            K(], SquareRight), K({, CurlyLeft), K(}, CurlyRight), K(|, VertLine),
+            { "\\", {Key::ReverseSlash} }, { "'", {Key::SingleQuote} },
+            K(<, Less), K(>, More), { ",", {Key::Comma} }, K(., Dot),
+            K2(q, Q), K2(w, W), K2(e, E), K2(r, R), K2(t, T), K2(y, Y), K2(u, U), K2(i, I), K2(o, O), K2(p, P),
+            K2(a, A), K2(s, S), K2(d, D), K2(f, F), K2(g, G), K2(h, H), K2(j, J), K2(k, K), K2(l, L),
+            K2(z, Z), K2(x, X), K2(c, C), K2(v, V), K2(b, B), K2(n, N), K2(m, M),
+            K(0, Kb0), K(1, Kb1), K(2, Kb2), K(3, Kb3), K(4, Kb4),
+            K(5, Kb5), K(6, Kb6), K(7, Kb7), K(8, Kb8), K(9, Kb9)
+    };
+
+    while (::X11::XPending(dpy) && ::X11::XCheckWindowEvent(dpy, wnd, eventMask, &evt)) {
+        switch (evt.type) {
+            case KeyPress: {
+                ::X11::XKeyEvent &ke = *reinterpret_cast<::X11::XKeyEvent *>(&evt);
+
+                std::string buffer(255, '\0');
+                ::X11::XLookupString(reinterpret_cast<::X11::XKeyEvent *>(&evt), buffer.data(), buffer.capacity(), nullptr, nullptr);
+
+                if (key_strings.find(buffer) != key_strings.end()) {
+                    for (Key k : key_strings[buffer]) keys[(size_t) k] = true;
+                }
+
+                break;
+            }
+        }
+    }
 }
 
 bool X11Window::isKeyPressed(Key key) {
-    return false;
+    return keys[(size_t) key];
 }

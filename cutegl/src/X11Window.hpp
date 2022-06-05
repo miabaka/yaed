@@ -35,6 +35,10 @@ namespace CuteGL::X11 {
         bool _shouldClose;
         int _swapInterval;
 
+        bool keys[(std::size_t) CuteGL::Key::MaxValue] {false};
+
+        long eventMask;
+
         friend class X11Context; // fixme: don't think this is good practice; don't kill me pls >.<
     public:
         X11Window(::X11::Display *dpy);

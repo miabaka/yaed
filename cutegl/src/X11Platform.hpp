@@ -9,6 +9,7 @@
 namespace X11 {
     extern "C" {
 #include "X11/Xlib.h"
+#include "X11/Xutil.h"
     }
 
     struct MotifWMHints {
@@ -61,7 +62,6 @@ namespace CuteGL::X11 {
     class X11Platform : public IPlatform {
         ::X11::Display *dpy;
 
-        bool keys[(std::size_t) CuteGL::Key::MaxValue] {false};
     public:
         X11Platform();
         ~X11Platform() override;
