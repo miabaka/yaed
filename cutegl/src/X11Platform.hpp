@@ -69,5 +69,7 @@ namespace CuteGL::X11 {
         std::unique_ptr<IWindow> createWindow() override;
 
         bool isKeyPressed(Key key) override;
+
+        void handleEvents() override;
     };
 }

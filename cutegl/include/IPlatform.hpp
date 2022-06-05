@@ -35,5 +35,7 @@ namespace CuteGL {
         virtual std::unique_ptr<IWindow> createWindow() = 0;
 
         virtual bool isKeyPressed(Key key) = 0;
+
+        virtual void handleEvents() = 0;
     };
 }

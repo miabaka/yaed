@@ -23,3 +23,7 @@ std::unique_ptr<IWindow> X11Platform::createWindow() {
 bool X11Platform::isKeyPressed(Key key) {
     return keys[(std::size_t) key];
 }
+
+void X11Platform::handleEvents() {
+//    ::X11::XSelectInput();
+}
