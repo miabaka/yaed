@@ -3,6 +3,8 @@ project(cutegl)
 add_library(cutegl STATIC src/IPlatform.cpp include/cutegl/IWindow.hpp)
 target_include_directories(cutegl PUBLIC include)
 
+target_link_libraries(cutegl PUBLIC glm gl3w)
+
 if(UNIX)
     find_package(PkgConfig REQUIRED)
 

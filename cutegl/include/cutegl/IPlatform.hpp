@@ -9,6 +9,10 @@
 #include "IWindow.hpp"
 #include "Key.hpp"
 
+namespace GL3W {
+#include <GL/gl3w.h>
+}
+
 namespace CuteGL {
     struct IPlatform {
         virtual ~IPlatform() = default;

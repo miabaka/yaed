@@ -53,6 +53,7 @@ namespace X11 {
 namespace GLX {
     extern "C" {
         using namespace ::X11;
+        using namespace ::GL3W;
 #include "GL/glx.h"
 #include <GL/glxext.h>
     }

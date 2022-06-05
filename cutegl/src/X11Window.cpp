@@ -8,6 +8,8 @@
 #include <codecvt>
 #include <unordered_map>
 #include <set>
+#include <string>
+#include <cstring>
 
 using namespace CuteGL::X11;
 using namespace CuteGL;
@@ -31,6 +33,9 @@ X11Context::X11Context(const X11Window &wnd) : dpy(wnd.dpy), wnd(wnd.glx) {
     };
 
     glx = globalData.glXCreateContextAttrib(dpy, wnd.fbCfg, nullptr, true, ctxAttribs);
+    ::GLX::glXMakeContextCurrent(dpy, wnd.glx, wnd.glx, glx);
+
+    ::GL3W::gl3wInit2((::GL3W::GL3WGetProcAddressProc) ::GLX::glXGetProcAddress);
 }
 
 X11Context::~X11Context() {
@@ -45,10 +50,10 @@ void X11Window::initGlobals(::X11::Display *dpy) {
     globalData.motifWmHints = ::X11::XInternAtom(dpy, "_MOTIF_WM_HINTS", True);
 
     globalData.glXSwapInterval = (::GLX::PFNGLXSWAPINTERVALEXTPROC)
-            ::GLX::glXGetProcAddress((const ::GLX::GLubyte *) ("glXSwapIntervalEXT"));
+            ::GLX::glXGetProcAddress((const ::GL3W::GLubyte *) ("glXSwapIntervalEXT"));
 
     globalData.glXCreateContextAttrib = (::GLX::PFNGLXCREATECONTEXTATTRIBSARBPROC)
-            ::GLX::glXGetProcAddress((const ::GLX::GLubyte *) ("glXCreateContextAttribsARB"));
+            ::GLX::glXGetProcAddress((const ::GL3W::GLubyte *) ("glXCreateContextAttribsARB"));
 
     globalData.initialized = true;
 }
@@ -198,6 +203,8 @@ void X11Window::swapBuffers() {
 }
 
 void X11Window::handleEvents() {
+    for (bool &key : keys) key = false;
+
     ::X11::XSelectInput(dpy, wnd, eventMask);
 
     ::X11::XEvent evt;
@@ -206,7 +213,7 @@ void X11Window::handleEvents() {
 #define K2(s, t) { #s, {Key::t} }, { #t, {Key::t} }
 
     // only those which can be matched by string only
-    std::unordered_map<std::string, std::set<Key>> key_strings = {
+    std::unordered_map<std::string, std::set<Key>> key_strings {
             { " ", {Key::Space} },
             K(\t, Tab), K(\n, Enter), K(`, Grave), K(~, Tilde), K(@, At),
             { "\"", {Key::DoubleQuote} },
@@ -229,11 +236,12 @@ void X11Window::handleEvents() {
             case KeyPress: {
                 ::X11::XKeyEvent &ke = *reinterpret_cast<::X11::XKeyEvent *>(&evt);
 
-                std::string buffer(255, '\0');
-                ::X11::XLookupString(reinterpret_cast<::X11::XKeyEvent *>(&evt), buffer.data(), buffer.capacity(), nullptr, nullptr);
+                char buffer[255];
+                ::X11::XLookupString(reinterpret_cast<::X11::XKeyEvent *>(&evt), buffer, sizeof(buffer), nullptr, nullptr);
+                std::string data(buffer);
 
-                if (key_strings.find(buffer) != key_strings.end()) {
-                    for (Key k : key_strings[buffer]) keys[(size_t) k] = true;
+                if (key_strings.find(data) != key_strings.end()) {
+                    for (Key k : key_strings[data]) keys[(size_t) k] = true;
                 }
 
                 break;
