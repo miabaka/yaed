@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "IPlatform.hpp"
+#include "cutegl/IPlatform.hpp"
 
 namespace X11 {
     extern "C" {

@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "IWindow.hpp"
+#include "cutegl/IWindow.hpp"
 #include "X11Platform.hpp" // for Xlib
 
 namespace CuteGL::X11 {
