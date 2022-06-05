@@ -25,6 +25,8 @@ public:
 
 	void openWorld();
 
+	void saveWorldAs();
+
 private:
 	std::weak_ptr<World> _selectedWorldForInspector;
 	std::weak_ptr<Level> _selectedLevelForInspector;

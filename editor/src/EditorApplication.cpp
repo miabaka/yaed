@@ -33,7 +33,10 @@ bool EditorApplication::update(bool shouldClose) {
 			ImGui::Separator();
 
 			ImGui::MenuItem("Save", "ctrl+s");
-			ImGui::MenuItem("Save As...", "ctrl+shift+s");
+
+			if (ImGui::MenuItem("Save As...", "ctrl+shift+s"))
+				saveWorldAs();
+
 			ImGui::MenuItem("Save All", "ctrl+alt+s");
 
 			ImGui::Separator();
@@ -231,4 +234,33 @@ void EditorApplication::openWorld() {
 		return;
 
 	BaseEditor::openWorld(selectedPath);
+}
+
+void EditorApplication::saveWorldAs() {
+	std::shared_ptr<Level> level = selectedLevel();
+
+	if (!level)
+		return;
+
+	std::shared_ptr<World> world = level->world();
+	const std::string &gameId = world->game()->id();
+
+	std::unique_ptr<IFileDialog> dialog = _dialogProvider->createFileDialog(IFileDialog::Type::Save);
+
+	for (const auto &[_, format]: worldFormatManager().formats()) {
+		const WorldFormatInfo &info = format->info();
+		std::shared_ptr<const BaseWorldExporter> exporter = format->exporter();
+
+		if (!(exporter && exporter->gameIsSupported(gameId)))
+			continue;
+
+		dialog->addExtensionFilter(info.name(), "*." + info.fileExtension());
+	}
+
+	const fs::path selectedPath = dialog->show();
+
+	if (selectedPath.empty())
+		return;
+
+	BaseEditor::saveWorldAs(world, selectedPath);
 }
