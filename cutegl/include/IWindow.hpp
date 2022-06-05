@@ -8,6 +8,8 @@
 #include <memory>
 #include "glm/vec2.hpp"
 
+#include "Key.hpp"
+
 namespace CuteGL {
     /**
      * RAII-enabled context.
@@ -45,5 +47,8 @@ namespace CuteGL {
         virtual std::unique_ptr<IWindowContext> createContext() = 0;
 
         virtual void swapBuffers() = 0;
+
+        virtual void handleEvents() = 0;
+        virtual bool isKeyPressed(Key key) = 0;
     };
 }

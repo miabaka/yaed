@@ -178,3 +178,11 @@ std::unique_ptr<IWindowContext> X11Window::createContext() {
 void X11Window::swapBuffers() {
     ::GLX::glXSwapBuffers(dpy, glx);
 }
+
+void X11Window::handleEvents() {
+
+}
+
+bool X11Window::isKeyPressed(Key key) {
+    return false;
+}

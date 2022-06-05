@@ -62,5 +62,9 @@ namespace CuteGL::X11 {
         std::unique_ptr<IWindowContext> createContext() override;
 
         void swapBuffers() override;
+
+        void handleEvents() override;
+
+        bool isKeyPressed(Key key) override;
     };
 }
