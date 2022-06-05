@@ -15,20 +15,10 @@ public:
 
 	void render();
 
-	std::shared_ptr<World> selectedWorldForInspector();
-
-	void selectWorldForInspector(std::shared_ptr<World> world);
-
-	std::shared_ptr<Level> selectedLevelForInspector();
-
-	void selectLevelForInspector(std::shared_ptr<Level> level);
-
 	void openWorld();
 
-	void saveWorldAs();
+	void saveSelectedWorldAs();
 
 private:
-	std::weak_ptr<World> _selectedWorldForInspector;
-	std::weak_ptr<Level> _selectedLevelForInspector;
 	std::unique_ptr<cute::dialogs::IDialogProvider> _dialogProvider;
 };

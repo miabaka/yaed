@@ -4,6 +4,7 @@
 
 #include <fmt/format.h>
 #include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
 #include <imgui/imgui_stdlib.h>
 #include <cute/dialogs/CuteDialogs.hpp>
 
@@ -32,16 +33,18 @@ bool EditorApplication::update(bool shouldClose) {
 
 			ImGui::Separator();
 
-			ImGui::MenuItem("Save", "ctrl+s");
+			if (ImGui::MenuItem("Save", "ctrl+s"))
+				saveSelectedWorld();
 
 			if (ImGui::MenuItem("Save As...", "ctrl+shift+s"))
-				saveWorldAs();
+				saveSelectedWorldAs();
 
 			ImGui::MenuItem("Save All", "ctrl+alt+s");
 
 			ImGui::Separator();
 
-			ImGui::MenuItem("Close", "ctrl+w");
+			if (ImGui::MenuItem("Close", "ctrl+w"))
+				closeSelectedWorld();
 
 			ImGui::Separator();
 
@@ -87,8 +90,8 @@ bool EditorApplication::update(bool shouldClose) {
 				ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanAvailWidth
 				| ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
 
-		std::shared_ptr<const World> worldSelection = selectedWorldForInspector();
-		std::shared_ptr<const Level> levelSelection = selectedLevelForInspector();
+		std::shared_ptr<const World> worldSelection = selectedWorld();
+		std::shared_ptr<const Level> levelSelection = selectedLevel();
 
 		for (const std::shared_ptr<World> &world: worlds()) {
 			{
@@ -96,17 +99,25 @@ bool EditorApplication::update(bool shouldClose) {
 
 				int nodeFlags = defaultNodeFlags;
 
-				if (alreadySelected && !levelSelection)
-					nodeFlags |= ImGuiTreeNodeFlags_Selected;
+				// Highlight node as selected if:
+				// - world is directly selected
+				// - world is collapsed and one of its levels is selected
+				{
+					const ImGuiID nextNodeId = ImGui::GetCurrentWindow()->GetID(world.get());
+
+					const bool exists = ImGui::GetStateStorage()->GetInt(nextNodeId, -1) != -1;
+					const bool previousOpen = ImGui::TreeNodeBehaviorIsOpen(nextNodeId) || !exists;
+
+					if (alreadySelected && !(levelSelection && previousOpen))
+						nodeFlags |= ImGuiTreeNodeFlags_Selected;
+				}
 
 				const bool open = ImGui::TreeNodeEx(world.get(), nodeFlags, "%s", world->name().c_str());
 
-				const bool justSelected = ImGui::IsItemActivated();
+				const bool justSelected = ImGui::IsItemActivated() && !ImGui::IsItemToggledOpen();
 
-				if (justSelected) {
-					selectWorldForInspector(world);
-					selectLevelForInspector({});
-				}
+				if (justSelected)
+					selectWorld(world);
 
 				if (!open)
 					continue;
@@ -118,15 +129,7 @@ bool EditorApplication::update(bool shouldClose) {
 				const bool alreadySelected = (level == levelSelection);
 				const bool justSelected = ImGui::Selectable(level->name().c_str(), alreadySelected);
 
-				if (justSelected) {
-					selectWorldForInspector(world);
-					selectLevelForInspector(level);
-				}
-
-				const bool doubleClicked =
-						(ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left));
-
-				if (doubleClicked)
+				if (justSelected)
 					selectLevel(level);
 
 				ImGui::PopID();
@@ -140,8 +143,8 @@ bool EditorApplication::update(bool shouldClose) {
 	if (ImGui::Begin("Inspector")) {
 		const int headerFlags = ImGuiTreeNodeFlags_DefaultOpen;
 
-		std::shared_ptr<World> world = selectedWorldForInspector();
-		std::shared_ptr<Level> level = selectedLevelForInspector();
+		std::shared_ptr<World> world = selectedWorld();
+		std::shared_ptr<Level> level = selectedLevel();
 
 		if (world) {
 			if (ImGui::CollapsingHeader("Game", headerFlags)) {
@@ -202,22 +205,6 @@ void EditorApplication::render() {
 
 }
 
-std::shared_ptr<World> EditorApplication::selectedWorldForInspector() {
-	return _selectedWorldForInspector.lock();
-}
-
-void EditorApplication::selectWorldForInspector(std::shared_ptr<World> world) {
-	_selectedWorldForInspector = world;
-}
-
-std::shared_ptr<Level> EditorApplication::selectedLevelForInspector() {
-	return _selectedLevelForInspector.lock();
-}
-
-void EditorApplication::selectLevelForInspector(std::shared_ptr<Level> level) {
-	_selectedLevelForInspector = level;
-}
-
 void EditorApplication::openWorld() {
 	std::unique_ptr<IFileDialog> dialog = _dialogProvider->createFileDialog(IFileDialog::Type::Open);
 
@@ -236,7 +223,7 @@ void EditorApplication::openWorld() {
 	BaseEditor::openWorld(selectedPath);
 }
 
-void EditorApplication::saveWorldAs() {
+void EditorApplication::saveSelectedWorldAs() {
 	std::shared_ptr<Level> level = selectedLevel();
 
 	if (!level)
@@ -262,5 +249,5 @@ void EditorApplication::saveWorldAs() {
 	if (selectedPath.empty())
 		return;
 
-	BaseEditor::saveWorldAs(world, selectedPath);
+	BaseEditor::saveSelectedWorldAs(selectedPath);
 }

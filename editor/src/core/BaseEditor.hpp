@@ -38,8 +38,24 @@ public:
 
 	void closeWorld(std::shared_ptr<World> world);
 
+	void saveSelectedWorld();
+
+	void saveSelectedWorldAs(const std::filesystem::path &path, std::shared_ptr<BaseWorldExporter> exporter = {}) const;
+
+	void closeSelectedWorld();
+
+	std::shared_ptr<World> selectedWorld();
+
 	std::shared_ptr<Level> selectedLevel();
 
+	/**
+	 * Select world and reset the level selection
+	 */
+	void selectWorld(std::shared_ptr<World> world);
+
+	/**
+	 * Select level and its world
+	 */
 	void selectLevel(std::shared_ptr<Level> level);
 
 private:
@@ -47,5 +63,6 @@ private:
 	WorldFormatManager _worldFormatManager;
 	WorldFactoryManager _worldFactoryManager;
 	std::vector<std::shared_ptr<World>> _worlds;
+	std::weak_ptr<World> _selectedWorld;
 	std::weak_ptr<Level> _selectedLevel;
 };
