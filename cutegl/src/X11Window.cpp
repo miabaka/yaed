@@ -56,7 +56,9 @@ void X11Window::initGlobals(::X11::Display *dpy) {
 X11Window::X11Window(::X11::Display *dpy) : dpy(dpy), _shouldClose(false), _swapInterval(0) {
     if (!globalData.initialized) X11Window::initGlobals(dpy);
 
-    static constexpr const int defaultX = 0, defaultY = 0, defaultW = 1024, defaultH = 768;
+    std::printf("X11Window:59\n");
+
+    static constexpr const int defaultX = 100, defaultY = 100, defaultW = 1024, defaultH = 768;
 
     static constexpr const int fbCfgAttribs[] = {
         GLX_X_RENDERABLE, True,
@@ -81,6 +83,8 @@ X11Window::X11Window(::X11::Display *dpy) : dpy(dpy), _shouldClose(false), _swap
 
     auto colormap = ::X11::XCreateColormap(dpy, root, visual->visual, AllocNone); // fixme: i guess AllocNone should be fine, but who knows?
 
+    std::printf("X11Window::86: %lx %lx %lx\n", (size_t) visual, (size_t) fbCfg, colormap);
+
     eventMask = ButtonPressMask | ButtonReleaseMask |
             KeyPressMask | KeyReleaseMask |
             VisibilityChangeMask | ExposureMask;
@@ -97,7 +101,13 @@ X11Window::X11Window(::X11::Display *dpy) : dpy(dpy), _shouldClose(false), _swap
             visual->visual,
             CWColormap | CWEventMask, &attrs);
 
+    ::X11::XFlush(dpy);
+
+    std::printf("X11Window::104: %lx\n", wnd);
+
     glx = ::GLX::glXCreateWindow(dpy, fbCfg, wnd, nullptr);
+
+    std::printf("X11Window::108: %lx\n", glx);
 }
 
 X11Window::~X11Window() {
@@ -107,6 +117,7 @@ X11Window::~X11Window() {
 
 void X11Window::setSize(glm::uvec2 size) {
     ::X11::XResizeWindow(dpy, wnd, size.x, size.y);
+    ::X11::XFlush(dpy);
 }
 
 void X11Window::setDecorations(IWindow::DecorationMode mode) {
@@ -141,6 +152,7 @@ void X11Window::setDecorations(IWindow::DecorationMode mode) {
             32,
             PropModeReplace,
             (unsigned char *) &hints, 5);
+    ::X11::XFlush(dpy);
 }
 
 IWindow::DecorationMode X11Window::getDecorations() const {
@@ -151,11 +163,13 @@ void X11Window::setTitle(std::wstring_view title) {
     ConvertUtf8 cvt;
 
     ::X11::XStoreName(dpy, wnd, cvt.to_bytes(title.data()).c_str());
+    ::X11::XFlush(dpy);
 }
 
 void X11Window::setVisible(bool visible) {
     if (visible) ::X11::XMapWindow(dpy, wnd);
     else ::X11::XUnmapWindow(dpy, wnd);
+    ::X11::XFlush(dpy);
 }
 
 bool X11Window::shouldClose() const {

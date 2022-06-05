@@ -11,6 +11,7 @@ set(GLFW_BUILD_DOCS OFF)
 set(GLFW_INSTALL OFF)
 
 add_subdirectory(cutegl)
+add_subdirectory(cutegl-example)
 add_subdirectory(glfw)
 add_subdirectory(glm)
 add_subdirectory(gl3w)
