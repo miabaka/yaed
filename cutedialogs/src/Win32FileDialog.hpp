@@ -19,7 +19,7 @@ public:
 
 	std::filesystem::path show() override;
 
-	std::filesystem::path showForMultiple() override;
+	std::vector<std::filesystem::path> showForMultiple() override;
 
 private:
 	struct Filter {

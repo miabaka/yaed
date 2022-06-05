@@ -14,6 +14,6 @@ fs::path StubFileDialog::show() {
 	return {};
 }
 
-fs::path StubFileDialog::showForMultiple() {
+std::vector<fs::path> StubFileDialog::showForMultiple() {
 	return {};
 }

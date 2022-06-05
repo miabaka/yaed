@@ -5,9 +5,9 @@
 #include <windows.h>
 #include <shobjidl.h>
 
-namespace fs = std::filesystem;
-
 using namespace cute::dialogs;
+
+namespace fs = std::filesystem;
 
 Win32FileDialog::Win32FileDialog(Type type)
 		: _type(type),
@@ -82,6 +82,6 @@ fs::path Win32FileDialog::show() {
 	return result;
 }
 
-std::filesystem::path Win32FileDialog::showForMultiple() {
+std::vector<fs::path> Win32FileDialog::showForMultiple() {
 	return {};
 }

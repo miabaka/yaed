@@ -23,7 +23,7 @@ public:
 
 	virtual std::filesystem::path show() = 0;
 
-	virtual std::filesystem::path showForMultiple() = 0;
+	virtual std::vector<std::filesystem::path> showForMultiple() = 0;
 };
 
 } // namespace cute::dialogs

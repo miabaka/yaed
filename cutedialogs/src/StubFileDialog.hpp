@@ -13,7 +13,7 @@ class StubFileDialog : public IFileDialog {
 
 	std::filesystem::path show() override;
 
-	std::filesystem::path showForMultiple() override;
+	std::vector<std::filesystem::path> showForMultiple() override;
 };
 
 } // namespace cute::dialogs
