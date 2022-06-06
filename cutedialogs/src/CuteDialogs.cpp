@@ -10,10 +10,10 @@
 using namespace cute::dialogs;
 
 std::unique_ptr<IDialogProvider> CuteDialogs::createDialogProvider() {
-#ifdef CUTE_DIALOGS_IMPL_WIN32
+#if defined(CUTE_DIALOGS_IMPL_WIN32)
 	return std::make_unique<Win32DialogProvider>();
-#elifdef CUTE_DIALOGS_IMPL_GTK
-    return std::make_unique<GtkDialogProvider>();
+#elif defined(CUTE_DIALOGS_IMPL_GTK)
+	return std::make_unique<GtkDialogProvider>();
 #else
 	return std::make_unique<StubDialogProvider>();
 #endif
