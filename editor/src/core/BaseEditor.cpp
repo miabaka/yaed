@@ -86,6 +86,9 @@ void BaseEditor::closeWorld(std::shared_ptr<World> world) {
 		return;
 
 	_worlds.erase(it);
+
+	if (selectedWorld() == world)
+		selectWorld({});
 }
 
 void BaseEditor::saveSelectedWorld() const {
@@ -126,9 +129,13 @@ std::shared_ptr<Level> BaseEditor::selectedLevel() const {
 void BaseEditor::selectWorld(std::shared_ptr<World> world) {
 	_selectedWorld = world;
 	_selectedLevel.reset();
+	onWorldSelectionChange(world);
 }
 
 void BaseEditor::selectLevel(std::shared_ptr<Level> level) {
 	_selectedWorld = level->world();
 	_selectedLevel = level;
+	onWorldSelectionChange(level->world());
 }
+
+void BaseEditor::onWorldSelectionChange(std::shared_ptr<World> world) {}

@@ -58,6 +58,9 @@ public:
 	 */
 	void selectLevel(std::shared_ptr<Level> level);
 
+protected:
+	virtual void onWorldSelectionChange(std::shared_ptr<World> world);
+
 private:
 	GameManager _gameManager;
 	WorldFormatManager _worldFormatManager;

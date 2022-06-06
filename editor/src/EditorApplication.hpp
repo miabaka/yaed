@@ -20,6 +20,9 @@ public:
 
 	void saveSelectedWorldAs();
 
+protected:
+	void onWorldSelectionChange(std::shared_ptr<World> world) override;
+
 private:
 	std::unique_ptr<cute::dialogs::IDialogProvider> _dialogProvider;
 	PaletteWindow _paletteWindow;

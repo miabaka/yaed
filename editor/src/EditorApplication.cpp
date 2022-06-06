@@ -179,7 +179,7 @@ bool EditorApplication::update(bool shouldClose) {
 	ImGui::End();
 
 	_paletteWindow.draw();
-	
+
 	ImGui::Begin("Layers");
 	ImGui::End();
 
@@ -249,4 +249,13 @@ void EditorApplication::saveSelectedWorldAs() {
 		return;
 
 	BaseEditor::saveSelectedWorldAs(selectedPath);
+}
+
+void EditorApplication::onWorldSelectionChange(std::shared_ptr<World> world) {
+	if (!world) {
+		_paletteWindow.setTemplate({});
+		return;
+	}
+
+	_paletteWindow.setTemplate(world->game()->paletteTemplate());
 }
