@@ -5,6 +5,7 @@
 
 #include <cute/dialogs/IDialogProvider.hpp>
 
+#include "ui/window/PaletteWindow.hpp"
 #include "Editor.hpp"
 
 class EditorApplication : public Editor {
@@ -21,4 +22,5 @@ public:
 
 private:
 	std::unique_ptr<cute::dialogs::IDialogProvider> _dialogProvider;
+	PaletteWindow _paletteWindow;
 };

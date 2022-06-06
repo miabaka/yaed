@@ -24,6 +24,8 @@ add_executable(editor
         src/exporter/TreasureHunterWorldExporter.cpp
         src/game/TreasureHunterGame.cpp
         src/importer/TreasureHunterWorldImporter.cpp
+        src/ui/BaseWindow.cpp
+        src/ui/window/PaletteWindow.cpp
         src/world_factory/TreasureHunterWorldFactory.cpp
         src/Editor.cpp
         src/EditorApplication.cpp

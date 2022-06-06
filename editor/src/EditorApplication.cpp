@@ -178,9 +178,8 @@ bool EditorApplication::update(bool shouldClose) {
 	}
 	ImGui::End();
 
-	ImGui::Begin("Palette");
-	ImGui::End();
-
+	_paletteWindow.draw();
+	
 	ImGui::Begin("Layers");
 	ImGui::End();
 
