@@ -10,7 +10,11 @@ public:
 protected:
 	explicit BaseWindow(std::string name);
 
-	virtual void onDraw() = 0;
+	virtual void onBeginPre();
+
+	virtual void onBeginPost();
+
+	virtual void onDraw();
 
 private:
 	std::string _name;

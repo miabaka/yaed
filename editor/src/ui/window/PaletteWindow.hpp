@@ -14,5 +14,9 @@ public:
 protected:
 	std::weak_ptr<const PaletteTemplate> _template;
 
+	void onBeginPre() override;
+
+	void onBeginPost() override;
+
 	void onDraw() override;
 };

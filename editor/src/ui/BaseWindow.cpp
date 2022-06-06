@@ -9,8 +9,20 @@ void BaseWindow::draw() {
 	if (!_open)
 		return;
 
-	if (ImGui::Begin(_name.c_str(), &_open))
+	onBeginPre();
+
+	bool collapsed = !ImGui::Begin(_name.c_str(), &_open);
+
+	onBeginPost();
+
+	if (!collapsed)
 		onDraw();
 
 	ImGui::End();
 }
+
+void BaseWindow::onBeginPre() {}
+
+void BaseWindow::onBeginPost() {}
+
+void BaseWindow::onDraw() {}
