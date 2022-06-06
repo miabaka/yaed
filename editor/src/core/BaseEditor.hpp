@@ -38,15 +38,15 @@ public:
 
 	void closeWorld(std::shared_ptr<World> world);
 
-	void saveSelectedWorld();
+	void saveSelectedWorld() const;
 
 	void saveSelectedWorldAs(const std::filesystem::path &path, std::shared_ptr<BaseWorldExporter> exporter = {}) const;
 
 	void closeSelectedWorld();
 
-	std::shared_ptr<World> selectedWorld();
+	std::shared_ptr<World> selectedWorld() const;
 
-	std::shared_ptr<Level> selectedLevel();
+	std::shared_ptr<Level> selectedLevel() const;
 
 	/**
 	 * Select world and reset the level selection

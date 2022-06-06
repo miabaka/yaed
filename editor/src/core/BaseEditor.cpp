@@ -88,12 +88,22 @@ void BaseEditor::closeWorld(std::shared_ptr<World> world) {
 	_worlds.erase(it);
 }
 
-void BaseEditor::saveSelectedWorld() {
+void BaseEditor::saveSelectedWorld() const {
+	std::shared_ptr<World> world = selectedWorld();
 
+	if (!world)
+		return;
+
+	saveWorld(world);
 }
 
 void BaseEditor::saveSelectedWorldAs(const fs::path &path, std::shared_ptr<BaseWorldExporter> exporter) const {
+	std::shared_ptr<World> world = selectedWorld();
 
+	if (!world)
+		return;
+
+	saveWorldAs(world, path, std::move(exporter));
 }
 
 void BaseEditor::closeSelectedWorld() {
@@ -105,11 +115,11 @@ void BaseEditor::closeSelectedWorld() {
 	closeWorld(world);
 }
 
-std::shared_ptr<World> BaseEditor::selectedWorld() {
+std::shared_ptr<World> BaseEditor::selectedWorld() const {
 	return _selectedWorld.lock();
 }
 
-std::shared_ptr<Level> BaseEditor::selectedLevel() {
+std::shared_ptr<Level> BaseEditor::selectedLevel() const {
 	return _selectedLevel.lock();
 }
 
