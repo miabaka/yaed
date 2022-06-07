@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "../../core/palette/IPaletteIconProvider.hpp"
+#include "../../core/palette/PaletteIconSet.hpp"
 #include "../../core/palette/PaletteTemplate.hpp"
 #include "../BaseWindow.hpp"
 
@@ -12,11 +12,11 @@ public:
 
 	void setTemplate(std::weak_ptr<const PaletteTemplate> paletteTemplate);
 
-	void setIconProvider(std::weak_ptr<IPaletteIconProvider> iconProvider);
+	void setIconSet(std::weak_ptr<PaletteIconSet> iconSet);
 
 protected:
 	std::weak_ptr<const PaletteTemplate> _template;
-	std::weak_ptr<IPaletteIconProvider> _iconProvider;
+	std::weak_ptr<PaletteIconSet> _iconSet;
 
 	void onBeginPre() override;
 

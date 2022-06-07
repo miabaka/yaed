@@ -9,7 +9,9 @@
 
 class PaletteIconSet {
 public:
-	std::optional<TextureSlice> getIconForBrush(const Brush &brush) const;
+	const TextureSlice &getIconForBrush(const Brush &brush) const;
+
+	void setIcon(Tilemap::tile_t tile, TextureSlice texture);
 
 private:
 	std::unordered_map<Tilemap::tile_t, TextureSlice> _textureSlices;

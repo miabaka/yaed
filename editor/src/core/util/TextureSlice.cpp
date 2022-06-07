@@ -1,13 +1,18 @@
 #include "TextureSlice.hpp"
 
-TextureSlice::TextureSlice(void *texture, glm::vec4 texCoords)
+TextureSlice::TextureSlice(void *texture, glm::vec2 p1, glm::vec2 p2)
 		: _texture(texture),
-		  _texCoords(texCoords) {}
+		  _p1(p1),
+		  _p2(p2) {}
 
 void *TextureSlice::texture() const {
 	return _texture;
 }
 
-glm::vec4 TextureSlice::texCoords() const {
-	return _texCoords;
+glm::vec2 TextureSlice::p1() const {
+	return _p1;
+}
+
+glm::vec2 TextureSlice::p2() const {
+	return _p2;
 }

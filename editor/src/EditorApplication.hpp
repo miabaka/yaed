@@ -21,7 +21,7 @@ public:
 	void saveSelectedWorldAs();
 
 protected:
-	void onWorldSelectionChange(std::shared_ptr<World> world) override;
+	void onLevelSelectionChange(std::shared_ptr<Level> level) override;
 
 private:
 	std::unique_ptr<cute::dialogs::IDialogProvider> _dialogProvider;

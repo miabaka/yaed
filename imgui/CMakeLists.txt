@@ -12,4 +12,4 @@ add_library(imgui STATIC
 
 target_include_directories(imgui PUBLIC include)
 
-target_link_libraries(imgui PRIVATE glfw gl3w)
+target_link_libraries(imgui PRIVATE glm glfw gl3w)

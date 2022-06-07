@@ -251,15 +251,16 @@ void EditorApplication::saveSelectedWorldAs() {
 	BaseEditor::saveSelectedWorldAs(selectedPath);
 }
 
-void EditorApplication::onWorldSelectionChange(std::shared_ptr<World> world) {
-	if (!world) {
+void EditorApplication::onLevelSelectionChange(std::shared_ptr<Level> level) {
+	if (!level) {
 		_paletteWindow.setTemplate({});
-		_paletteWindow.setIconProvider({});
+		_paletteWindow.setIconSet({});
 		return;
 	}
 
-	const IGame &game = *world->game();
+	const IGame &game = *level->world()->game();
+	IPaletteIconProvider &iconProvider = *paletteIconProviders().findProviderForGame(game);
 
 	_paletteWindow.setTemplate(game.paletteTemplate());
-	_paletteWindow.setIconProvider(paletteIconProviders().findProviderForGame(game));
+	_paletteWindow.setIconSet(iconProvider.getDefaultIconSetForWorld(*level->world()));
 }

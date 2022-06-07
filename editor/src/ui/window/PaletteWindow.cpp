@@ -9,8 +9,8 @@ void PaletteWindow::setTemplate(std::weak_ptr<const PaletteTemplate> paletteTemp
 	_template = std::move(paletteTemplate);
 }
 
-void PaletteWindow::setIconProvider(std::weak_ptr<IPaletteIconProvider> iconProvider) {
-	_iconProvider = std::move(iconProvider);
+void PaletteWindow::setIconSet(std::weak_ptr<PaletteIconSet> iconSet) {
+	_iconSet = std::move(iconSet);
 }
 
 void PaletteWindow::onBeginPre() {
@@ -28,13 +28,15 @@ static void sameLine() {
 		ImGui::NewLine();
 }
 
-static void drawBrush(const Brush &brush, bool &first) {
+static void drawBrush(const Brush &brush, bool &first, PaletteIconSet &iconSet) {
 	if (first)
 		first = false;
 	else
 		sameLine();
 
-	ImGui::ImageButton({}, {42, 42}, {}, {}, 0);
+	const TextureSlice &icon = iconSet.getIconForBrush(brush);
+
+	ImGui::ImageButton(icon.texture(), {36, 36}, icon.p1(), icon.p2(), 3);
 
 	if (!ImGui::IsItemHovered())
 		return;
@@ -48,9 +50,10 @@ static void drawBrush(const Brush &brush, bool &first) {
 }
 
 void PaletteWindow::onDraw() {
-	if (_template.expired())
+	if (_template.expired() || _iconSet.expired())
 		return;
 
+	std::shared_ptr<PaletteIconSet> iconSet = _iconSet.lock();
 	std::shared_ptr<const PaletteTemplate> palTemplate = _template.lock();
 
 	ImGui::PushStyleColor(ImGuiCol_Header, 0);
@@ -70,7 +73,7 @@ void PaletteWindow::onDraw() {
 		bool first = true;
 
 		for (const std::shared_ptr<Brush> &brush: group->brushes())
-			drawBrush(*brush, first);
+			drawBrush(*brush, first, *iconSet);
 
 		ImGui::Indent(-6.f);
 	}
