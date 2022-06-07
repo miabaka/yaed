@@ -17,7 +17,7 @@ using namespace SthInternal;
 // TODO: properly generate icon sets using tilemap renderer, brush definitions and some internal overrides
 SthPaletteIconProvider::SthPaletteIconProvider() {
 	int width, height, channelCount;
-	void *pixelData = stbi_load("data/palette.png", &width, &height, &channelCount, STBI_rgb_alpha);
+	void *pixelData = stbi_load("data/palette0.png", &width, &height, &channelCount, STBI_rgb_alpha);
 
 	glGenTextures(1, &_testIconSetTexture);
 	glBindTexture(GL_TEXTURE_2D, _testIconSetTexture);
