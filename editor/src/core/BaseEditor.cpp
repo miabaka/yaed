@@ -7,19 +7,23 @@ namespace fs = std::filesystem;
 
 struct EditorWorldData : public ICustomData {
 	fs::path path;
-	std::shared_ptr<BaseWorldExporter> exporter;
+	std::shared_ptr<IWorldExporter> exporter;
 };
 
 GameManager &BaseEditor::gameManager() {
 	return _gameManager;
 }
 
-WorldFormatManager &BaseEditor::worldFormatManager() {
+WorldFormatManager &BaseEditor::worldFormats() {
 	return _worldFormatManager;
 }
 
-WorldFactoryManager &BaseEditor::worldFactoryManager() {
+WorldFactoryManager &BaseEditor::worldFactories() {
 	return _worldFactoryManager;
+}
+
+PaletteIconProviderManager &BaseEditor::paletteIconProviders() {
+	return _iconProviderManager;
 }
 
 const std::vector<std::shared_ptr<World>> &BaseEditor::worlds() const {
@@ -66,7 +70,7 @@ void BaseEditor::saveWorld(std::shared_ptr<const World> world) const {
 
 void BaseEditor::saveWorldAs(
 		std::shared_ptr<World> world, const std::filesystem::path &path,
-		std::shared_ptr<BaseWorldExporter> exporter) const {
+		std::shared_ptr<IWorldExporter> exporter) const {
 	auto &customData = world->customData<EditorWorldData>();
 
 	if (exporter)
@@ -100,7 +104,7 @@ void BaseEditor::saveSelectedWorld() const {
 	saveWorld(world);
 }
 
-void BaseEditor::saveSelectedWorldAs(const fs::path &path, std::shared_ptr<BaseWorldExporter> exporter) const {
+void BaseEditor::saveSelectedWorldAs(const fs::path &path, std::shared_ptr<IWorldExporter> exporter) const {
 	std::shared_ptr<World> world = selectedWorld();
 
 	if (!world)

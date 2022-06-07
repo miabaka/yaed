@@ -207,7 +207,7 @@ void EditorApplication::render() {
 void EditorApplication::openWorld() {
 	std::unique_ptr<IFileDialog> dialog = _dialogProvider->createFileDialog(IFileDialog::Type::Open);
 
-	for (const auto &[_, format]: worldFormatManager().formats()) {
+	for (const auto &[_, format]: worldFormats().formats()) {
 		const WorldFormatInfo &info = format->info();
 		dialog->addExtensionFilter(info.name(), "*." + info.fileExtension());
 	}
@@ -233,9 +233,9 @@ void EditorApplication::saveSelectedWorldAs() {
 
 	std::unique_ptr<IFileDialog> dialog = _dialogProvider->createFileDialog(IFileDialog::Type::Save);
 
-	for (const auto &[_, format]: worldFormatManager().formats()) {
+	for (const auto &[_, format]: worldFormats().formats()) {
 		const WorldFormatInfo &info = format->info();
-		std::shared_ptr<const BaseWorldExporter> exporter = format->exporter();
+		std::shared_ptr<const IWorldExporter> exporter = format->exporter();
 
 		if (!(exporter && exporter->gameIsSupported(gameId)))
 			continue;
@@ -254,8 +254,12 @@ void EditorApplication::saveSelectedWorldAs() {
 void EditorApplication::onWorldSelectionChange(std::shared_ptr<World> world) {
 	if (!world) {
 		_paletteWindow.setTemplate({});
+		_paletteWindow.setIconProvider({});
 		return;
 	}
 
-	_paletteWindow.setTemplate(world->game()->paletteTemplate());
+	const IGame &game = *world->game();
+
+	_paletteWindow.setTemplate(game.paletteTemplate());
+	_paletteWindow.setIconProvider(paletteIconProviders().findProviderForGame(game));
 }

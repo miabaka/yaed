@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../core/IWorldImporter.hpp"
+#include "../../core/IWorldImporter.hpp"
 
-class TreasureHunterWorldImporter : public IWorldImporter {
+class SthWorldImporter : public IWorldImporter {
 public:
 	const std::string &name() const override;
 

@@ -1,6 +1,6 @@
-#include "TreasureHunterGame.hpp"
+#include "SthGame.hpp"
 
-#include "../core/PaletteTemplateBuilder.hpp"
+#include "../../core/palette/PaletteTemplateBuilder.hpp"
 
 namespace Tile {
 enum {
@@ -58,14 +58,14 @@ enum {
 };
 };
 
-TreasureHunterGame::TreasureHunterGame()
+SthGame::SthGame()
 		: KnownGame("sth", "Snowy: Treasure Hunter") {
 	setupLayerTemplates();
 	setupLevelSkins();
 	setupPaletteTemplate();
 }
 
-void TreasureHunterGame::setupLayerTemplates() {
+void SthGame::setupLayerTemplates() {
 	std::set<Tilemap::tile_t> mainTiles = {
 			Tile::Air,
 			Tile::Ground,
@@ -105,13 +105,13 @@ void TreasureHunterGame::setupLayerTemplates() {
 	addLayerTemplate("gems", std::make_shared<LayerTemplate>("Gems", std::move(gemTiles)));
 }
 
-void TreasureHunterGame::setupLevelSkins() {
+void SthGame::setupLevelSkins() {
 	addLevelSkin(std::make_shared<LevelSkin>(Skin::MummiesTreasures, "Mummies' Treasures"));
 	addLevelSkin(std::make_shared<LevelSkin>(Skin::CyclopsOnGuard, "Cyclops on Guard!"));
 	addLevelSkin(std::make_shared<LevelSkin>(Skin::NorthernLegends, "Northern Legends"));
 }
 
-void TreasureHunterGame::setupPaletteTemplate() {
+void SthGame::setupPaletteTemplate() {
 	std::shared_ptr<PaletteTemplate> paletteTemplate = PaletteTemplate::builder()
 			.beginGroup("Common")
 			.brush("Air", Tile::Air)

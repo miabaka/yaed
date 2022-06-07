@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../core/IWorldFactory.hpp"
+#include "../../core/IWorldFactory.hpp"
 
-class TreasureHunterWorldFactory : public IWorldFactory {
+class SthWorldFactory : public IWorldFactory {
 	const std::string &id() const override;
 
 	const std::string &name() const override;

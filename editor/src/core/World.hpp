@@ -4,13 +4,13 @@
 #include <string>
 #include <vector>
 
-#include "game/BaseGame.hpp"
-#include "CustomDataContainer.hpp"
+#include "game/IGame.hpp"
+#include "util/CustomDataContainer.hpp"
 #include "Level.hpp"
 
 class World : public CustomDataContainer {
 public:
-	explicit World(std::shared_ptr<BaseGame> game, std::string name);
+	explicit World(std::shared_ptr<IGame> game, std::string name);
 
 	std::string &name();
 
@@ -20,12 +20,12 @@ public:
 
 	void addLevel(const std::shared_ptr<Level> &level);
 
-	std::shared_ptr<BaseGame> game();
+	std::shared_ptr<IGame> game();
 
-	std::shared_ptr<const BaseGame> game() const;
+	std::shared_ptr<const IGame> game() const;
 
 private:
 	std::string _name;
 	std::vector<std::shared_ptr<Level>> _levels;
-	std::shared_ptr<BaseGame> _game;
+	std::shared_ptr<IGame> _game;
 };

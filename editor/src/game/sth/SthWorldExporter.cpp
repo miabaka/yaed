@@ -1,18 +1,17 @@
+#include "SthWorldExporter.hpp"
+
 #include <fstream>
-#include "TreasureHunterWorldExporter.hpp"
 
-namespace fs = std::filesystem;
-
-const std::string &TreasureHunterWorldExporter::name() const {
-	static std::string name = "TreasureHunterWorldExporter";
+const std::string &SthWorldExporter::name() const {
+	static std::string name = "WorldExporter";
 	return name;
 }
 
-std::set<std::string> TreasureHunterWorldExporter::supportedGameIds() const {
+std::set<std::string> SthWorldExporter::supportedGameIds() const {
 	return {"sth"};
 }
 
-void TreasureHunterWorldExporter::save(const World &world, const std::filesystem::path &path) const {
+void SthWorldExporter::save(const World &world, const std::filesystem::path &path) const {
 	std::ofstream file(path, std::ios::binary);
 
 	char header[12] = {'T', 'H', 0};

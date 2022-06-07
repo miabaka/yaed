@@ -9,6 +9,10 @@ void PaletteWindow::setTemplate(std::weak_ptr<const PaletteTemplate> paletteTemp
 	_template = std::move(paletteTemplate);
 }
 
+void PaletteWindow::setIconProvider(std::weak_ptr<IPaletteIconProvider> iconProvider) {
+	_iconProvider = std::move(iconProvider);
+}
+
 void PaletteWindow::onBeginPre() {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {6, 6});
 }

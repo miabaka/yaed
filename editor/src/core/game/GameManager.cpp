@@ -3,14 +3,14 @@
 #include <stdexcept>
 #include "UnknownGame.hpp"
 
-void GameManager::registerGame(std::shared_ptr<BaseGame> game) {
+void GameManager::registerGame(std::shared_ptr<IGame> game) {
 	bool inserted = _games.insert({game->id(), game}).second;
 
 	if (!inserted)
 		throw std::runtime_error("Game with id '" + game->id() + "' is already registered");
 }
 
-std::shared_ptr<BaseGame> GameManager::findGameById(const std::string &id) const {
+std::shared_ptr<IGame> GameManager::findGameById(const std::string &id) const {
 	auto it = _games.find(id);
 
 	if (it == _games.end())

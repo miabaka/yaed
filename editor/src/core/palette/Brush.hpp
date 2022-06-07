@@ -2,8 +2,8 @@
 
 #include <string>
 
-#include "util/Range.hpp"
-#include "Tilemap.hpp"
+#include "../util/Range.hpp"
+#include "../Tilemap.hpp"
 
 class Brush {
 public:

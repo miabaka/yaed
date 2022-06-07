@@ -1,20 +1,20 @@
-#include "TreasureHunterWorldImporter.hpp"
+#include "SthWorldImporter.hpp"
 
 #include <cstring>
 #include <fstream>
 
-#include "../core/game/BaseGame.hpp"
+#include "../../core/game/BaseGame.hpp"
 
 namespace fs = std::filesystem;
 
 static const char THP_MAGIC[] = {'T', 'H', '\0', '\0'};
 
-const std::string &TreasureHunterWorldImporter::name() const {
-	static std::string name = "TreasureHunterWorldImporter";
+const std::string &SthWorldImporter::name() const {
+	static std::string name = "SthWorldImporter";
 	return name;
 }
 
-bool TreasureHunterWorldImporter::probe(const fs::path &path) const {
+bool SthWorldImporter::probe(const fs::path &path) const {
 	std::ifstream file(path, std::ios::binary);
 
 	char magicBuf[sizeof(THP_MAGIC)];
@@ -83,10 +83,10 @@ uint32_t CrappyTestBinaryReader::read() {
 }
 
 std::shared_ptr<World>
-TreasureHunterWorldImporter::load(
+SthWorldImporter::load(
 		const std::filesystem::path &path, const GameManager &gameManager,
 		const WorldFactoryManager &worldFactoryManager) const {
-	std::shared_ptr<BaseGame> game = gameManager.findGameById("sth");
+	std::shared_ptr<IGame> game = gameManager.findGameById("sth");
 	std::shared_ptr<IWorldFactory> worldFactory = worldFactoryManager.findFactoryById("sth");
 
 	std::shared_ptr<World> world = worldFactory->createWorld(gameManager, path.filename().string());

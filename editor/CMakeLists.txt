@@ -1,32 +1,37 @@
 project(editor)
 
 add_executable(editor
+        src/core/export/BaseWorldExporter.cpp
         src/core/format/WorldFormat.cpp
         src/core/format/WorldFormatInfo.cpp
         src/core/format/WorldFormatManager.cpp
         src/core/game/GameManager.cpp
         src/core/game/KnownGame.cpp
         src/core/game/UnknownGame.cpp
+        src/core/palette/BasePaletteIconProvider.cpp
+        src/core/palette/Brush.cpp
+        src/core/palette/BrushGroup.cpp
+        src/core/palette/PaletteIconSet.cpp
+        src/core/palette/PaletteTemplate.cpp
+        src/core/palette/PaletteTemplateBuilder.cpp
+        src/core/util/CustomDataContainer.cpp
+        src/core/util/TextureSlice.cpp
         src/core/BaseEditor.cpp
-        src/core/BaseWorldExporter.cpp
-        src/core/Brush.cpp
-        src/core/BrushGroup.cpp
-        src/core/CustomDataContainer.cpp
+        src/core/palette/PaletteIconProviderManager.cpp
         src/core/Layer.cpp
         src/core/LayerTemplate.cpp
         src/core/Level.cpp
         src/core/LevelSkin.cpp
-        src/core/PaletteTemplate.cpp
-        src/core/PaletteTemplateBuilder.cpp
         src/core/Tilemap.cpp
         src/core/World.cpp
         src/core/WorldFactoryManager.cpp
-        src/exporter/TreasureHunterWorldExporter.cpp
-        src/game/TreasureHunterGame.cpp
-        src/importer/TreasureHunterWorldImporter.cpp
-        src/ui/BaseWindow.cpp
+        src/game/sth/SthGame.cpp
+        src/game/sth/SthPaletteIconProvider.cpp
+        src/game/sth/SthWorldExporter.cpp
+        src/game/sth/SthWorldFactory.cpp
+        src/game/sth/SthWorldImporter.cpp
         src/ui/window/PaletteWindow.cpp
-        src/world_factory/TreasureHunterWorldFactory.cpp
+        src/ui/BaseWindow.cpp
         src/Editor.cpp
         src/EditorApplication.cpp
         src/main.cpp)

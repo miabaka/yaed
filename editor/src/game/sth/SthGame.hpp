@@ -1,12 +1,12 @@
 #pragma once
 
 #include <memory>
-#include "../core/game/KnownGame.hpp"
-#include "../core/PaletteTemplate.hpp"
+#include "../../core/game/KnownGame.hpp"
+#include "../../core/palette/PaletteTemplate.hpp"
 
-class TreasureHunterGame : public KnownGame {
+class SthGame : public KnownGame {
 public:
-	TreasureHunterGame();
+	SthGame();
 
 private:
 	std::shared_ptr<PaletteTemplate> _paletteTemplate;

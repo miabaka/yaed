@@ -4,14 +4,14 @@
 #include <string>
 #include <unordered_map>
 
-#include "BaseGame.hpp"
+#include "IGame.hpp"
 
 class GameManager {
 public:
-	void registerGame(std::shared_ptr<BaseGame> game);
+	void registerGame(std::shared_ptr<IGame> game);
 
-	std::shared_ptr<BaseGame> findGameById(const std::string &id) const;
+	std::shared_ptr<IGame> findGameById(const std::string &id) const;
 
 private:
-	std::unordered_map<std::string, std::shared_ptr<BaseGame>> _games;
+	std::unordered_map<std::string, std::shared_ptr<IGame>> _games;
 };

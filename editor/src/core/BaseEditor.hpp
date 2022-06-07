@@ -9,10 +9,11 @@
 #include "game/GameManager.hpp"
 #include "game/BaseGame.hpp"
 #include "IWorldImporter.hpp"
-#include "BaseWorldExporter.hpp"
+#include "export/IWorldExporter.hpp"
 #include "Level.hpp"
 #include "World.hpp"
 #include "WorldFactoryManager.hpp"
+#include "palette/PaletteIconProviderManager.hpp"
 
 class BaseEditor {
 public:
@@ -20,9 +21,11 @@ public:
 
 	GameManager &gameManager();
 
-	WorldFormatManager &worldFormatManager();
+	WorldFormatManager &worldFormats();
 
-	WorldFactoryManager &worldFactoryManager();
+	WorldFactoryManager &worldFactories();
+
+	PaletteIconProviderManager &paletteIconProviders();
 
 	const std::vector<std::shared_ptr<World>> &worlds() const;
 
@@ -34,13 +37,13 @@ public:
 
 	void saveWorldAs(
 			std::shared_ptr<World> world, const std::filesystem::path &path,
-			std::shared_ptr<BaseWorldExporter> exporter = {}) const;
+			std::shared_ptr<IWorldExporter> exporter = {}) const;
 
 	void closeWorld(std::shared_ptr<World> world);
 
 	void saveSelectedWorld() const;
 
-	void saveSelectedWorldAs(const std::filesystem::path &path, std::shared_ptr<BaseWorldExporter> exporter = {}) const;
+	void saveSelectedWorldAs(const std::filesystem::path &path, std::shared_ptr<IWorldExporter> exporter = {}) const;
 
 	void closeSelectedWorld();
 
@@ -65,6 +68,7 @@ private:
 	GameManager _gameManager;
 	WorldFormatManager _worldFormatManager;
 	WorldFactoryManager _worldFactoryManager;
+	PaletteIconProviderManager _iconProviderManager;
 	std::vector<std::shared_ptr<World>> _worlds;
 	std::weak_ptr<World> _selectedWorld;
 	std::weak_ptr<Level> _selectedLevel;

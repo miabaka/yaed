@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../core/BaseWorldExporter.hpp"
+#include "../../core/export/BaseWorldExporter.hpp"
 
-class TreasureHunterWorldExporter : public BaseWorldExporter {
+class SthWorldExporter : public BaseWorldExporter {
 	const std::string &name() const override;
 
 	std::set<std::string> supportedGameIds() const override;

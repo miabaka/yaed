@@ -6,7 +6,7 @@
 #include "BaseGame.hpp"
 #include "../LevelSkin.hpp"
 #include "../LayerTemplate.hpp"
-#include "../PaletteTemplate.hpp"
+#include "../palette/PaletteTemplate.hpp"
 
 class KnownGame : public BaseGame {
 public:
