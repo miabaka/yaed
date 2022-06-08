@@ -20,9 +20,9 @@ public:
 	std::shared_ptr<PaletteIconSet> getIconSetForLevel(const Level &level) override;
 
 private:
-	void loadIconSet(const std::filesystem::path &path, int id);
-
 	// TODO: make it independent from gapi
 	std::unordered_set<unsigned int> _textureHandles;
 	std::unordered_map<int, std::shared_ptr<PaletteIconSet>> _iconSets;
+
+	void loadIconSet(const std::filesystem::path &path, int id);
 };
