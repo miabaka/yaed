@@ -24,5 +24,5 @@ std::shared_ptr<Level> SthWorldFactory::createLevel(
 	auto mainLayer = std::make_shared<Layer>(game->findLayerTemplateById("main"), size);
 	auto gemLayer = std::make_shared<Layer>(game->findLayerTemplateById("gems"), size);
 
-	return std::make_shared<Level>(name, skin, std::vector{mainLayer, gemLayer});
+	return std::make_shared<Level>(name, skin, std::vector{gemLayer, mainLayer});
 }

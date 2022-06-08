@@ -2,7 +2,6 @@
 
 #include <filesystem>
 
-#include <fmt/format.h>
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 #include <imgui/imgui_stdlib.h>
@@ -17,73 +16,7 @@ EditorApplication::EditorApplication()
 		: _dialogProvider(CuteDialogs::createDialogProvider()) {}
 
 bool EditorApplication::update(bool shouldClose) {
-	if (ImGui::BeginMainMenuBar()) {
-		if (ImGui::BeginMenu("File")) {
-			ImGui::MenuItem("New...", "ctrl+n");
-
-			ImGui::Separator();
-
-			if (ImGui::MenuItem("Open...", "ctrl+o"))
-				openWorld();
-
-			if (ImGui::BeginMenu("Open Recent")) {
-				ImGui::MenuItem("Clear Recently Opened");
-				ImGui::EndMenu();
-			}
-
-			ImGui::Separator();
-
-			if (ImGui::MenuItem("Save", "ctrl+s"))
-				saveSelectedWorld();
-
-			if (ImGui::MenuItem("Save As...", "ctrl+shift+s"))
-				saveSelectedWorldAs();
-
-			ImGui::MenuItem("Save All", "ctrl+alt+s");
-
-			ImGui::Separator();
-
-			if (ImGui::MenuItem("Close", "ctrl+w"))
-				closeSelectedWorld();
-
-			ImGui::Separator();
-
-			ImGui::MenuItem("Exit");
-
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Window")) {
-			ImGui::MenuItem("Restore Default Layout");
-
-			ImGui::Separator();
-
-			ImGui::MenuItem("Inspector", {}, true);
-			ImGui::MenuItem("Layers", {}, true);
-			ImGui::MenuItem("Palette", {}, true);
-			ImGui::MenuItem("Viewport", {}, true);
-			ImGui::MenuItem("World Tree", {}, true);
-#ifndef NDEBUG
-			ImGui::Separator();
-
-			if (ImGui::BeginMenu("Dear ImGui")) {
-				ImGui::MenuItem("Demo", nullptr, false);
-				ImGui::MenuItem("Metrics/Debugger", nullptr, false);
-				ImGui::MenuItem("Style Editor", nullptr, false);
-
-				ImGui::EndMenu();
-			}
-#endif
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Help")) {
-			ImGui::MenuItem("About");
-			ImGui::EndMenu();
-		}
-
-		ImGui::EndMainMenuBar();
-	}
+	drawGlobalMenu();
 
 	if (ImGui::Begin("World Tree")) {
 		const int defaultNodeFlags =
@@ -205,10 +138,77 @@ void EditorApplication::onWorldSelectionChange(std::shared_ptr<World> world) {
 
 void EditorApplication::onLevelSelectionChange(std::shared_ptr<Level> level) {
 	_inspector.setLevel(level);
+	_layers.setLevel(level);
+	_viewport.setLevel(level);
 	_palette.setLevel(*this, level);
+}
 
-	if (!level) {
-		_viewport.restoreDefaultTitle();
-		return;
+void EditorApplication::drawGlobalMenu() {
+	if (ImGui::BeginMainMenuBar()) {
+		if (ImGui::BeginMenu("File")) {
+			ImGui::MenuItem("New...", "ctrl+n");
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Open...", "ctrl+o"))
+				openWorld();
+
+			if (ImGui::BeginMenu("Open Recent")) {
+				ImGui::MenuItem("Clear Recently Opened");
+				ImGui::EndMenu();
+			}
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Save", "ctrl+s"))
+				saveSelectedWorld();
+
+			if (ImGui::MenuItem("Save As...", "ctrl+shift+s"))
+				saveSelectedWorldAs();
+
+			ImGui::MenuItem("Save All", "ctrl+alt+s");
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Close", "ctrl+w"))
+				closeSelectedWorld();
+
+			ImGui::Separator();
+
+			ImGui::MenuItem("Exit");
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Window")) {
+			ImGui::MenuItem("Restore Default Layout");
+
+			ImGui::Separator();
+
+			ImGui::MenuItem("Inspector", {}, true);
+			ImGui::MenuItem("Layers", {}, true);
+			ImGui::MenuItem("Palette", {}, true);
+			ImGui::MenuItem("Viewport", {}, true);
+			ImGui::MenuItem("World Tree", {}, true);
+#ifndef NDEBUG
+			ImGui::Separator();
+
+			if (ImGui::BeginMenu("Dear ImGui")) {
+				ImGui::MenuItem("Demo", nullptr, false);
+				ImGui::MenuItem("Metrics/Debugger", nullptr, false);
+				ImGui::MenuItem("Style Editor", nullptr, false);
+
+				ImGui::EndMenu();
+			}
+#endif
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Help")) {
+			ImGui::MenuItem("About");
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMainMenuBar();
 	}
 }

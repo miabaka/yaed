@@ -34,4 +34,6 @@ private:
 	LayerListWindow _layers;
 	PaletteWindow _palette;
 	ViewportWindow _viewport;
+
+	void drawGlobalMenu();
 };

@@ -24,6 +24,10 @@ public:
 
 	void setSkin(std::shared_ptr<LevelSkin> skin);
 
+	std::shared_ptr<Layer> selectedLayer() const;
+
+	void selectLayer(std::shared_ptr<Layer> layer);
+
 	const std::vector<std::shared_ptr<Layer>> &layers() const;
 
 	std::shared_ptr<World> world();
@@ -35,4 +39,5 @@ private:
 	std::shared_ptr<LevelSkin> _skin;
 	std::vector<std::shared_ptr<Layer>> _layers;
 	std::weak_ptr<World> _world;
+	std::weak_ptr<Layer> _selectedLayer;
 };
