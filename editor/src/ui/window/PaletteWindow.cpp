@@ -5,12 +5,19 @@
 PaletteWindow::PaletteWindow()
 		: BaseWindow("Palette") {}
 
-void PaletteWindow::setTemplate(std::weak_ptr<const PaletteTemplate> paletteTemplate) {
-	_template = std::move(paletteTemplate);
-}
+void PaletteWindow::setLevel(BaseEditor &editor, std::shared_ptr<Level> level) {
+	_level = level;
 
-void PaletteWindow::setIconSet(std::weak_ptr<PaletteIconSet> iconSet) {
-	_iconSet = std::move(iconSet);
+	if (!level) {
+		_template = {};
+		_iconProvider = {};
+		return;
+	}
+
+	const IGame &game = *level->world()->game();
+
+	_iconProvider = editor.paletteIconProviders().findProviderForGame(game);
+	_template = game.paletteTemplate();
 }
 
 void PaletteWindow::onBeginPre() {
@@ -50,8 +57,16 @@ static void drawBrush(const Brush &brush, bool &first, PaletteIconSet &iconSet) 
 }
 
 void PaletteWindow::onDraw() {
-	if (_template.expired() || _iconSet.expired())
+	if (_level.expired() || _template.expired())
 		return;
+
+	updateIconSet();
+
+	// TODO: use default stub icon set in such situation
+	if (_iconSet.expired()) {
+		ImGui::TextWrapped("Can't show: icon set is a hiding baka!");
+		return;
+	}
 
 	std::shared_ptr<PaletteIconSet> iconSet = _iconSet.lock();
 	std::shared_ptr<const PaletteTemplate> palTemplate = _template.lock();
@@ -80,4 +95,19 @@ void PaletteWindow::onDraw() {
 
 	ImGui::PopStyleVar();
 	ImGui::PopStyleColor(4);
+}
+
+void PaletteWindow::updateIconSet() {
+	if (_level.expired() || _iconProvider.expired())
+		return;
+
+	std::shared_ptr<Level> level = _level.lock();
+	std::shared_ptr<LevelSkin> levelSkin = level->skin();
+
+	if (_levelSkin.lock() == levelSkin)
+		return;
+
+	_levelSkin = levelSkin;
+
+	_iconSet = _iconProvider.lock()->getIconSetForLevel(*level);
 }

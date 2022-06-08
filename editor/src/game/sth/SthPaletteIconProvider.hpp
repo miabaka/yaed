@@ -1,5 +1,8 @@
 #pragma once
 
+#include <filesystem>
+#include <unordered_set>
+
 #include "../../core/palette/BasePaletteIconProvider.hpp"
 
 class SthPaletteIconProvider : public BasePaletteIconProvider {
@@ -17,6 +20,9 @@ public:
 	std::shared_ptr<PaletteIconSet> getIconSetForLevel(const Level &level) override;
 
 private:
-	unsigned int _testIconSetTexture{};
-	std::shared_ptr<PaletteIconSet> _testIconSet{};
+	void loadIconSet(const std::filesystem::path &path, int id);
+
+	// TODO: make it independent from gapi
+	std::unordered_set<unsigned int> _textureHandles;
+	std::unordered_map<int, std::shared_ptr<PaletteIconSet>> _iconSets;
 };

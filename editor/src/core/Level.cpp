@@ -13,7 +13,7 @@ const std::string &Level::name() const {
 	return _name;
 }
 
-std::shared_ptr<LevelSkin> &Level::skin() {
+std::shared_ptr<LevelSkin> Level::skin() const {
 	return _skin;
 }
 

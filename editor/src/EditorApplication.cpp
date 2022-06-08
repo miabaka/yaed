@@ -205,20 +205,10 @@ void EditorApplication::onWorldSelectionChange(std::shared_ptr<World> world) {
 
 void EditorApplication::onLevelSelectionChange(std::shared_ptr<Level> level) {
 	_inspector.setLevel(level);
+	_palette.setLevel(*this, level);
 
 	if (!level) {
-		_palette.setTemplate({});
-		_palette.setIconSet({});
 		_viewport.restoreDefaultTitle();
 		return;
 	}
-
-	const IGame &game = *level->world()->game();
-	IPaletteIconProvider &iconProvider = *paletteIconProviders().findProviderForGame(game);
-
-	_palette.setTemplate(game.paletteTemplate());
-	_palette.setIconSet(iconProvider.getDefaultIconSetForWorld(*level->world()));
-
-	// TODO: replace with just a _viewportWindow->setLevel(level);
-	_viewport.setTitle(fmt::format("{} ({})###Viewport", level->world()->name(), level->name()));
 }

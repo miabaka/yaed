@@ -20,7 +20,7 @@ public:
 
 	const std::string &name() const;
 
-	std::shared_ptr<LevelSkin> &skin();
+	std::shared_ptr<LevelSkin> skin() const;
 
 	void setSkin(std::shared_ptr<LevelSkin> skin);
 
