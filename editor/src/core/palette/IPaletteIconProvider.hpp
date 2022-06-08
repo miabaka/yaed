@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "../World.hpp"
 #include "../Level.hpp"
 #include "PaletteIconSet.hpp"
 

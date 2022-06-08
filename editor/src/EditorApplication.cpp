@@ -140,62 +140,10 @@ bool EditorApplication::update(bool shouldClose) {
 	}
 	ImGui::End();
 
-	if (ImGui::Begin("Inspector")) {
-		const int headerFlags = ImGuiTreeNodeFlags_DefaultOpen;
-
-		std::shared_ptr<World> world = selectedWorld();
-		std::shared_ptr<Level> level = selectedLevel();
-
-		if (world) {
-			if (ImGui::CollapsingHeader("Game", headerFlags)) {
-				std::string gameName = world->game()->name();
-				ImGui::InputText("Name##Game", gameName, ImGuiInputTextFlags_ReadOnly);
-			}
-
-			if (ImGui::CollapsingHeader("World", headerFlags))
-				ImGui::InputText("Name##World", world->name());
-		}
-
-		if (level && ImGui::CollapsingHeader("Level", headerFlags)) {
-			std::shared_ptr<LevelSkin> levelSkin = level->skin();
-
-			ImGui::InputText("Name##Level", level->name());
-
-			if (ImGui::BeginCombo("Skin", levelSkin->name().c_str())) {
-				for (auto &[_, skin]: world->game()->levelSkins()) {
-					const bool alreadySelected = (skin == levelSkin);
-					const bool selected = ImGui::Selectable(skin->name().c_str(), alreadySelected);
-
-					if (!selected)
-						continue;
-
-					level->setSkin(skin);
-				}
-
-				ImGui::EndCombo();
-			}
-		}
-	}
-	ImGui::End();
-
-	_paletteWindow.draw();
-
-	ImGui::Begin("Layers");
-	ImGui::End();
-
-	std::string viewportWindowTitle;
-
-	{
-		std::shared_ptr<Level> level = selectedLevel();
-
-		if (level)
-			viewportWindowTitle = fmt::format("{} ({})###Viewport", level->world()->name(), level->name());
-		else
-			viewportWindowTitle = "Viewport###Viewport";
-	}
-
-	ImGui::Begin(viewportWindowTitle.c_str());
-	ImGui::End();
+	_inspector.draw();
+	_palette.draw();
+	_layers.draw();
+	_viewport.draw();
 
 	return !shouldClose;
 }
@@ -251,16 +199,26 @@ void EditorApplication::saveSelectedWorldAs() {
 	BaseEditor::saveSelectedWorldAs(selectedPath);
 }
 
+void EditorApplication::onWorldSelectionChange(std::shared_ptr<World> world) {
+	_inspector.setWorld(world);
+}
+
 void EditorApplication::onLevelSelectionChange(std::shared_ptr<Level> level) {
+	_inspector.setLevel(level);
+
 	if (!level) {
-		_paletteWindow.setTemplate({});
-		_paletteWindow.setIconSet({});
+		_palette.setTemplate({});
+		_palette.setIconSet({});
+		_viewport.restoreDefaultTitle();
 		return;
 	}
 
 	const IGame &game = *level->world()->game();
 	IPaletteIconProvider &iconProvider = *paletteIconProviders().findProviderForGame(game);
 
-	_paletteWindow.setTemplate(game.paletteTemplate());
-	_paletteWindow.setIconSet(iconProvider.getDefaultIconSetForWorld(*level->world()));
+	_palette.setTemplate(game.paletteTemplate());
+	_palette.setIconSet(iconProvider.getDefaultIconSetForWorld(*level->world()));
+
+	// TODO: replace with just a _viewportWindow->setLevel(level);
+	_viewport.setTitle(fmt::format("{} ({})###Viewport", level->world()->name(), level->name()));
 }

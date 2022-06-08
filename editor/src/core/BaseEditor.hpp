@@ -62,6 +62,8 @@ public:
 	void selectLevel(std::shared_ptr<Level> level);
 
 protected:
+	virtual void onWorldSelectionChange(std::shared_ptr<World> world);
+
 	virtual void onLevelSelectionChange(std::shared_ptr<Level> level);
 
 private:

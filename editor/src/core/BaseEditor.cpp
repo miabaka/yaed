@@ -133,13 +133,17 @@ std::shared_ptr<Level> BaseEditor::selectedLevel() const {
 void BaseEditor::selectWorld(std::shared_ptr<World> world) {
 	_selectedWorld = world;
 	_selectedLevel.reset();
+	onWorldSelectionChange(world);
 	onLevelSelectionChange({});
 }
 
 void BaseEditor::selectLevel(std::shared_ptr<Level> level) {
 	_selectedWorld = level->world();
 	_selectedLevel = level;
+	onWorldSelectionChange(level->world());
 	onLevelSelectionChange(level);
 }
+
+void BaseEditor::onWorldSelectionChange(std::shared_ptr<World> world) {}
 
 void BaseEditor::onLevelSelectionChange(std::shared_ptr<Level> level) {}

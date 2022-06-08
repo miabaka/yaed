@@ -2,8 +2,25 @@
 
 #include <imgui/imgui.h>
 
-BaseWindow::BaseWindow(std::string name)
-		: _name(std::move(name)) {}
+void BaseWindow::setTitle(const std::string &title) {
+	_actualTitle = title + "###" + _id;
+}
+
+void BaseWindow::setTitle(const std::string &title, bool useAsDefault) {
+	if (useAsDefault)
+		_defaultTitle = title;
+
+	setTitle(title);
+}
+
+void BaseWindow::restoreDefaultTitle() {
+	setTitle(_defaultTitle);
+}
+
+BaseWindow::BaseWindow(const std::string &id, const std::string &title)
+		: _id(id) {
+	BaseWindow::setTitle(title.empty() ? id : title, true);
+}
 
 void BaseWindow::draw() {
 	if (!_open)
@@ -11,7 +28,7 @@ void BaseWindow::draw() {
 
 	onBeginPre();
 
-	bool collapsed = !ImGui::Begin(_name.c_str(), &_open);
+	bool collapsed = !ImGui::Begin(_actualTitle.c_str(), &_open);
 
 	onBeginPost();
 
