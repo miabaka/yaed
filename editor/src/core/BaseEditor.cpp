@@ -10,7 +10,7 @@ struct EditorWorldData : public ICustomData {
 	std::shared_ptr<IWorldExporter> exporter;
 };
 
-GameManager &BaseEditor::gameManager() {
+GameManager &BaseEditor::games() {
 	return _gameManager;
 }
 
@@ -24,6 +24,10 @@ WorldFactoryManager &BaseEditor::worldFactories() {
 
 PaletteIconProviderManager &BaseEditor::paletteIconProviders() {
 	return _iconProviderManager;
+}
+
+TilemapRendererManager &BaseEditor::tilemapRenderers() {
+	return _tilemapRendererManager;
 }
 
 const std::vector<std::shared_ptr<World>> &BaseEditor::worlds() const {

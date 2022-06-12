@@ -82,7 +82,7 @@ bool EditorApplication::update(bool shouldClose) {
 }
 
 void EditorApplication::render() {
-
+	_viewport.render();
 }
 
 void EditorApplication::openWorld() {
@@ -139,7 +139,7 @@ void EditorApplication::onWorldSelectionChange(std::shared_ptr<World> world) {
 void EditorApplication::onLevelSelectionChange(std::shared_ptr<Level> level) {
 	_inspector.setLevel(level);
 	_layers.setLevel(level);
-	_viewport.setLevel(level);
+	_viewport.setLevel(*this, level);
 	_palette.setLevel(*this, level);
 }
 

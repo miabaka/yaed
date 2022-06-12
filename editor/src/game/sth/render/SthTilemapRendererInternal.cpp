@@ -1,0 +1,115 @@
+#include "SthTilemapRendererInternal.hpp"
+
+SthTilemapRendererInternal::SthTilemapRendererInternal() {
+	setupVbo();
+	setupVao();
+	setupProgram();
+}
+
+SthTilemapRendererInternal::~SthTilemapRendererInternal() {
+	glDeleteProgram(_program);
+	glDeleteVertexArrays(1, &_vao);
+	glDeleteBuffers(1, &_vbo);
+}
+
+const AtlasPair &SthTilemapRendererInternal::getAtlasPairFor(const Level &level) const {
+	static AtlasPair pair;
+	return pair;
+}
+
+void SthTilemapRendererInternal::drawTiles(const AtlasPair &atlasPair, const std::vector<TileInstance> &tiles) const {
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+
+	glBufferSubData(GL_ARRAY_BUFFER, 0, static_cast<GLsizei>(sizeof(TileInstance) * tiles.size()), tiles.data());
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindVertexArray(_vao);
+	glUseProgram(_program);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, atlasPair.commonTexture());
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, atlasPair.altTexture());
+
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_1D, atlasPair.frameOffsetTexture());
+
+	glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, 4, static_cast<GLsizei>(tiles.size()));
+
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_1D, 0);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glBindVertexArray(0);
+	glUseProgram(0);
+}
+
+void SthTilemapRendererInternal::setupVbo() {
+	glGenBuffers(1, &_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(TileInstance) * 2400, nullptr, GL_DYNAMIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void SthTilemapRendererInternal::setupVao() {
+	glGenVertexArrays(1, &_vao);
+	glBindVertexArray(_vao);
+
+	glEnableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+	glVertexAttribDivisor(0, 1);
+	glVertexAttribIPointer(0, 3, GL_UNSIGNED_SHORT, sizeof(TileInstance), (void *) 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindVertexArray(0);
+}
+
+static void attachShader(GLuint program, GLenum type, const char *source) {
+	GLuint shader = glCreateShader(type);
+
+	glShaderSource(shader, 1, &source, nullptr);
+	glCompileShader(shader);
+
+	glAttachShader(program, shader);
+
+	glDeleteShader(shader);
+}
+
+void SthTilemapRendererInternal::setupProgram() {
+	static const char VERTEX_SOURCE[] = "#version 330 core\n\nlayout (location = 0) in ivec3 a;\n\nuniform float uTileScale = 1.6f;\nuniform mat4 uProjection = mat4(.05,0,0,0,0,-.0666667,0,0,0,0,-1,0,-1,1,0,1);\n\nflat out int vMaterial;\nout vec2 vTexCoords;\n\nvoid main(){int i=gl_VertexID;vec2 d=vec2(ivec2(i,(i+1)&2)/2);vTexCoords=d;vMaterial=a.b;gl_Position=uProjection*vec4((d-.5)*uTileScale+.5+a.rg,0,1);}";
+	static const char FRAGMENT_SOURCE[] = "#version 330 core\n\nuniform int uFirstAltFrame = 0;\nuniform vec2 uCommonScale = 64 / vec2(1636, 1024);\nuniform vec2 uAltScale = 64 / vec2(1280, 1024);\n\nuniform sampler2D texCommon;\nuniform sampler2D texAlt;\nuniform sampler1D texFrameOffsets;\n\nflat in int vMaterial;\nin vec2 vTexCoords;\n\nout vec4 outColor;\n\nvoid main() {\n    vec2 uvOffset = texelFetch(texFrameOffsets, vMaterial, 0).xy;\n\n    bool useAlt = vMaterial >= uFirstAltFrame;\n    vec2 uv = uvOffset + vTexCoords * (useAlt ? uAltScale : uCommonScale);\n\n    outColor = texture(useAlt ? texAlt : texCommon, uv);\n}"; // втффф
+
+	_program = glCreateProgram();
+
+	attachShader(_program, GL_VERTEX_SHADER, VERTEX_SOURCE);
+	attachShader(_program, GL_FRAGMENT_SHADER, FRAGMENT_SOURCE);
+
+	glLinkProgram(_program);
+
+	char buf[1337];
+	glGetProgramInfoLog(_program, sizeof(buf), nullptr, buf);
+
+	if (buf[0] == '\0')
+		puts("Yay!");
+	else
+		puts(buf);
+
+	glUseProgram(_program);
+
+	glUniform1i(glGetUniformLocation(_program, "texCommon"), 0);
+	glUniform1i(glGetUniformLocation(_program, "texAlt"), 1);
+	glUniform1i(glGetUniformLocation(_program, "texFrameOffsets"), 2);
+
+	glUseProgram(0);
+}

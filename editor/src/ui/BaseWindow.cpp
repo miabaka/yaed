@@ -17,8 +17,15 @@ void BaseWindow::restoreDefaultTitle() {
 	setTitle(_defaultTitle);
 }
 
-BaseWindow::BaseWindow(const std::string &id, const std::string &title)
-		: _id(id) {
+BaseWindow::BaseWindow(const std::string &id, int flags)
+		: _id(id),
+		  _flags(flags) {
+	BaseWindow::setTitle(id, true);
+}
+
+BaseWindow::BaseWindow(const std::string &id, const std::string &title, int flags)
+		: _id(id),
+		  _flags(flags) {
 	BaseWindow::setTitle(title.empty() ? id : title, true);
 }
 
@@ -28,7 +35,7 @@ void BaseWindow::draw() {
 
 	onBeginPre();
 
-	bool collapsed = !ImGui::Begin(_actualTitle.c_str(), &_open);
+	bool collapsed = !ImGui::Begin(_actualTitle.c_str(), &_open, _flags);
 
 	onBeginPost();
 
@@ -38,8 +45,17 @@ void BaseWindow::draw() {
 	ImGui::End();
 }
 
+void BaseWindow::render() {
+	if (!_open) // TODO: also check if window is collapsed
+		return;
+
+	onRender();
+}
+
 void BaseWindow::onBeginPre() {}
 
 void BaseWindow::onBeginPost() {}
 
 void BaseWindow::onDraw() {}
+
+void BaseWindow::onRender() {}

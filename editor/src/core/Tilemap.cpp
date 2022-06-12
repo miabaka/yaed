@@ -35,6 +35,13 @@ Tilemap::tile_t Tilemap::operator()(int x, int y) const {
 	return _tiles[y * _size.x + x];
 }
 
+Tilemap::tile_t Tilemap::operator()(glm::ivec2 position) const {
+	if (!positionIsValid(position))
+		return 0;
+
+	return _tiles[position.y * _size.x + position.x];
+}
+
 const Tilemap::tile_t *Tilemap::data() const noexcept {
-  return _tiles.data();
+	return _tiles.data();
 }

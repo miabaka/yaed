@@ -1,7 +1,7 @@
 #include "PaletteIconProviderManager.hpp"
 
 #include <stdexcept>
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 void PaletteIconProviderManager::registerProvider(std::shared_ptr<IPaletteIconProvider> provider) {
 	using fmt::format;

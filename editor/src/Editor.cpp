@@ -2,16 +2,17 @@
 
 #include "game/sth/SthGame.hpp"
 #include "game/sth/SthPaletteIconProvider.hpp"
+#include "game/sth/render/SthTilemapRenderer.hpp"
 #include "game/sth/SthWorldExporter.hpp"
-#include "game/sth/SthWorldImporter.hpp"
 #include "game/sth/SthWorldFactory.hpp"
+#include "game/sth/SthWorldImporter.hpp"
 
 Editor::Editor() {
-	auto thGame = std::make_shared<SthGame>();
-	gameManager().registerGame(thGame);
+	auto sthGame = std::make_shared<SthGame>();
+	games().registerGame(sthGame);
 
-	auto thWorldFactory = std::make_shared<SthWorldFactory>();
-	worldFactories().registerFactory(thWorldFactory);
+	auto sthWorldFactory = std::make_shared<SthWorldFactory>();
+	worldFactories().registerFactory(sthWorldFactory);
 
 	WorldFormat &thpFormat = worldFormats().registerFormat("sth_thp", {"Treasure Hunter Pack", "thp"});
 
@@ -21,6 +22,9 @@ Editor::Editor() {
 	auto thpExporter = std::make_shared<SthWorldExporter>();
 	thpFormat.setExporter(thpExporter);
 
-	auto thPaletteIconProvider = std::make_shared<SthPaletteIconProvider>();
-	paletteIconProviders().registerProvider(thPaletteIconProvider);
+	auto sthPaletteIconProvider = std::make_shared<SthPaletteIconProvider>();
+	paletteIconProviders().registerProvider(sthPaletteIconProvider);
+
+	auto sthTilemapRenderer = std::make_shared<SthTilemapRenderer>();
+	tilemapRenderers().registerRenderer(sthTilemapRenderer);
 }

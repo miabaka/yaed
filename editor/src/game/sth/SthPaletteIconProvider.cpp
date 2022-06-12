@@ -4,11 +4,6 @@
 
 #include <GL/gl3w.h>
 
-#define STB_IMAGE_IMPLEMENTATION
-
-#define STBI_ONLY_PNG
-#define STBI_NO_THREAD_LOCALS
-
 #include "stb_image.h"
 #include "SthInternal.hpp"
 
@@ -76,7 +71,7 @@ void SthPaletteIconProvider::loadIconSet(const std::filesystem::path &path, int 
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	static const std::array<Tilemap::tile_t, 28> tiles = {
+	static const Tilemap::tile_t tiles[] = {
 			Tile::Air,
 			Tile::Hero,
 			Tile::Ground,

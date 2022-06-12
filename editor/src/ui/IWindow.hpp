@@ -11,4 +11,6 @@ public:
 	virtual void restoreDefaultTitle() = 0;
 
 	virtual void draw() = 0;
+
+	virtual void render() = 0;
 };

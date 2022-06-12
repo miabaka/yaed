@@ -5,27 +5,30 @@
 #include <vector>
 #include <unordered_map>
 
+#include "export/IWorldExporter.hpp"
 #include "format/WorldFormatManager.hpp"
+#include "palette/PaletteIconProviderManager.hpp"
+#include "render/TilemapRendererManager.hpp"
 #include "game/GameManager.hpp"
 #include "game/BaseGame.hpp"
 #include "IWorldImporter.hpp"
-#include "export/IWorldExporter.hpp"
-#include "Level.hpp"
 #include "World.hpp"
 #include "WorldFactoryManager.hpp"
-#include "palette/PaletteIconProviderManager.hpp"
+#include "Level.hpp"
 
 class BaseEditor {
 public:
 	virtual ~BaseEditor() = default;
 
-	GameManager &gameManager();
+	GameManager &games();
 
 	WorldFormatManager &worldFormats();
 
 	WorldFactoryManager &worldFactories();
 
 	PaletteIconProviderManager &paletteIconProviders();
+
+	TilemapRendererManager &tilemapRenderers();
 
 	const std::vector<std::shared_ptr<World>> &worlds() const;
 
@@ -71,6 +74,7 @@ private:
 	WorldFormatManager _worldFormatManager;
 	WorldFactoryManager _worldFactoryManager;
 	PaletteIconProviderManager _iconProviderManager;
+	TilemapRendererManager _tilemapRendererManager;
 	std::vector<std::shared_ptr<World>> _worlds;
 	std::weak_ptr<World> _selectedWorld;
 	std::weak_ptr<Level> _selectedLevel;

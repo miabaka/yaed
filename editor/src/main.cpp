@@ -16,7 +16,7 @@ int main() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
 
-	GLFWwindow *window = glfwCreateWindow(1280, 720, "Ayaya! Ayaya!", nullptr, nullptr);
+	GLFWwindow *window = glfwCreateWindow(1280, 720, "yaed", nullptr, nullptr);
 
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
@@ -28,7 +28,9 @@ int main() {
 	{
 		ImGuiIO &io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+#ifdef _WIN32
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+#endif
 	}
 
 	ImGui::StyleColorsLight();
@@ -57,7 +59,7 @@ int main() {
 
 			editor.render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+#ifdef _WIN32
 			{
 				GLFWwindow *previousContext = glfwGetCurrentContext();
 
@@ -66,7 +68,7 @@ int main() {
 
 				glfwMakeContextCurrent(previousContext);
 			}
-
+#endif
 			glfwSwapBuffers(window);
 		}
 	}

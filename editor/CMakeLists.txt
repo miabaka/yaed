@@ -14,6 +14,8 @@ add_executable(editor
         src/core/palette/PaletteIconSet.cpp
         src/core/palette/PaletteTemplate.cpp
         src/core/palette/PaletteTemplateBuilder.cpp
+        src/core/render/BaseTilemapRenderer.cpp
+        src/core/render/TilemapRendererManager.cpp
         src/core/util/CustomDataContainer.cpp
         src/core/util/TextureSlice.cpp
         src/core/BaseEditor.cpp
@@ -25,8 +27,15 @@ add_executable(editor
         src/core/Tilemap.cpp
         src/core/World.cpp
         src/core/WorldFactoryManager.cpp
+        src/game/sth/stb_image.c
         src/game/sth/SthGame.cpp
         src/game/sth/SthPaletteIconProvider.cpp
+        src/game/sth/render/AtlasEntry.cpp
+        src/game/sth/render/AtlasPair.cpp
+        src/game/sth/render/InputAtlasEntry.cpp
+        src/game/sth/render/SthTilemapRenderer.cpp
+        src/game/sth/render/SthTilemapRendererContext.cpp
+        src/game/sth/render/SthTilemapRendererInternal.cpp
         src/game/sth/SthWorldExporter.cpp
         src/game/sth/SthWorldFactory.cpp
         src/game/sth/SthWorldImporter.cpp
@@ -35,6 +44,7 @@ add_executable(editor
         src/ui/window/PaletteWindow.cpp
         src/ui/window/ViewportWindow.cpp
         src/ui/BaseWindow.cpp
+        src/ui/ImUtil.cpp
         src/Editor.cpp
         src/EditorApplication.cpp
         src/main.cpp)
