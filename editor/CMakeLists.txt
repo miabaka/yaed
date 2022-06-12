@@ -27,7 +27,6 @@ add_executable(editor
         src/core/Tilemap.cpp
         src/core/World.cpp
         src/core/WorldFactoryManager.cpp
-        src/game/sth/stb_image.c
         src/game/sth/SthGame.cpp
         src/game/sth/SthPaletteIconProvider.cpp
         src/game/sth/render/AtlasEntry.cpp
@@ -49,4 +48,4 @@ add_executable(editor
         src/EditorApplication.cpp
         src/main.cpp)
 
-target_link_libraries(editor PRIVATE fmt glm glfw gl3w imgui cutedialogs)
+target_link_libraries(editor PRIVATE fmt glm glfw gl3w imgui stb_image cutedialogs)

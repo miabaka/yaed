@@ -3,8 +3,8 @@
 #include <array>
 
 #include <GL/gl3w.h>
+#include <stb/image.h>
 
-#include "stb_image.h"
 #include "SthInternal.hpp"
 
 using namespace SthInternal;

@@ -2,7 +2,8 @@
 
 #include <filesystem>
 
-#include "../stb_image.h"
+#include <stb/image.h>
+
 #include "../SthInternal.hpp"
 #include "InputAtlasEntry.hpp"
 
