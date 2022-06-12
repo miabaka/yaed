@@ -20,15 +20,8 @@ void InspectorWindow::onDraw() {
 	std::shared_ptr<World> world = _world.lock();
 	std::shared_ptr<Level> level = _level.lock();
 
-	if (world) {
-		if (ImGui::CollapsingHeader("Game", headerFlags)) {
-			std::string gameName = world->game()->name();
-			ImGui::InputText("Name##Game", gameName, ImGuiInputTextFlags_ReadOnly);
-		}
-
-		if (ImGui::CollapsingHeader("World", headerFlags))
-			ImGui::InputTextWithHint("Name##World", world->filename().c_str(), world->name());
-	}
+	if (world && ImGui::CollapsingHeader("World", headerFlags))
+		ImGui::InputTextWithHint("Name##World", world->filename().c_str(), world->name());
 
 	if (level && ImGui::CollapsingHeader("Level", headerFlags)) {
 		std::shared_ptr<LevelSkin> levelSkin = level->skin();
