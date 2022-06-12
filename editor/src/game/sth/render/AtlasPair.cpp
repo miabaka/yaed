@@ -1,17 +1,13 @@
 #include "AtlasPair.hpp"
 
-#include <filesystem>
-
 #include <stb/image.h>
-
-#include "../SthInternal.hpp"
-#include "InputAtlasEntry.hpp"
 
 namespace fs = std::filesystem;
 
-using namespace SthInternal;
+AtlasPair::AtlasPair(float defaultTileScale)
+		: _defaultTileScale(defaultTileScale) {}
 
-static GLuint loadTexture(const fs::path &path) {
+static GLuint loadTexture(const fs::path &path, glm::ivec2 &outSize) {
 	int width, height, channelCount;
 	void *pixelData = stbi_load(path.string().c_str(), &width, &height, &channelCount, STBI_rgb_alpha);
 
@@ -36,63 +32,40 @@ static GLuint loadTexture(const fs::path &path) {
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	outSize.x = width;
+	outSize.y = height;
+
 	return texture;
 }
 
-AtlasPair::AtlasPair() {
-	_texCommon = loadTexture("data/sth_renderer/textures/common.png");
-	_texAlt = loadTexture("data/sth_renderer/textures/0_0.png");
+void AtlasPair::loadTexture(const std::filesystem::path &path, TextureSlot slot) {
+	switch (slot) {
+		case TextureSlot::Common:
+			_texCommon = ::loadTexture(path, _texCommonSize);
+			break;
 
-	static const InputAtlasEntry commonEntries[] = {
-			{{Tile::Bonus},        {0,    0},   {64, 64}, 32, 4},
-			{{Tile::Hero},         {256,  0},   {64, 64}, 32, 4},
-			{{Tile::BombItem},     {512,  0},   {64, 64}, 32, 4},
-			{{Tile::FakeHeroItem}, {768,  0},   {64, 64}, 32, 4},
-			{{Tile::KeyItem},      {1024, 0},   {64, 64}, 32, 4},
-			{{Tile::TrapItem},     {1280, 0},   {64, 64}, 32, 4},
-			{{},                   {0,    512}, {64, 64}, 32, 4},
-			{{},                   {256,  512}, {64, 64}, 32, 4},
-			{{},                   {512,  512}, {64, 64}, 32, 4},
-			{{},                   {768,  512}, {64, 64}, 32, 4},
-			{{},                   {1024, 512}, {64, 64}, 32, 4},
-			{{},                   {1280, 512}, {64, 64}, 32, 4},
-	};
+		case TextureSlot::Alt:
+			_texAlt = ::loadTexture(path, _texAltSize);
 
-	static const InputAtlasEntry altEntries[] = {
-			// alt
-			{{Tile::LockedExit}, {0,    0},   {64, 64}, 32, 4},
-			{{Tile::HiddenExit}, {256,  0},   {64, 64}, 32, 4},
-			{{Tile::Gem0},       {512,  0},   {64, 64}, 32, 4},
-			{{Tile::Gem1},       {768,  0},   {64, 64}, 32, 4},
-			{{Tile::Gem2},       {1024, 0},   {64, 64}, 32, 4},
-			{{Tile::Gem3},       {0,    512}, {64, 64}, 32, 4},
-			{{Tile::Gem4},       {256,  512}, {64, 64}, 32, 4},
-			{{Tile::Gem5},       {512,  512}, {64, 64}, 32, 4},
-			{{},                 {768,  512}, {64, 64}, 32, 4},
-			{{},                 {1024, 512}, {64, 64}, 16, 4},
-			{{},                 {1024, 768}, {64, 64}, 16, 4}
-	};
+		default:
+			break;
+	}
+}
 
-	std::vector<glm::vec2> offsets;
+void AtlasPair::appendEntries(const std::vector<InputAtlasEntry> &entries, glm::ivec2 atlasSize) {
+	for (const auto &inputEntry: entries) {
+		const auto firstFrame = static_cast<int>(_frameOffsets.size());
 
-	for (const auto &inputEntry: commonEntries) {
 		for (Tilemap::tile_t tile: inputEntry.tiles) {
-			AtlasEntry entry(static_cast<int>(offsets.size()), inputEntry.frameCount);
+			AtlasEntry entry(firstFrame, inputEntry.frameCount);
 			_entries.insert({tile, entry});
 		}
 
-		inputEntry.computeOffsets(offsets, {1536, 1024});
+		inputEntry.computeOffsets(_frameOffsets, atlasSize);
 	}
+}
 
-	for (const auto &inputEntry: altEntries) {
-		for (Tilemap::tile_t tile: inputEntry.tiles) {
-			AtlasEntry entry(static_cast<int>(offsets.size()), inputEntry.frameCount);
-			_entries.insert({tile, entry});
-		}
-
-		inputEntry.computeOffsets(offsets, {1280, 1024});
-	}
-
+void AtlasPair::submitFrameOffsets() {
 	glGenTextures(1, &_texFrameOffsets);
 
 	glBindTexture(GL_TEXTURE_1D, _texFrameOffsets);
@@ -100,9 +73,12 @@ AtlasPair::AtlasPair() {
 	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	glTexImage1D(GL_TEXTURE_1D, 0, GL_RG32F, static_cast<GLsizei>(offsets.size()), 0, GL_RG, GL_FLOAT, offsets.data());
+	const auto count = static_cast<GLsizei>(_frameOffsets.size());
+	glTexImage1D(GL_TEXTURE_1D, 0, GL_RG32F, count, 0, GL_RG, GL_FLOAT, _frameOffsets.data());
 
 	glBindTexture(GL_TEXTURE_1D, 0);
+
+	_frameOffsets.clear();
 }
 
 GLuint AtlasPair::commonTexture() const {
@@ -115,6 +91,18 @@ GLuint AtlasPair::altTexture() const {
 
 GLuint AtlasPair::frameOffsetTexture() const {
 	return _texFrameOffsets;
+}
+
+float AtlasPair::defaultTileScale() const {
+	return _defaultTileScale;
+}
+
+glm::vec2 AtlasPair::commonScale() const {
+	return 40 * defaultTileScale() / glm::vec2(_texCommonSize);
+}
+
+glm::vec2 AtlasPair::altScale() const {
+	return 40 * defaultTileScale() / glm::vec2(_texAltSize);
 }
 
 const AtlasEntry &AtlasPair::findEntryForTile(Tilemap::tile_t tile) const {

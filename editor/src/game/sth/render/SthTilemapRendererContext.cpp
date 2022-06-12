@@ -35,6 +35,10 @@ void SthTilemapRendererContext::setLevel(std::weak_ptr<Level> level) {
 	_level = std::move(level);
 }
 
+static inline bool isBlockTile(Tilemap::tile_t tile) {
+	return tile >= Tile::Ground && tile <= Tile::Hole;
+}
+
 void SthTilemapRendererContext::render() {
 	if (_level.expired())
 		return;
@@ -46,9 +50,21 @@ void SthTilemapRendererContext::render() {
 
 	glm::ivec2 size = gemLayerMap.size();
 
-	const AtlasPair &atlasPair = _renderer->getAtlasPairFor(*level);
+	const AtlasPair &gemAtlasPair = _renderer->getAtlasPairFor(*level, AtlasPair::Tag::Common);
+	const AtlasPair &ladderAndRopeAtlasPair = _renderer->getAtlasPairFor(*level, AtlasPair::Tag::LadderAndRope);
+	const AtlasPair &knobAtlasPair = _renderer->getAtlasPairFor(*level, AtlasPair::Tag::Knobs);
+	const AtlasPair &blockAtlasPair = _renderer->getAtlasPairFor(*level, AtlasPair::Tag::Blocks);
 
-	std::vector<SthTilemapRendererInternal::TileInstance> tiles;
+	// TODO: use preallocated memory
+	std::vector<SthTilemapRendererInternal::TileInstance> gemTiles;
+	std::vector<SthTilemapRendererInternal::TileInstance> ladderAndRopeTiles;
+	std::vector<SthTilemapRendererInternal::TileInstance> knobTiles;
+	std::vector<SthTilemapRendererInternal::TileInstance> blockTiles;
+
+	gemTiles.reserve(1200);
+	ladderAndRopeTiles.reserve(1200);
+	knobTiles.reserve(1200);
+	blockTiles.reserve(1200);
 
 	for (int i = 0; i < gemLayerMap.tileCount(); i++) {
 		glm::ivec2 position = {i % size.x, i / size.x};
@@ -58,9 +74,88 @@ void SthTilemapRendererContext::render() {
 		if (tile < Tile::Gem0 || tile > Tile::Gem5)
 			continue;
 
-		int frame = atlasPair.findEntryForTile(tile).firstFrame();
+		int frame = gemAtlasPair.findEntryForTile(tile).firstFrame();
 
-		tiles.push_back({static_cast<GLshort>(position.x), static_cast<GLshort>(position.y), static_cast<GLshort>(frame)});
+		gemTiles.push_back(
+				{static_cast<GLshort>(position.x), static_cast<GLshort>(position.y), static_cast<GLshort>(frame)});
+	}
+
+	for (int i = 0; i < mainLayerMap.tileCount(); i++) {
+		glm::ivec2 position = {i % size.x, i / size.x};
+
+		Tilemap::tile_t tile = mainLayerMap(position);
+
+		if (!(tile == Tile::Ladder || tile == Tile::Rope))
+			continue;
+
+		int frame = ladderAndRopeAtlasPair.findEntryForTile(tile).firstFrame();
+
+		ladderAndRopeTiles.push_back(
+				{static_cast<GLshort>(position.x), static_cast<GLshort>(position.y), static_cast<GLshort>(frame)});
+	}
+
+	const int firstRopeKnobFrame = knobAtlasPair.findEntryForTile(512).firstFrame();
+	const int firstLadderKnobFrame = knobAtlasPair.findEntryForTile(513).firstFrame();
+
+	for (int i = 0; i < mainLayerMap.tileCount(); i++) {
+		glm::ivec2 position = {i % size.x, i / size.x};
+
+		Tilemap::tile_t tile = mainLayerMap(position);
+
+		int frame;
+
+		if (tile == Tile::Ladder) {
+			Tilemap::tile_t upperTile = mainLayerMap(position + glm::ivec2(0, -1));
+			Tilemap::tile_t lowerTile = mainLayerMap(position + glm::ivec2(0, 1));
+
+			bool hasTopNeighbor = (upperTile == Tile::Ladder);
+			bool hasBottomNeighbor = (lowerTile == Tile::Ladder);
+
+			if (hasTopNeighbor && hasBottomNeighbor)
+				continue;
+
+			frame = firstLadderKnobFrame + ((hasTopNeighbor << 1) | hasBottomNeighbor);
+		} else if (tile == Tile::Rope) {
+			Tilemap::tile_t leftTile = mainLayerMap(position + glm::ivec2(-1, 0));
+			Tilemap::tile_t rightTile = mainLayerMap(position + glm::ivec2(1, 0));
+
+			bool hasLeftNeighbor = (leftTile == Tile::Rope);
+			bool hasRightNeighbor = (rightTile == Tile::Rope);
+
+			if (hasLeftNeighbor && hasRightNeighbor)
+				continue;
+
+			frame = firstRopeKnobFrame + ((hasLeftNeighbor << 1) | hasRightNeighbor);
+		} else {
+			continue;
+		}
+
+		knobTiles.push_back(
+				{static_cast<GLshort>(position.x), static_cast<GLshort>(position.y), static_cast<GLshort>(frame)});
+	}
+
+	static const int blockDockingMapping[] = {0, 4, 2, 9, 1, 8, 5, 11, 3, 7, 6, 13, 10, 14, 12, 15};
+
+	for (int i = 0; i < gemLayerMap.tileCount(); i++) {
+		glm::ivec2 position = {i % size.x, i / size.x};
+
+		Tilemap::tile_t tile = mainLayerMap(position);
+
+		if (!isBlockTile(tile))
+			continue;
+
+		bool hasLeftNeighbor = isBlockTile(mainLayerMap(position + glm::ivec2(-1, 0)));
+		bool hasRightNeighbor = isBlockTile(mainLayerMap(position + glm::ivec2(1, 0)));
+		bool hasTopNeighbor = isBlockTile(mainLayerMap(position + glm::ivec2(0, -1)));
+		bool hasBottomNeighbor = isBlockTile(mainLayerMap(position + glm::ivec2(0, 1)));
+
+		int baseFrame = blockAtlasPair.findEntryForTile(tile).firstFrame();
+		int variant = (hasBottomNeighbor << 3) | (hasTopNeighbor << 2) | (hasRightNeighbor << 1) | hasLeftNeighbor;
+
+		int frame = baseFrame + blockDockingMapping[variant];
+
+		blockTiles.push_back(
+				{static_cast<GLshort>(position.x), static_cast<GLshort>(position.y), static_cast<GLshort>(frame)});
 	}
 
 	GLint previousFbo;
@@ -75,7 +170,10 @@ void SthTilemapRendererContext::render() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	_renderer->drawTiles(atlasPair, tiles);
+	_renderer->drawTiles(ladderAndRopeAtlasPair, ladderAndRopeTiles);
+	_renderer->drawTiles(knobAtlasPair, knobTiles);
+	_renderer->drawTiles(gemAtlasPair, gemTiles); // is it in right order?
+	_renderer->drawTiles(blockAtlasPair, blockTiles);
 
 	glDisable(GL_BLEND);
 

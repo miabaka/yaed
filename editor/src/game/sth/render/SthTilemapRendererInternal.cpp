@@ -1,9 +1,15 @@
 #include "SthTilemapRendererInternal.hpp"
 
-SthTilemapRendererInternal::SthTilemapRendererInternal() {
+#include <glm/gtc/type_ptr.hpp>
+#include "../SthInternal.hpp"
+
+SthTilemapRendererInternal::SthTilemapRendererInternal()
+		: _commonAtlasPair(1.6f),
+		  _knobAtlasPair(1.6) {
 	setupVbo();
 	setupVao();
 	setupProgram();
+	setupAtlasPairs();
 }
 
 SthTilemapRendererInternal::~SthTilemapRendererInternal() {
@@ -12,20 +18,44 @@ SthTilemapRendererInternal::~SthTilemapRendererInternal() {
 	glDeleteBuffers(1, &_vbo);
 }
 
-const AtlasPair &SthTilemapRendererInternal::getAtlasPairFor(const Level &level) const {
-	static AtlasPair pair;
-	return pair;
+const AtlasPair &SthTilemapRendererInternal::getAtlasPairFor(const Level &level, AtlasPair::Tag tag) const {
+	switch (tag) {
+		case AtlasPair::Tag::Common:
+			return _commonAtlasPair;
+
+		case AtlasPair::Tag::LadderAndRope:
+			return _ladderAndRopeAtlasPair;
+
+		case AtlasPair::Tag::Knobs:
+			return _knobAtlasPair;
+
+		case AtlasPair::Tag::Blocks:
+			return _blockAtlasPair;
+
+		default:
+			break;
+	}
+
+	static AtlasPair stub;
+
+	return stub;
 }
 
 void SthTilemapRendererInternal::drawTiles(const AtlasPair &atlasPair, const std::vector<TileInstance> &tiles) const {
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 
+	// TODO: create separate buffer for each virtual layer to reduce cpu<->gpu synchronization
 	glBufferSubData(GL_ARRAY_BUFFER, 0, static_cast<GLsizei>(sizeof(TileInstance) * tiles.size()), tiles.data());
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glBindVertexArray(_vao);
 	glUseProgram(_program);
+
+	// TODO: cache uniform locations
+	glUniform1f(glGetUniformLocation(_program, "uTileScale"), atlasPair.defaultTileScale());
+	glUniform2fv(glGetUniformLocation(_program, "uCommonScale"), 1, glm::value_ptr(atlasPair.commonScale()));
+	glUniform2fv(glGetUniformLocation(_program, "uAltScale"), 1, glm::value_ptr(atlasPair.altScale()));
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, atlasPair.commonTexture());
@@ -87,8 +117,8 @@ static void attachShader(GLuint program, GLenum type, const char *source) {
 }
 
 void SthTilemapRendererInternal::setupProgram() {
-	static const char VERTEX_SOURCE[] = "#version 330 core\n\nlayout (location = 0) in ivec3 a;\n\nuniform float uTileScale = 1.6f;\nuniform mat4 uProjection = mat4(.05,0,0,0,0,-.0666667,0,0,0,0,-1,0,-1,1,0,1);\n\nflat out int vMaterial;\nout vec2 vTexCoords;\n\nvoid main(){int i=gl_VertexID;vec2 d=vec2(ivec2(i,(i+1)&2)/2);vTexCoords=d;vMaterial=a.b;gl_Position=uProjection*vec4((d-.5)*uTileScale+.5+a.rg,0,1);}";
-	static const char FRAGMENT_SOURCE[] = "#version 330 core\n\nuniform int uFirstAltFrame = 0;\nuniform vec2 uCommonScale = 64 / vec2(1636, 1024);\nuniform vec2 uAltScale = 64 / vec2(1280, 1024);\n\nuniform sampler2D texCommon;\nuniform sampler2D texAlt;\nuniform sampler1D texFrameOffsets;\n\nflat in int vMaterial;\nin vec2 vTexCoords;\n\nout vec4 outColor;\n\nvoid main() {\n    vec2 uvOffset = texelFetch(texFrameOffsets, vMaterial, 0).xy;\n\n    bool useAlt = vMaterial >= uFirstAltFrame;\n    vec2 uv = uvOffset + vTexCoords * (useAlt ? uAltScale : uCommonScale);\n\n    outColor = texture(useAlt ? texAlt : texCommon, uv);\n}"; // втффф
+	static const char VERTEX_SOURCE[] = "#version 330 core\n\nlayout (location = 0) in ivec3 a;\n\nuniform float uTileScale;\nuniform mat4 uProjection = mat4(.05,0,0,0,0,-.0666667,0,0,0,0,-1,0,-1,1,0,1);\n\nflat out int vMaterial;\nout vec2 vTexCoords;\n\nvoid main(){int i=gl_VertexID;vec2 d=vec2(ivec2(i,(i+1)&2)/2);vTexCoords=d;vMaterial=a.b;gl_Position=uProjection*vec4((d-.5)*uTileScale+.5+a.rg,0,1);}";
+	static const char FRAGMENT_SOURCE[] = "#version 330 core\n\nuniform int uFirstAltFrame = 0;\nuniform vec2 uCommonScale;\nuniform vec2 uAltScale;\n\nuniform sampler2D texCommon;\nuniform sampler2D texAlt;\nuniform sampler1D texFrameOffsets;\n\nflat in int vMaterial;\nin vec2 vTexCoords;\n\nout vec4 outColor;\n\nvoid main() {\n    vec2 uvOffset = texelFetch(texFrameOffsets, vMaterial, 0).xy;\n\n    bool useAlt = vMaterial >= uFirstAltFrame;\n    vec2 uv = uvOffset + vTexCoords * (useAlt ? uAltScale : uCommonScale);\n\n    outColor = texture(useAlt ? texAlt : texCommon, uv);\n}"; // втффф
 
 	_program = glCreateProgram();
 
@@ -97,14 +127,6 @@ void SthTilemapRendererInternal::setupProgram() {
 
 	glLinkProgram(_program);
 
-	char buf[1337];
-	glGetProgramInfoLog(_program, sizeof(buf), nullptr, buf);
-
-	if (buf[0] == '\0')
-		puts("Yay!");
-	else
-		puts(buf);
-
 	glUseProgram(_program);
 
 	glUniform1i(glGetUniformLocation(_program, "texCommon"), 0);
@@ -112,4 +134,85 @@ void SthTilemapRendererInternal::setupProgram() {
 	glUniform1i(glGetUniformLocation(_program, "texFrameOffsets"), 2);
 
 	glUseProgram(0);
+}
+
+void SthTilemapRendererInternal::setupAtlasPairs() {
+	using namespace SthInternal;
+
+	{
+		static const std::vector<InputAtlasEntry> commonEntries = {
+				{{Tile::Bonus},        {0,    0},   {64, 64}, 32, 4},
+				{{Tile::Hero},         {256,  0},   {64, 64}, 32, 4},
+				{{Tile::BombItem},     {512,  0},   {64, 64}, 32, 4},
+				{{Tile::FakeHeroItem}, {768,  0},   {64, 64}, 32, 4},
+				{{Tile::KeyItem},      {1024, 0},   {64, 64}, 32, 4},
+				{{Tile::TrapItem},     {1280, 0},   {64, 64}, 32, 4},
+				{{},                   {0,    512}, {64, 64}, 32, 4},
+				{{},                   {256,  512}, {64, 64}, 32, 4},
+				{{},                   {512,  512}, {64, 64}, 32, 4},
+				{{},                   {768,  512}, {64, 64}, 32, 4},
+				{{},                   {1024, 512}, {64, 64}, 32, 4},
+				{{},                   {1280, 512}, {64, 64}, 32, 4}
+		};
+
+		static const std::vector<InputAtlasEntry> altEntries = {
+				{{Tile::LockedExit}, {0,    0},   {64, 64}, 32, 4},
+				{{Tile::HiddenExit}, {256,  0},   {64, 64}, 32, 4},
+				{{Tile::Gem0},       {512,  0},   {64, 64}, 32, 4},
+				{{Tile::Gem1},       {768,  0},   {64, 64}, 32, 4},
+				{{Tile::Gem2},       {1024, 0},   {64, 64}, 32, 4},
+				{{Tile::Gem3},       {0,    512}, {64, 64}, 32, 4},
+				{{Tile::Gem4},       {256,  512}, {64, 64}, 32, 4},
+				{{Tile::Gem5},       {512,  512}, {64, 64}, 32, 4},
+				{{},                 {768,  512}, {64, 64}, 32, 4},
+				{{},                 {1024, 512}, {64, 64}, 16, 4},
+				{{},                 {1024, 768}, {64, 64}, 16, 4}
+		};
+
+		_commonAtlasPair.appendEntries(commonEntries, {1536, 1024});
+		_commonAtlasPair.appendEntries(altEntries, {1280, 1024});
+
+		_commonAtlasPair.submitFrameOffsets();
+	}
+
+	_commonAtlasPair.loadTexture("data/sth_renderer/textures/common.png", AtlasPair::TextureSlot::Common);
+	_commonAtlasPair.loadTexture("data/sth_renderer/textures/0_0.png", AtlasPair::TextureSlot::Alt);
+
+	{
+		static const std::vector<InputAtlasEntry> altEntries = {
+				{{Tile::Rope},   {0,  0}, {40, 40}, 1, 1},
+				{{Tile::Ladder}, {40, 0}, {40, 40}, 1, 1}
+		};
+
+		_ladderAndRopeAtlasPair.appendEntries(altEntries, {80, 40});
+		_ladderAndRopeAtlasPair.submitFrameOffsets();
+	}
+
+	_ladderAndRopeAtlasPair.loadTexture("data/sth_renderer/textures/0_1.png", AtlasPair::TextureSlot::Alt);
+
+	{
+		static const std::vector<InputAtlasEntry> altEntries = {
+				{{512}, {0, 0},  {64, 64}, 3, 3},
+				{{513}, {0, 64}, {64, 64}, 3, 3}
+		};
+
+		_knobAtlasPair.appendEntries(altEntries, {192, 128});
+		_knobAtlasPair.submitFrameOffsets();
+	}
+
+	_knobAtlasPair.loadTexture("data/sth_renderer/textures/0_2.png", AtlasPair::TextureSlot::Alt);
+
+
+	{
+		static const std::vector<InputAtlasEntry> altEntries = {
+				{{Tile::Ground, Tile::Hole, Tile::Ice}, {0, 0},  {40, 40}, 16, 16},
+				{{Tile::AltGround},                     {0, 40}, {40, 40}, 16, 16},
+				{{Tile::Concrete},                      {0, 80}, {40, 40}, 16, 16}
+		};
+
+		_blockAtlasPair.appendEntries(altEntries, {640, 120});
+		_blockAtlasPair.submitFrameOffsets();
+	}
+
+	_blockAtlasPair.loadTexture("data/sth_renderer/textures/0_3.png", AtlasPair::TextureSlot::Alt);
 }
