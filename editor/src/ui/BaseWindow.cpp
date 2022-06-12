@@ -2,6 +2,14 @@
 
 #include <imgui/imgui.h>
 
+bool &BaseWindow::isOpen() {
+	return _open;
+}
+
+void BaseWindow::setOpen(bool open) {
+	_open = open;
+}
+
 void BaseWindow::setTitle(const std::string &title) {
 	_actualTitle = title + "###" + _id;
 }

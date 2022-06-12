@@ -40,6 +40,7 @@ add_executable(editor
         src/game/sth/SthWorldImporter.cpp
         src/ui/window/InspectorWindow.cpp
         src/ui/window/LayerListWindow.cpp
+        src/ui/window/MinimapWindow.cpp
         src/ui/window/PaletteWindow.cpp
         src/ui/window/ViewportWindow.cpp
         src/ui/BaseWindow.cpp

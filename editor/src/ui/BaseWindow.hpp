@@ -5,6 +5,10 @@
 
 class BaseWindow : public IWindow {
 public:
+	bool &isOpen() override;
+
+	void setOpen(bool open) override;
+
 	void draw() override;
 
 	void render() override;

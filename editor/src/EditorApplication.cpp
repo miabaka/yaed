@@ -74,8 +74,9 @@ bool EditorApplication::update(bool shouldClose) {
 	ImGui::End();
 
 	_inspector.draw();
-	_palette.draw();
 	_layers.draw();
+	_minimap.draw();
+	_palette.draw();
 	_viewport.draw();
 
 	return !shouldClose;
@@ -185,10 +186,11 @@ void EditorApplication::drawGlobalMenu() {
 
 			ImGui::Separator();
 
-			ImGui::MenuItem("Inspector", {}, true);
-			ImGui::MenuItem("Layers", {}, true);
-			ImGui::MenuItem("Palette", {}, true);
-			ImGui::MenuItem("Viewport", {}, true);
+			ImGui::MenuItem("Inspector", {}, &_inspector.isOpen());
+			ImGui::MenuItem("Layers", {}, &_layers.isOpen());
+			ImGui::MenuItem("Minimap", {}, &_minimap.isOpen());
+			ImGui::MenuItem("Palette", {}, &_palette.isOpen());
+			ImGui::MenuItem("Viewport", {}, &_viewport.isOpen());
 			ImGui::MenuItem("World Tree", {}, true);
 #ifndef NDEBUG
 			ImGui::Separator();

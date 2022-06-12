@@ -7,6 +7,7 @@
 
 #include "ui/window/InspectorWindow.hpp"
 #include "ui/window/LayerListWindow.hpp"
+#include "ui/window/MinimapWindow.hpp"
 #include "ui/window/PaletteWindow.hpp"
 #include "ui/window/ViewportWindow.hpp"
 #include "Editor.hpp"
@@ -32,6 +33,7 @@ private:
 	std::unique_ptr<cute::dialogs::IDialogProvider> _dialogProvider;
 	InspectorWindow _inspector;
 	LayerListWindow _layers;
+	MinimapWindow _minimap;
 	PaletteWindow _palette;
 	ViewportWindow _viewport;
 
