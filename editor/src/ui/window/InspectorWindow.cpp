@@ -27,7 +27,7 @@ void InspectorWindow::onDraw() {
 		}
 
 		if (ImGui::CollapsingHeader("World", headerFlags))
-			ImGui::InputText("Name##World", world->name());
+			ImGui::InputTextWithHint("Name##World", world->filename().c_str(), world->name());
 	}
 
 	if (level && ImGui::CollapsingHeader("Level", headerFlags)) {

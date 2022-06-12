@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <memory>
 #include <string>
 #include <vector>
@@ -16,6 +17,14 @@ public:
 
 	const std::string &name() const;
 
+	const std::filesystem::path &path() const;
+
+	const std::string &filename() const;
+
+	const std::string &nameOrFilename() const;
+
+	void setPath(const std::filesystem::path &path);
+
 	const std::vector<std::shared_ptr<Level>> &levels() const;
 
 	void addLevel(const std::shared_ptr<Level> &level);
@@ -26,6 +35,9 @@ public:
 
 private:
 	std::string _name;
+	std::string _filename;
+	std::string _nameWithFilename;
+	std::filesystem::path _path;
 	std::vector<std::shared_ptr<Level>> _levels;
 	std::shared_ptr<IGame> _game;
 };

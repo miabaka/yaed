@@ -1,5 +1,7 @@
 #include "World.hpp"
 
+namespace fs = std::filesystem;
+
 World::World(std::shared_ptr<IGame> game, std::string name)
 		: _game(std::move(game)),
 		  _name(std::move(name)) {}
@@ -9,6 +11,26 @@ std::string &World::name() {
 }
 
 const std::string &World::name() const {
+	return _name;
+}
+
+const fs::path &World::path() const {
+	return _path;
+}
+
+void World::setPath(const fs::path &path) {
+	_path = path;
+	_filename = path.filename().string();
+}
+
+const std::string &World::filename() const {
+	return _filename;
+}
+
+const std::string &World::nameOrFilename() const {
+	if (_name.empty())
+		return _filename;
+
 	return _name;
 }
 

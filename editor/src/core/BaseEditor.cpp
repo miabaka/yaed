@@ -6,7 +6,6 @@
 namespace fs = std::filesystem;
 
 struct EditorWorldData : public ICustomData {
-	fs::path path;
 	std::shared_ptr<IWorldExporter> exporter;
 };
 
@@ -54,7 +53,6 @@ std::shared_ptr<World> BaseEditor::openWorld(const std::filesystem::path &path) 
 
 	auto customData = std::make_unique<EditorWorldData>();
 
-	customData->path = path;
 	customData->exporter = _worldFormatManager.findAssociatedExporter(importer);
 
 	world->setCustomData(std::move(customData));
@@ -69,7 +67,7 @@ void BaseEditor::saveWorld(std::shared_ptr<const World> world) const {
 	if (!customData.exporter)
 		return;
 
-	customData.exporter->save(*world, customData.path);
+	customData.exporter->save(*world, world->path());
 }
 
 void BaseEditor::saveWorldAs(
@@ -84,7 +82,7 @@ void BaseEditor::saveWorldAs(
 		return;
 
 	customData.exporter->save(*world, path);
-	customData.path = path;
+	world->setPath(path);
 }
 
 void BaseEditor::closeWorld(std::shared_ptr<World> world) {

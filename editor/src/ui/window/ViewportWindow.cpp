@@ -48,7 +48,7 @@ void ViewportWindow::onDraw() {
 	std::shared_ptr<Level> level = _level.lock();
 
 	// TODO: move this line to some kind of rename event handler
-	setTitle(fmt::format("{} ({})###Viewport", level->world()->name(), level->name()));
+	setTitle(fmt::format("{} - {}", level->world()->nameOrFilename(), level->name()));
 
 	if (!_rendererContext) {
 		ImUtil::centeredText("Can't show: renderer context is a *hiding* baka!");

@@ -89,7 +89,9 @@ SthWorldImporter::load(
 	std::shared_ptr<IGame> game = gameManager.findGameById("sth");
 	std::shared_ptr<IWorldFactory> worldFactory = worldFactoryManager.findFactoryById("sth");
 
-	std::shared_ptr<World> world = worldFactory->createWorld(gameManager, path.filename().string());
+	std::shared_ptr<World> world = worldFactory->createWorld(gameManager, {});
+
+	world->setPath(path);
 
 	std::vector<char> data;
 

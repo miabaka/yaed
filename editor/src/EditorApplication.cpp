@@ -45,7 +45,7 @@ bool EditorApplication::update(bool shouldClose) {
 						nodeFlags |= ImGuiTreeNodeFlags_Selected;
 				}
 
-				const bool open = ImGui::TreeNodeEx(world.get(), nodeFlags, "%s", world->name().c_str());
+				const bool open = ImGui::TreeNodeEx(world.get(), nodeFlags, "%s", world->nameOrFilename().c_str());
 
 				const bool justSelected = ImGui::IsItemActivated() && !ImGui::IsItemToggledOpen();
 
