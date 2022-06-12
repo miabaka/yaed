@@ -54,6 +54,8 @@ public:
 
 	std::shared_ptr<Level> selectedLevel() const;
 
+	bool hasSelectedWorld() const;
+
 	/**
 	 * Select world and reset the level selection
 	 */

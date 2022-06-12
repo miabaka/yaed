@@ -146,6 +146,10 @@ void BaseEditor::selectLevel(std::shared_ptr<Level> level) {
 	onLevelSelectionChange(level);
 }
 
+bool BaseEditor::hasSelectedWorld() const {
+	return !_selectedLevel.expired();
+}
+
 void BaseEditor::onWorldSelectionChange(std::shared_ptr<World> world) {}
 
 void BaseEditor::onLevelSelectionChange(std::shared_ptr<Level> level) {}

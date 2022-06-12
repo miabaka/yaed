@@ -160,17 +160,17 @@ void EditorApplication::drawGlobalMenu() {
 
 			ImGui::Separator();
 
-			if (ImGui::MenuItem("Save", "ctrl+s"))
+			if (ImGui::MenuItem("Save", "ctrl+s", false, hasSelectedWorld()))
 				saveSelectedWorld();
 
-			if (ImGui::MenuItem("Save As...", "ctrl+shift+s"))
+			if (ImGui::MenuItem("Save As...", "ctrl+shift+s", false, hasSelectedWorld()))
 				saveSelectedWorldAs();
 
 			ImGui::MenuItem("Save All", "ctrl+alt+s");
 
 			ImGui::Separator();
 
-			if (ImGui::MenuItem("Close", "ctrl+w"))
+			if (ImGui::MenuItem("Close", "ctrl+w", false, hasSelectedWorld()))
 				closeSelectedWorld();
 
 			ImGui::Separator();
