@@ -11,6 +11,11 @@
 class SthTilemapRendererInternal {
 public:
 	struct TileInstance {
+		TileInstance(glm::ivec2 position, int material)
+				: x(static_cast<GLshort>(position.x)),
+				  y(static_cast<GLshort>(position.y)),
+				  material(static_cast<GLshort>(material)) {}
+
 		GLshort x;
 		GLshort y;
 		GLshort material;

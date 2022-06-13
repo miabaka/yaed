@@ -81,6 +81,10 @@ void AtlasPair::submitFrameOffsets() {
 	_frameOffsets.clear();
 }
 
+void AtlasPair::beginAltOffsets() {
+	_firstAltFrame = static_cast<int>(_frameOffsets.size());
+}
+
 GLuint AtlasPair::commonTexture() const {
 	return _texCommon;
 }
@@ -103,6 +107,10 @@ glm::vec2 AtlasPair::commonScale() const {
 
 glm::vec2 AtlasPair::altScale() const {
 	return 40 * defaultTileScale() / glm::vec2(_texAltSize);
+}
+
+int AtlasPair::firstAltFrame() const {
+	return _firstAltFrame;
 }
 
 const AtlasEntry &AtlasPair::findEntryForTile(Tilemap::tile_t tile) const {

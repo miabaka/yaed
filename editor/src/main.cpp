@@ -55,9 +55,18 @@ int main() {
 
 			ImGui::Render();
 
+			editor.render();
+
+			{
+				glm::ivec2 fbSize;
+				glfwGetFramebufferSize(window, &fbSize.x, &fbSize.y);
+
+				glViewport(0, 0, fbSize.x, fbSize.y);
+			}
+
+			glClearColor(0.f, 0.f, 0.f, 1.f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			editor.render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 #ifdef _WIN32
 			{

@@ -53,6 +53,7 @@ void SthTilemapRendererInternal::drawTiles(const AtlasPair &atlasPair, const std
 	glUseProgram(_program);
 
 	// TODO: cache uniform locations
+	glUniform1i(glGetUniformLocation(_program, "uFirstAltFrame"), atlasPair.firstAltFrame());
 	glUniform1f(glGetUniformLocation(_program, "uTileScale"), atlasPair.defaultTileScale());
 	glUniform2fv(glGetUniformLocation(_program, "uCommonScale"), 1, glm::value_ptr(atlasPair.commonScale()));
 	glUniform2fv(glGetUniformLocation(_program, "uAltScale"), 1, glm::value_ptr(atlasPair.altScale()));
@@ -140,36 +141,47 @@ void SthTilemapRendererInternal::setupAtlasPairs() {
 	using namespace SthInternal;
 
 	{
-		static const std::vector<InputAtlasEntry> commonEntries = {
+		const std::vector<InputAtlasEntry> commonEntries = {
 				{{Tile::Bonus},        {0,    0},   {64, 64}, 32, 4},
 				{{Tile::Hero},         {256,  0},   {64, 64}, 32, 4},
 				{{Tile::BombItem},     {512,  0},   {64, 64}, 32, 4},
 				{{Tile::FakeHeroItem}, {768,  0},   {64, 64}, 32, 4},
 				{{Tile::KeyItem},      {1024, 0},   {64, 64}, 32, 4},
 				{{Tile::TrapItem},     {1280, 0},   {64, 64}, 32, 4},
-				{{},                   {0,    512}, {64, 64}, 32, 4},
-				{{},                   {256,  512}, {64, 64}, 32, 4},
-				{{},                   {512,  512}, {64, 64}, 32, 4},
-				{{},                   {768,  512}, {64, 64}, 32, 4},
-				{{},                   {1024, 512}, {64, 64}, 32, 4},
-				{{},                   {1280, 512}, {64, 64}, 32, 4}
+				{{512},                {0,    512}, {64, 64}, 32, 4},
+				{{513},                {256,  512}, {64, 64}, 32, 4},
+				{{514},                {512,  512}, {64, 64}, 32, 4},
+				{{515},                {768,  512}, {64, 64}, 32, 4},
+				{{516},                {1024, 512}, {64, 64}, 32, 4},
+				{{517},                {1280, 512}, {64, 64}, 32, 4}
 		};
 
-		static const std::vector<InputAtlasEntry> altEntries = {
-				{{Tile::LockedExit}, {0,    0},   {64, 64}, 32, 4},
-				{{Tile::HiddenExit}, {256,  0},   {64, 64}, 32, 4},
-				{{Tile::Gem0},       {512,  0},   {64, 64}, 32, 4},
-				{{Tile::Gem1},       {768,  0},   {64, 64}, 32, 4},
-				{{Tile::Gem2},       {1024, 0},   {64, 64}, 32, 4},
-				{{Tile::Gem3},       {0,    512}, {64, 64}, 32, 4},
-				{{Tile::Gem4},       {256,  512}, {64, 64}, 32, 4},
-				{{Tile::Gem5},       {512,  512}, {64, 64}, 32, 4},
-				{{},                 {768,  512}, {64, 64}, 32, 4},
-				{{},                 {1024, 512}, {64, 64}, 16, 4},
-				{{},                 {1024, 768}, {64, 64}, 16, 4}
+		std::unordered_set<Tilemap::tile_t> teleportIns;
+		std::unordered_set<Tilemap::tile_t> teleportOuts;
+
+		for (Tilemap::tile_t tile = Tile::TeleportIn0; tile <= Tile::TeleportInE; tile++)
+			teleportIns.insert(tile);
+
+		for (Tilemap::tile_t tile = Tile::TeleportOut0; tile <= Tile::TeleportOutE; tile++)
+			teleportOuts.insert(tile);
+
+		const std::vector<InputAtlasEntry> altEntries = {
+				{{Tile::LockedExit},      {0,    0},   {64, 64}, 32, 4},
+				{{Tile::HiddenExit},      {256,  0},   {64, 64}, 32, 4},
+				{{Tile::Gem0},            {512,  0},   {64, 64}, 32, 4},
+				{{Tile::Gem1},            {768,  0},   {64, 64}, 32, 4},
+				{{Tile::Gem2},            {1024, 0},   {64, 64}, 32, 4},
+				{{Tile::Gem3},            {0,    512}, {64, 64}, 32, 4},
+				{{Tile::Gem4},            {256,  512}, {64, 64}, 32, 4},
+				{{Tile::Gem5},            {512,  512}, {64, 64}, 32, 4},
+				{{518},                   {768,  512}, {64, 64}, 32, 4},
+				{std::move(teleportIns),  {1024, 512}, {64, 64}, 16, 4},
+				{std::move(teleportOuts), {1024, 768}, {64, 64}, 16, 4}
 		};
 
 		_commonAtlasPair.appendEntries(commonEntries, {1536, 1024});
+
+		_commonAtlasPair.beginAltOffsets();
 		_commonAtlasPair.appendEntries(altEntries, {1280, 1024});
 
 		_commonAtlasPair.submitFrameOffsets();
@@ -179,24 +191,28 @@ void SthTilemapRendererInternal::setupAtlasPairs() {
 	_commonAtlasPair.loadTexture("data/sth_renderer/textures/0_0.png", AtlasPair::TextureSlot::Alt);
 
 	{
-		static const std::vector<InputAtlasEntry> altEntries = {
-				{{Tile::Rope},   {0,  0}, {40, 40}, 1, 1},
-				{{Tile::Ladder}, {40, 0}, {40, 40}, 1, 1}
+		const std::vector<InputAtlasEntry> altEntries = {
+				{{Tile::Rope},                       {0,  0}, {40, 40}, 1, 1},
+				{{Tile::Ladder, Tile::HiddenLadder}, {40, 0}, {40, 40}, 1, 1}
 		};
 
+		_ladderAndRopeAtlasPair.beginAltOffsets();
 		_ladderAndRopeAtlasPair.appendEntries(altEntries, {80, 40});
+
 		_ladderAndRopeAtlasPair.submitFrameOffsets();
 	}
 
 	_ladderAndRopeAtlasPair.loadTexture("data/sth_renderer/textures/0_1.png", AtlasPair::TextureSlot::Alt);
 
 	{
-		static const std::vector<InputAtlasEntry> altEntries = {
+		const std::vector<InputAtlasEntry> altEntries = {
 				{{512}, {0, 0},  {64, 64}, 3, 3},
 				{{513}, {0, 64}, {64, 64}, 3, 3}
 		};
 
+		_knobAtlasPair.beginAltOffsets();
 		_knobAtlasPair.appendEntries(altEntries, {192, 128});
+
 		_knobAtlasPair.submitFrameOffsets();
 	}
 
@@ -204,13 +220,15 @@ void SthTilemapRendererInternal::setupAtlasPairs() {
 
 
 	{
-		static const std::vector<InputAtlasEntry> altEntries = {
+		const std::vector<InputAtlasEntry> altEntries = {
 				{{Tile::Ground, Tile::Hole, Tile::Ice}, {0, 0},  {40, 40}, 16, 16},
 				{{Tile::AltGround},                     {0, 40}, {40, 40}, 16, 16},
 				{{Tile::Concrete},                      {0, 80}, {40, 40}, 16, 16}
 		};
 
+		_blockAtlasPair.beginAltOffsets();
 		_blockAtlasPair.appendEntries(altEntries, {640, 120});
+
 		_blockAtlasPair.submitFrameOffsets();
 	}
 

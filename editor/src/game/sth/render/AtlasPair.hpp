@@ -32,6 +32,8 @@ public:
 
 	void submitFrameOffsets();
 
+	void beginAltOffsets();
+
 	GLuint commonTexture() const;
 
 	GLuint altTexture() const;
@@ -44,6 +46,8 @@ public:
 
 	glm::vec2 altScale() const;
 
+	int firstAltFrame() const;
+
 	const AtlasEntry &findEntryForTile(Tilemap::tile_t tile) const;
 
 private:
@@ -55,4 +59,5 @@ private:
 	GLuint _texAlt{};
 	GLuint _texFrameOffsets{};
 	float _defaultTileScale;
+	int _firstAltFrame = 0;
 };

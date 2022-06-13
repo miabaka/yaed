@@ -39,6 +39,19 @@ static inline bool isBlockTile(Tilemap::tile_t tile) {
 	return tile >= Tile::Ground && tile <= Tile::Hole;
 }
 
+static inline bool isLadderTile(Tilemap::tile_t tile) {
+	return tile == Tile::Ladder || tile == Tile::HiddenLadder;
+}
+
+static inline bool isMonsterTile(Tilemap::tile_t tile) {
+	return tile >= Tile::MonsterSpawn0 && tile <= Tile::MonsterSpawn3;
+}
+
+static inline bool isSecondMonsterTile(Tilemap::tile_t tile) {
+	return (tile >= Tile::SecondMonsterSpawn0 && tile <= Tile::SecondMonsterSpawn9)
+	       || (tile >= Tile::SecondMonsterRespawn0 && tile <= Tile::SecondMonsterRespawn9);
+}
+
 void SthTilemapRendererContext::render() {
 	if (_level.expired())
 		return;
@@ -50,21 +63,23 @@ void SthTilemapRendererContext::render() {
 
 	glm::ivec2 size = gemLayerMap.size();
 
-	const AtlasPair &gemAtlasPair = _renderer->getAtlasPairFor(*level, AtlasPair::Tag::Common);
+	const AtlasPair &commonAtlasPair = _renderer->getAtlasPairFor(*level, AtlasPair::Tag::Common);
 	const AtlasPair &ladderAndRopeAtlasPair = _renderer->getAtlasPairFor(*level, AtlasPair::Tag::LadderAndRope);
 	const AtlasPair &knobAtlasPair = _renderer->getAtlasPairFor(*level, AtlasPair::Tag::Knobs);
 	const AtlasPair &blockAtlasPair = _renderer->getAtlasPairFor(*level, AtlasPair::Tag::Blocks);
 
 	// TODO: use preallocated memory
-	std::vector<SthTilemapRendererInternal::TileInstance> gemTiles;
 	std::vector<SthTilemapRendererInternal::TileInstance> ladderAndRopeTiles;
 	std::vector<SthTilemapRendererInternal::TileInstance> knobTiles;
+	std::vector<SthTilemapRendererInternal::TileInstance> gemTiles;
 	std::vector<SthTilemapRendererInternal::TileInstance> blockTiles;
+	std::vector<SthTilemapRendererInternal::TileInstance> commonTiles;
 
-	gemTiles.reserve(1200);
 	ladderAndRopeTiles.reserve(1200);
 	knobTiles.reserve(1200);
+	gemTiles.reserve(1200);
 	blockTiles.reserve(1200);
+	commonTiles.reserve(2400);
 
 	for (int i = 0; i < gemLayerMap.tileCount(); i++) {
 		glm::ivec2 position = {i % size.x, i / size.x};
@@ -74,10 +89,9 @@ void SthTilemapRendererContext::render() {
 		if (tile < Tile::Gem0 || tile > Tile::Gem5)
 			continue;
 
-		int frame = gemAtlasPair.findEntryForTile(tile).firstFrame();
+		int frame = commonAtlasPair.findEntryForTile(tile).firstFrame();
 
-		gemTiles.push_back(
-				{static_cast<GLshort>(position.x), static_cast<GLshort>(position.y), static_cast<GLshort>(frame)});
+		gemTiles.emplace_back(position, frame);
 	}
 
 	for (int i = 0; i < mainLayerMap.tileCount(); i++) {
@@ -85,13 +99,12 @@ void SthTilemapRendererContext::render() {
 
 		Tilemap::tile_t tile = mainLayerMap(position);
 
-		if (!(tile == Tile::Ladder || tile == Tile::Rope))
+		if (!(isLadderTile(tile) || tile == Tile::Rope))
 			continue;
 
 		int frame = ladderAndRopeAtlasPair.findEntryForTile(tile).firstFrame();
 
-		ladderAndRopeTiles.push_back(
-				{static_cast<GLshort>(position.x), static_cast<GLshort>(position.y), static_cast<GLshort>(frame)});
+		ladderAndRopeTiles.emplace_back(position, frame);
 	}
 
 	const int firstRopeKnobFrame = knobAtlasPair.findEntryForTile(512).firstFrame();
@@ -105,11 +118,11 @@ void SthTilemapRendererContext::render() {
 		int frame;
 
 		if (tile == Tile::Ladder) {
-			Tilemap::tile_t upperTile = mainLayerMap(position + glm::ivec2(0, -1));
-			Tilemap::tile_t lowerTile = mainLayerMap(position + glm::ivec2(0, 1));
+			Tilemap::tile_t topTile = mainLayerMap(position + glm::ivec2(0, -1));
+			Tilemap::tile_t bottomTile = mainLayerMap(position + glm::ivec2(0, 1));
 
-			bool hasTopNeighbor = (upperTile == Tile::Ladder);
-			bool hasBottomNeighbor = (lowerTile == Tile::Ladder);
+			bool hasTopNeighbor = isLadderTile(topTile);
+			bool hasBottomNeighbor = isLadderTile(bottomTile);
 
 			if (hasTopNeighbor && hasBottomNeighbor)
 				continue;
@@ -130,8 +143,7 @@ void SthTilemapRendererContext::render() {
 			continue;
 		}
 
-		knobTiles.push_back(
-				{static_cast<GLshort>(position.x), static_cast<GLshort>(position.y), static_cast<GLshort>(frame)});
+		knobTiles.emplace_back(position, frame);
 	}
 
 	static const int blockDockingMapping[] = {0, 4, 2, 9, 1, 8, 5, 11, 3, 7, 6, 13, 10, 14, 12, 15};
@@ -154,8 +166,35 @@ void SthTilemapRendererContext::render() {
 
 		int frame = baseFrame + blockDockingMapping[variant];
 
-		blockTiles.push_back(
-				{static_cast<GLshort>(position.x), static_cast<GLshort>(position.y), static_cast<GLshort>(frame)});
+		blockTiles.emplace_back(position, frame);
+	}
+
+	{
+		const AtlasEntry &iceEntry = commonAtlasPair.findEntryForTile(517);
+		const AtlasEntry &monsterEntry = commonAtlasPair.findEntryForTile(514);
+		const AtlasEntry &secondMonsterEntry = commonAtlasPair.findEntryForTile(513);
+
+		for (int i = 0; i < mainLayerMap.tileCount(); i++) {
+			glm::ivec2 position = {i % size.x, i / size.x};
+
+			Tilemap::tile_t tile = mainLayerMap(position);
+
+			if (tile < Tile::HiddenExit || (tile > Tile::FakeHeroItem && tile != Tile::Bonus))
+				continue;
+
+			const AtlasEntry *entry;
+
+			if (tile == Tile::Ice)
+				entry = &iceEntry;
+			else if (isMonsterTile(tile))
+				entry = &monsterEntry;
+			else if (isSecondMonsterTile(tile))
+				entry = &secondMonsterEntry;
+			else
+				entry = &commonAtlasPair.findEntryForTile(tile);
+
+			commonTiles.emplace_back(position, entry->firstFrame());
+		}
 	}
 
 	GLint previousFbo;
@@ -172,8 +211,9 @@ void SthTilemapRendererContext::render() {
 
 	_renderer->drawTiles(ladderAndRopeAtlasPair, ladderAndRopeTiles);
 	_renderer->drawTiles(knobAtlasPair, knobTiles);
-	_renderer->drawTiles(gemAtlasPair, gemTiles); // is it in right order?
+	_renderer->drawTiles(commonAtlasPair, gemTiles); // is it in right order?
 	_renderer->drawTiles(blockAtlasPair, blockTiles);
+	_renderer->drawTiles(commonAtlasPair, commonTiles);
 
 	glDisable(GL_BLEND);
 
