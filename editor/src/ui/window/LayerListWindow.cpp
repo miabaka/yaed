@@ -9,6 +9,14 @@ void LayerListWindow::setLevel(std::weak_ptr<Level> level) {
 	_level = std::move(level);
 }
 
+void LayerListWindow::onBeginPre() {
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {3, 3});
+}
+
+void LayerListWindow::onBeginPost() {
+	ImGui::PopStyleVar();
+}
+
 static bool drawLayer(const Layer &layer, bool selected) {
 	ImGui::PushID(&layer);
 
@@ -18,10 +26,10 @@ static bool drawLayer(const Layer &layer, bool selected) {
 
 	const glm::vec2 cursorPos = ImGui::GetCursorPos();
 
-	ImGui::SetCursorPos(cursorPos - glm::vec2{1, 35});
+	ImGui::SetCursorPos(cursorPos + glm::vec2{1, -35});
 	ImGui::Image({}, {40, 30});
 
-	ImGui::SetCursorPos(cursorPos + glm::vec2{44, -36 + (32 - (int) ImGui::GetTextLineHeight()) / 2});
+	ImGui::SetCursorPos(cursorPos + glm::vec2{47, -36 + (32 - (int) ImGui::GetTextLineHeight()) / 2});
 	ImGui::Text("%s", layer.name().c_str());
 
 	ImGui::SetCursorPos(cursorPos);

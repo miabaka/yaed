@@ -43,6 +43,10 @@ static inline bool isLadderTile(Tilemap::tile_t tile) {
 	return tile == Tile::Ladder || tile == Tile::HiddenLadder;
 }
 
+static inline bool isSolidTile(Tilemap::tile_t tile) {
+	return isBlockTile(tile) || isLadderTile(tile);
+}
+
 static inline bool isMonsterTile(Tilemap::tile_t tile) {
 	return tile >= Tile::MonsterSpawn0 && tile <= Tile::MonsterSpawn3;
 }
@@ -50,6 +54,10 @@ static inline bool isMonsterTile(Tilemap::tile_t tile) {
 static inline bool isSecondMonsterTile(Tilemap::tile_t tile) {
 	return (tile >= Tile::SecondMonsterSpawn0 && tile <= Tile::SecondMonsterSpawn9)
 	       || (tile >= Tile::SecondMonsterRespawn0 && tile <= Tile::SecondMonsterRespawn9);
+}
+
+static inline bool isGemTile(Tilemap::tile_t tile) {
+	return tile >= Tile::Gem0 && tile <= Tile::Gem5;
 }
 
 void SthTilemapRendererContext::render() {
@@ -60,6 +68,9 @@ void SthTilemapRendererContext::render() {
 
 	const Tilemap &gemLayerMap = level->layers()[0]->tilemap();
 	const Tilemap &mainLayerMap = level->layers()[1]->tilemap();
+
+	if (gemLayerMap.size() != mainLayerMap.size())
+		return;
 
 	glm::ivec2 size = gemLayerMap.size();
 
@@ -170,6 +181,27 @@ void SthTilemapRendererContext::render() {
 	}
 
 	{
+		const AtlasEntry &gemSignEntry = commonAtlasPair.findEntryForTile(518);
+
+		for (int i = 0; i < mainLayerMap.tileCount(); i++) {
+			glm::ivec2 position = {i % size.x, i / size.x};
+
+			Tilemap::tile_t tile = mainLayerMap(position);
+
+			if (isSolidTile(tile))
+				continue;
+
+			Tilemap::tile_t bottomMainTile = mainLayerMap(position + glm::ivec2{0, 1});
+			Tilemap::tile_t bottomGemTile = gemLayerMap(position + glm::ivec2{0, 1});
+
+			if (!(isBlockTile(bottomMainTile) && isGemTile(bottomGemTile)))
+				continue;
+
+			commonTiles.emplace_back(position, gemSignEntry.firstFrame());
+		}
+	}
+
+	{
 		const AtlasEntry &iceEntry = commonAtlasPair.findEntryForTile(517);
 		const AtlasEntry &monsterEntry = commonAtlasPair.findEntryForTile(514);
 		const AtlasEntry &secondMonsterEntry = commonAtlasPair.findEntryForTile(513);
@@ -209,11 +241,20 @@ void SthTilemapRendererContext::render() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	_renderer->drawTiles(ladderAndRopeAtlasPair, ladderAndRopeTiles);
-	_renderer->drawTiles(knobAtlasPair, knobTiles);
-	_renderer->drawTiles(commonAtlasPair, gemTiles); // is it in right order?
-	_renderer->drawTiles(blockAtlasPair, blockTiles);
-	_renderer->drawTiles(commonAtlasPair, commonTiles);
+	const bool gemLayerSelected = (level->selectedLayer() == level->layers()[0]);
+	const float commonLayerOpacity = gemLayerSelected ? 0.5f : 1.f;
+
+	_renderer->drawTiles(ladderAndRopeAtlasPair, ladderAndRopeTiles, commonLayerOpacity);
+	_renderer->drawTiles(knobAtlasPair, knobTiles, commonLayerOpacity);
+
+	if (!gemLayerSelected)
+		_renderer->drawTiles(commonAtlasPair, gemTiles);
+
+	_renderer->drawTiles(blockAtlasPair, blockTiles, commonLayerOpacity);
+	_renderer->drawTiles(commonAtlasPair, commonTiles, commonLayerOpacity);
+
+	if (gemLayerSelected)
+		_renderer->drawTiles(commonAtlasPair, gemTiles);
 
 	glDisable(GL_BLEND);
 

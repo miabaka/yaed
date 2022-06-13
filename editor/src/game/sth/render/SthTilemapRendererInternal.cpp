@@ -41,7 +41,8 @@ const AtlasPair &SthTilemapRendererInternal::getAtlasPairFor(const Level &level,
 	return stub;
 }
 
-void SthTilemapRendererInternal::drawTiles(const AtlasPair &atlasPair, const std::vector<TileInstance> &tiles) const {
+void SthTilemapRendererInternal::drawTiles(
+		const AtlasPair &atlasPair, const std::vector<TileInstance> &tiles, float opacity) const {
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 
 	// TODO: create separate buffer for each virtual layer to reduce cpu<->gpu synchronization
@@ -54,9 +55,10 @@ void SthTilemapRendererInternal::drawTiles(const AtlasPair &atlasPair, const std
 
 	// TODO: cache uniform locations
 	glUniform1i(glGetUniformLocation(_program, "uFirstAltFrame"), atlasPair.firstAltFrame());
-	glUniform1f(glGetUniformLocation(_program, "uTileScale"), atlasPair.defaultTileScale());
 	glUniform2fv(glGetUniformLocation(_program, "uCommonScale"), 1, glm::value_ptr(atlasPair.commonScale()));
 	glUniform2fv(glGetUniformLocation(_program, "uAltScale"), 1, glm::value_ptr(atlasPair.altScale()));
+	glUniform1f(glGetUniformLocation(_program, "uTileScale"), atlasPair.defaultTileScale());
+	glUniform1f(glGetUniformLocation(_program, "uOpacity"), opacity);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, atlasPair.commonTexture());
@@ -119,7 +121,7 @@ static void attachShader(GLuint program, GLenum type, const char *source) {
 
 void SthTilemapRendererInternal::setupProgram() {
 	static const char VERTEX_SOURCE[] = "#version 330 core\n\nlayout (location = 0) in ivec3 a;\n\nuniform float uTileScale;\nuniform mat4 uProjection = mat4(.05,0,0,0,0,-.0666667,0,0,0,0,-1,0,-1,1,0,1);\n\nflat out int vMaterial;\nout vec2 vTexCoords;\n\nvoid main(){int i=gl_VertexID;vec2 d=vec2(ivec2(i,(i+1)&2)/2);vTexCoords=d;vMaterial=a.b;gl_Position=uProjection*vec4((d-.5)*uTileScale+.5+a.rg,0,1);}";
-	static const char FRAGMENT_SOURCE[] = "#version 330 core\n\nuniform int uFirstAltFrame = 0;\nuniform vec2 uCommonScale;\nuniform vec2 uAltScale;\n\nuniform sampler2D texCommon;\nuniform sampler2D texAlt;\nuniform sampler1D texFrameOffsets;\n\nflat in int vMaterial;\nin vec2 vTexCoords;\n\nout vec4 outColor;\n\nvoid main() {\n    vec2 uvOffset = texelFetch(texFrameOffsets, vMaterial, 0).xy;\n\n    bool useAlt = vMaterial >= uFirstAltFrame;\n    vec2 uv = uvOffset + vTexCoords * (useAlt ? uAltScale : uCommonScale);\n\n    outColor = texture(useAlt ? texAlt : texCommon, uv);\n}"; // втффф
+	static const char FRAGMENT_SOURCE[] = "#version 330 core\n\nuniform int uFirstAltFrame;\nuniform vec2 uCommonScale;\nuniform vec2 uAltScale;\nuniform float uOpacity;\n\nuniform sampler2D texCommon;\nuniform sampler2D texAlt;\nuniform sampler1D texFrameOffsets;\n\nflat in int vMaterial;\nin vec2 vTexCoords;\n\nout vec4 outColor;\n\nvoid main() {\n    vec2 uvOffset = texelFetch(texFrameOffsets, vMaterial, 0).xy;\n\n    bool useAlt = vMaterial >= uFirstAltFrame;\n    vec2 uv = uvOffset + vTexCoords * (useAlt ? uAltScale : uCommonScale);\n\n    vec4 sampledColor = texture(useAlt ? texAlt : texCommon, uv);\n\n    outColor = sampledColor * vec4(1.f, 1.f, 1.f, uOpacity);\n}"; // втффф
 
 	_program = glCreateProgram();
 

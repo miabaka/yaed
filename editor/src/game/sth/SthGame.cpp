@@ -13,7 +13,7 @@ SthGame::SthGame()
 }
 
 void SthGame::setupLayerTemplates() {
-	std::set<Tilemap::tile_t> mainTiles = {
+	std::unordered_set<Tilemap::tile_t> mainTiles = {
 			Tile::Air,
 			Tile::Ground,
 			Tile::AltGround,
@@ -38,7 +38,7 @@ void SthGame::setupLayerTemplates() {
 			Tile::Bonus
 	};
 
-	std::set<Tilemap::tile_t> gemTiles = {
+	std::unordered_set<Tilemap::tile_t> gemTiles = {
 			Tile::Air,
 			Tile::Gem0,
 			Tile::Gem1,

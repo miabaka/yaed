@@ -35,7 +35,7 @@ static void sameLine() {
 		ImGui::NewLine();
 }
 
-static void drawBrush(const Brush &brush, bool &first, PaletteIconSet &iconSet) {
+static void drawBrush(const Brush &brush, bool &first, bool allowed, PaletteIconSet &iconSet) {
 	if (first)
 		first = false;
 	else
@@ -43,7 +43,11 @@ static void drawBrush(const Brush &brush, bool &first, PaletteIconSet &iconSet) 
 
 	const TextureSlice &icon = iconSet.getIconForBrush(brush);
 
+	ImGui::BeginDisabled(!allowed);
+
 	ImGui::ImageButton(icon.texture(), {36, 36}, icon.p1(), icon.p2(), 3);
+
+	ImGui::EndDisabled();
 
 	if (!ImGui::IsItemHovered())
 		return;
@@ -68,6 +72,23 @@ void PaletteWindow::onDraw() {
 		return;
 	}
 
+	std::shared_ptr<Level> level = _level.lock();
+	std::shared_ptr<const LayerTemplate> layerTemplate;
+
+	if (!level->selectedLayer()) {
+		ImGui::TextWrapped("Can't show: no selected layer");
+		return;
+	}
+
+	layerTemplate = level->selectedLayer()->getTemplate();
+
+	if (!layerTemplate) {
+		ImGui::TextWrapped("Can't show: layer template isn't set");
+		return;
+	}
+
+	const std::unordered_set<Tilemap::tile_t> allowedTiles = layerTemplate->allowedTiles();
+
 	std::shared_ptr<PaletteIconSet> iconSet = _iconSet.lock();
 	std::shared_ptr<const PaletteTemplate> palTemplate = _template.lock();
 
@@ -83,14 +104,16 @@ void PaletteWindow::onDraw() {
 		if (!ImGui::CollapsingHeader(group->name().c_str(), headerFlags))
 			continue;
 
-		ImGui::Indent(6.f);
+		ImGui::Indent(6);
 
 		bool first = true;
 
-		for (const std::shared_ptr<Brush> &brush: group->brushes())
-			drawBrush(*brush, first, *iconSet);
+		for (const std::shared_ptr<Brush> &brush: group->brushes()) {
+			const bool allowed = allowedTiles.find(brush->range().start()) != allowedTiles.end();
+			drawBrush(*brush, first, allowed, *iconSet);
+		}
 
-		ImGui::Indent(-6.f);
+		ImGui::Indent(-6);
 	}
 
 	ImGui::PopStyleVar();

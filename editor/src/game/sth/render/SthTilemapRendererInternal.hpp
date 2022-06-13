@@ -27,7 +27,7 @@ public:
 
 	const AtlasPair &getAtlasPairFor(const Level &level, AtlasPair::Tag tag) const;
 
-	void drawTiles(const AtlasPair &atlasPair, const std::vector<TileInstance> &tiles) const;
+	void drawTiles(const AtlasPair &atlasPair, const std::vector<TileInstance> &tiles, float opacity = 1.f) const;
 
 private:
 	AtlasPair _commonAtlasPair;
