@@ -22,6 +22,8 @@ public:
 
 	void openWorld();
 
+	void saveWorldAs(std::shared_ptr<World> world);
+
 	void saveSelectedWorldAs();
 
 protected:
@@ -39,4 +41,7 @@ private:
 	bool _worldSelectionLockedByCollapsing = false;
 
 	void drawGlobalMenu();
+
+	// TODO: create separate class for this
+	void drawWorldTreeWindow();
 };

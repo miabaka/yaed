@@ -17,90 +17,7 @@ EditorApplication::EditorApplication()
 
 bool EditorApplication::update(bool shouldClose) {
 	drawGlobalMenu();
-
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {1, 1});
-
-	if (ImGui::Begin("World Tree")) {
-		const int defaultNodeFlags =
-				ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth
-				| ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow
-				| ImGuiTreeNodeFlags_FramePadding;
-
-		const int selectableFlags = ImGuiSelectableFlags_SpanAllColumns;
-
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {4, 2});
-
-		std::shared_ptr<const World> worldSelection = selectedWorld();
-		std::shared_ptr<const Level> levelSelection = selectedLevel();
-
-		for (const std::shared_ptr<World> &world: worlds()) {
-			{
-				const bool alreadySelected = (world == worldSelection);
-
-				int nodeFlags = defaultNodeFlags;
-
-				// Highlight node as selected if:
-				// - world is directly selected
-				// - world is collapsed and one of its levels is selected
-				{
-					const ImGuiID nextNodeId = ImGui::GetCurrentWindow()->GetID(world.get());
-
-					const bool exists = ImGui::GetStateStorage()->GetInt(nextNodeId, -1) != -1;
-					const bool previousOpen = ImGui::TreeNodeBehaviorIsOpen(nextNodeId) || !exists;
-
-					if (alreadySelected && !(levelSelection && previousOpen))
-						nodeFlags |= ImGuiTreeNodeFlags_Selected;
-				}
-
-				ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});
-
-				const bool open = ImGui::TreeNodeEx(world.get(), nodeFlags, "%s", world->nameOrFilename().c_str());
-
-				ImGui::PopStyleVar();
-
-				if (ImGui::IsItemToggledOpen())
-					_worldSelectionLockedByCollapsing = true;
-
-				const bool justClicked = ImGui::IsItemDeactivated() && ImGui::IsItemHovered();
-				const bool justSelected = justClicked && !_worldSelectionLockedByCollapsing;
-
-				if (justClicked)
-					_worldSelectionLockedByCollapsing = false;
-
-				if (justSelected)
-					selectWorld(world);
-
-				if (!open)
-					continue;
-			}
-
-			if (!world->levels().empty()) {
-				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
-
-				for (const std::shared_ptr<Level> &level: world->levels()) {
-					ImGui::PushID(level.get());
-
-					const bool alreadySelected = (level == levelSelection);
-					const bool justSelected =
-							ImGui::Selectable(level->name().c_str(), alreadySelected, selectableFlags);
-
-					if (justSelected)
-						selectLevel(level);
-
-					ImGui::PopID();
-				}
-
-				ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
-			}
-
-			ImGui::TreePop();
-		}
-
-		ImGui::PopStyleVar();
-	}
-	ImGui::End();
-
-	ImGui::PopStyleVar();
+	drawWorldTreeWindow();
 
 	_inspector.draw();
 	_layers.draw();
@@ -133,13 +50,10 @@ void EditorApplication::openWorld() {
 	BaseEditor::openWorld(selectedPath);
 }
 
-void EditorApplication::saveSelectedWorldAs() {
-	std::shared_ptr<Level> level = selectedLevel();
-
-	if (!level)
+void EditorApplication::saveWorldAs(std::shared_ptr<World> world) {
+	if (!world)
 		return;
 
-	std::shared_ptr<World> world = level->world();
 	const std::string &gameId = world->game()->id();
 
 	std::unique_ptr<IFileDialog> dialog = _dialogProvider->createFileDialog(IFileDialog::Type::Save);
@@ -159,7 +73,11 @@ void EditorApplication::saveSelectedWorldAs() {
 	if (selectedPath.empty())
 		return;
 
-	BaseEditor::saveSelectedWorldAs(selectedPath);
+	BaseEditor::saveWorldAs(world, selectedPath);
+}
+
+void EditorApplication::saveSelectedWorldAs() {
+	saveWorldAs(selectedWorld());
 }
 
 void EditorApplication::onWorldSelectionChange(std::shared_ptr<World> world) {
@@ -225,9 +143,9 @@ void EditorApplication::drawGlobalMenu() {
 			ImGui::Separator();
 
 			if (ImGui::BeginMenu("Dear ImGui")) {
-				ImGui::MenuItem("Demo", nullptr, false);
-				ImGui::MenuItem("Metrics/Debugger", nullptr, false);
-				ImGui::MenuItem("Style Editor", nullptr, false);
+				ImGui::MenuItem("Demo", {}, false);
+				ImGui::MenuItem("Metrics/Debugger", {}, false);
+				ImGui::MenuItem("Style Editor", {}, false);
 
 				ImGui::EndMenu();
 			}
@@ -242,4 +160,125 @@ void EditorApplication::drawGlobalMenu() {
 
 		ImGui::EndMainMenuBar();
 	}
+}
+
+void EditorApplication::drawWorldTreeWindow() {
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {1, 1});
+
+	bool worldTreeIsOpen = ImGui::Begin("World Tree");
+
+	ImGui::PopStyleVar();
+
+	if (!worldTreeIsOpen) {
+		ImGui::End();
+		return;
+	}
+
+	const int defaultNodeFlags =
+			ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth
+			| ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow
+			| ImGuiTreeNodeFlags_FramePadding;
+
+	const int selectableFlags = ImGuiSelectableFlags_SpanAllColumns;
+
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {4, 2});
+
+	std::shared_ptr<const World> worldSelection = selectedWorld();
+	std::shared_ptr<const Level> levelSelection = selectedLevel();
+
+	std::shared_ptr<World> worldToClose;
+
+	for (const std::shared_ptr<World> &world: worlds()) {
+		{
+			const bool alreadySelected = (world == worldSelection);
+
+			int nodeFlags = defaultNodeFlags;
+
+			// Highlight node as selected if:
+			// - world is directly selected
+			// - world is collapsed and one of its levels is selected
+			{
+				const ImGuiID nextNodeId = ImGui::GetCurrentWindow()->GetID(world.get());
+
+				const bool exists = ImGui::GetStateStorage()->GetInt(nextNodeId, -1) != -1;
+				const bool previousOpen = ImGui::TreeNodeBehaviorIsOpen(nextNodeId) || !exists;
+
+				if (alreadySelected && !(levelSelection && previousOpen))
+					nodeFlags |= ImGuiTreeNodeFlags_Selected;
+			}
+
+			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});
+
+			const bool open = ImGui::TreeNodeEx(world.get(), nodeFlags, "%s", world->nameOrFilename().c_str());
+
+			ImGui::PopStyleVar();
+
+			if (ImGui::BeginPopupContextItem()) {
+				ImGui::MenuItem(world->nameOrFilename().c_str(), {}, false, false);
+
+				ImGui::Separator();
+
+				ImGui::MenuItem("Copy Path", {}, false, false);
+				ImGui::MenuItem("Show In Explorer", {}, false, false);
+
+				ImGui::Separator();
+
+				if (ImGui::MenuItem("Save"))
+					saveWorld(world);
+
+				if (ImGui::MenuItem("Save As..."))
+					saveWorldAs(world);
+
+				ImGui::Separator();
+
+				if (ImGui::MenuItem("Close"))
+					worldToClose = world;
+
+				ImGui::EndPopup();
+			}
+
+			if (ImGui::IsItemToggledOpen())
+				_worldSelectionLockedByCollapsing = true;
+
+			const bool justClicked = ImGui::IsItemDeactivated() && ImGui::IsItemHovered();
+			const bool justSelected = justClicked && !_worldSelectionLockedByCollapsing;
+
+			if (justClicked)
+				_worldSelectionLockedByCollapsing = false;
+
+			if (justSelected)
+				selectWorld(world);
+
+			if (!open)
+				continue;
+		}
+
+		if (!world->levels().empty()) {
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+
+			for (const std::shared_ptr<Level> &level: world->levels()) {
+				ImGui::PushID(level.get());
+
+				const bool alreadySelected = (level == levelSelection);
+				const bool justSelected =
+						ImGui::Selectable(level->name().c_str(), alreadySelected, selectableFlags);
+
+				if (justSelected)
+					selectLevel(level);
+
+				ImGui::PopID();
+			}
+
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+		}
+
+		ImGui::TreePop();
+	}
+
+	ImGui::PopStyleVar();
+
+	ImGui::End();
+
+	if (worldToClose)
+		closeWorld(worldToClose);
 }
