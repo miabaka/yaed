@@ -18,10 +18,17 @@ EditorApplication::EditorApplication()
 bool EditorApplication::update(bool shouldClose) {
 	drawGlobalMenu();
 
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {1, 1});
+
 	if (ImGui::Begin("World Tree")) {
 		const int defaultNodeFlags =
-				ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanAvailWidth
-				| ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
+				ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth
+				| ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow
+				| ImGuiTreeNodeFlags_FramePadding;
+
+		const int selectableFlags = ImGuiSelectableFlags_SpanAllColumns;
+
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {4, 2});
 
 		std::shared_ptr<const World> worldSelection = selectedWorld();
 		std::shared_ptr<const Level> levelSelection = selectedLevel();
@@ -45,7 +52,11 @@ bool EditorApplication::update(bool shouldClose) {
 						nodeFlags |= ImGuiTreeNodeFlags_Selected;
 				}
 
+				ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});
+
 				const bool open = ImGui::TreeNodeEx(world.get(), nodeFlags, "%s", world->nameOrFilename().c_str());
+
+				ImGui::PopStyleVar();
 
 				if (ImGui::IsItemToggledOpen())
 					_worldSelectionLockedByCollapsing = true;
@@ -63,22 +74,33 @@ bool EditorApplication::update(bool shouldClose) {
 					continue;
 			}
 
-			for (const std::shared_ptr<Level> &level: world->levels()) {
-				ImGui::PushID(level.get());
+			if (!world->levels().empty()) {
+				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
 
-				const bool alreadySelected = (level == levelSelection);
-				const bool justSelected = ImGui::Selectable(level->name().c_str(), alreadySelected);
+				for (const std::shared_ptr<Level> &level: world->levels()) {
+					ImGui::PushID(level.get());
 
-				if (justSelected)
-					selectLevel(level);
+					const bool alreadySelected = (level == levelSelection);
+					const bool justSelected =
+							ImGui::Selectable(level->name().c_str(), alreadySelected, selectableFlags);
 
-				ImGui::PopID();
+					if (justSelected)
+						selectLevel(level);
+
+					ImGui::PopID();
+				}
+
+				ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
 			}
 
 			ImGui::TreePop();
 		}
+
+		ImGui::PopStyleVar();
 	}
 	ImGui::End();
+
+	ImGui::PopStyleVar();
 
 	_inspector.draw();
 	_layers.draw();
