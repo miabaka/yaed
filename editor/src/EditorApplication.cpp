@@ -127,7 +127,7 @@ void EditorApplication::drawGlobalMenu() {
 			if (ImGui::MenuItem("Save As...", "ctrl+shift+s", false, hasSelectedWorld()))
 				saveSelectedWorldAs();
 
-			ImGui::MenuItem("Save All", "ctrl+alt+s");
+			ImGui::MenuItem("Save All", "ctrl+alt+s", false, false);
 
 			ImGui::Separator();
 
@@ -256,7 +256,14 @@ void EditorApplication::drawWorldTreeWindow() {
 
 				ImGui::Separator();
 
-				ImGui::MenuItem("Copy Path", {}, false, false);
+				{
+					if (ImGui::MenuItem("Copy Path"))
+						ImGui::SetClipboardText(world->path().string().c_str());
+
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("%s", world->path().string().c_str());
+				}
+
 				ImGui::MenuItem("Show In Explorer", {}, false, false);
 
 				ImGui::Separator();
