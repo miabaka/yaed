@@ -91,8 +91,6 @@ SthWorldImporter::load(
 
 	std::shared_ptr<World> world = worldFactory->createWorld(gameManager, {});
 
-	world->setPath(path);
-
 	std::vector<char> data;
 
 	{

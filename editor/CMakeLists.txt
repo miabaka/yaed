@@ -47,6 +47,7 @@ add_executable(editor
         src/ui/ImUtil.cpp
         src/Editor.cpp
         src/EditorApplication.cpp
-        src/main.cpp)
+        src/main.cpp
+        src/RecentlyOpenedManager.cpp)
 
 target_link_libraries(editor PRIVATE fmt glm glfw gl3w imgui stb_image cutedialogs)

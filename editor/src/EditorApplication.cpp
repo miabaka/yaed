@@ -91,6 +91,10 @@ void EditorApplication::onLevelSelectionChange(std::shared_ptr<Level> level) {
 	_palette.setLevel(*this, level);
 }
 
+void EditorApplication::onWorldFileOperation(std::shared_ptr<World> world, const std::filesystem::path &path) {
+	_recentlyOpened.pokePath(path);
+}
+
 void EditorApplication::drawGlobalMenu() {
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
@@ -102,7 +106,16 @@ void EditorApplication::drawGlobalMenu() {
 				openWorld();
 
 			if (ImGui::BeginMenu("Open Recent")) {
-				ImGui::MenuItem("Clear Recently Opened");
+				if (drawRecentlyOpenedMenuItems()) {
+					ImGui::Separator();
+
+					if (ImGui::MenuItem("Clear This List"))
+						_recentlyOpened.clear();
+				} else {
+					ImGui::MenuItem("(Nothing)", {}, false, false);
+				}
+
+
 				ImGui::EndMenu();
 			}
 
@@ -160,6 +173,31 @@ void EditorApplication::drawGlobalMenu() {
 
 		ImGui::EndMainMenuBar();
 	}
+}
+
+bool EditorApplication::drawRecentlyOpenedMenuItems() {
+	fs::path selectedPath;
+
+	const auto &paths = _recentlyOpened.paths();
+
+	for (auto it = paths.rbegin(); it < paths.rend(); it++) {
+		const fs::path &path = *it;
+
+		ImGui::PushID(&path);
+
+		if (ImGui::MenuItem(path.filename().string().c_str()))
+			selectedPath = path;
+
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("%s", path.string().c_str());
+
+		ImGui::PopID();
+	}
+
+	if (!selectedPath.empty())
+		BaseEditor::openWorld(selectedPath);
+
+	return !paths.empty();
 }
 
 void EditorApplication::drawWorldTreeWindow() {

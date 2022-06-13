@@ -36,17 +36,17 @@ public:
 
 	std::shared_ptr<World> openWorld(const std::filesystem::path &path);
 
-	void saveWorld(std::shared_ptr<const World> world) const;
+	void saveWorld(std::shared_ptr<World> world);
 
 	void saveWorldAs(
 			std::shared_ptr<World> world, const std::filesystem::path &path,
-			std::shared_ptr<IWorldExporter> exporter = {}) const;
+			std::shared_ptr<IWorldExporter> exporter = {});
 
 	void closeWorld(std::shared_ptr<World> world);
 
-	void saveSelectedWorld() const;
+	void saveSelectedWorld();
 
-	void saveSelectedWorldAs(const std::filesystem::path &path, std::shared_ptr<IWorldExporter> exporter = {}) const;
+	void saveSelectedWorldAs(const std::filesystem::path &path, std::shared_ptr<IWorldExporter> exporter = {});
 
 	void closeSelectedWorld();
 
@@ -72,6 +72,18 @@ protected:
 	virtual void onWorldSelectionChange(std::shared_ptr<World> world);
 
 	virtual void onLevelSelectionChange(std::shared_ptr<Level> level);
+
+	virtual void onWorldOpen(std::shared_ptr<World> world, const std::filesystem::path &path);
+
+	/**
+	 * Fires on both save and save as
+	 */
+	virtual void onWorldSave(std::shared_ptr<World> world, const std::filesystem::path &path);
+
+	/**
+	 * Fires on any operations with world files (opening, saving)
+	 */
+	virtual void onWorldFileOperation(std::shared_ptr<World> world, const std::filesystem::path &path);
 
 private:
 	GameManager _gameManager;

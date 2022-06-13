@@ -11,6 +11,7 @@
 #include "ui/window/PaletteWindow.hpp"
 #include "ui/window/ViewportWindow.hpp"
 #include "Editor.hpp"
+#include "RecentlyOpenedManager.hpp"
 
 class EditorApplication : public Editor {
 public:
@@ -31,16 +32,24 @@ protected:
 
 	void onLevelSelectionChange(std::shared_ptr<Level> level) override;
 
+	void onWorldFileOperation(std::shared_ptr<World> world, const std::filesystem::path &path) override;
+
 private:
 	std::unique_ptr<cute::dialogs::IDialogProvider> _dialogProvider;
+
 	InspectorWindow _inspector;
 	LayerListWindow _layers;
 	MinimapWindow _minimap;
 	PaletteWindow _palette;
 	ViewportWindow _viewport;
+
 	bool _worldSelectionLockedByCollapsing = false;
 
+	RecentlyOpenedManager _recentlyOpened;
+
 	void drawGlobalMenu();
+
+	bool drawRecentlyOpenedMenuItems();
 
 	// TODO: create separate class for this
 	void drawWorldTreeWindow();

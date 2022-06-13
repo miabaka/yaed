@@ -56,7 +56,12 @@ std::shared_ptr<World> BaseEditor::openWorld(const std::filesystem::path &path) 
 	customData->exporter = _worldFormatManager.findAssociatedExporter(importer);
 
 	world->setCustomData(std::move(customData));
+	world->setPath(path);
+
 	_worlds.push_back(world);
+
+	onWorldOpen(world, path);
+	onWorldFileOperation(world, path);
 
 	if (world->levels().empty())
 		selectWorld(world);
@@ -66,18 +71,20 @@ std::shared_ptr<World> BaseEditor::openWorld(const std::filesystem::path &path) 
 	return world;
 }
 
-void BaseEditor::saveWorld(std::shared_ptr<const World> world) const {
+void BaseEditor::saveWorld(std::shared_ptr<World> world) {
 	auto &customData = world->customData<EditorWorldData>();
 
 	if (!customData.exporter)
 		return;
 
 	customData.exporter->save(*world, world->path());
+
+	onWorldSave(world, world->path());
+	onWorldFileOperation(world, world->path());
 }
 
 void BaseEditor::saveWorldAs(
-		std::shared_ptr<World> world, const std::filesystem::path &path,
-		std::shared_ptr<IWorldExporter> exporter) const {
+		std::shared_ptr<World> world, const fs::path &path, std::shared_ptr<IWorldExporter> exporter) {
 	auto &customData = world->customData<EditorWorldData>();
 
 	if (exporter)
@@ -86,8 +93,9 @@ void BaseEditor::saveWorldAs(
 	if (!customData.exporter)
 		return;
 
-	customData.exporter->save(*world, path);
 	world->setPath(path);
+
+	saveWorld(world);
 }
 
 void BaseEditor::closeWorld(std::shared_ptr<World> world) {
@@ -102,7 +110,7 @@ void BaseEditor::closeWorld(std::shared_ptr<World> world) {
 		selectLastWorld();
 }
 
-void BaseEditor::saveSelectedWorld() const {
+void BaseEditor::saveSelectedWorld() {
 	std::shared_ptr<World> world = selectedWorld();
 
 	if (!world)
@@ -111,7 +119,7 @@ void BaseEditor::saveSelectedWorld() const {
 	saveWorld(world);
 }
 
-void BaseEditor::saveSelectedWorldAs(const fs::path &path, std::shared_ptr<IWorldExporter> exporter) const {
+void BaseEditor::saveSelectedWorldAs(const fs::path &path, std::shared_ptr<IWorldExporter> exporter) {
 	std::shared_ptr<World> world = selectedWorld();
 
 	if (!world)
@@ -172,3 +180,9 @@ bool BaseEditor::hasSelectedWorld() const {
 void BaseEditor::onWorldSelectionChange(std::shared_ptr<World> world) {}
 
 void BaseEditor::onLevelSelectionChange(std::shared_ptr<Level> level) {}
+
+void BaseEditor::onWorldOpen(std::shared_ptr<World> world, const std::filesystem::path &path) {}
+
+void BaseEditor::onWorldSave(std::shared_ptr<World> world, const std::filesystem::path &path) {}
+
+void BaseEditor::onWorldFileOperation(std::shared_ptr<World> world, const std::filesystem::path &path) {}
