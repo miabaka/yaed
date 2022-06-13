@@ -50,6 +50,8 @@ public:
 
 	void closeSelectedWorld();
 
+	void selectLastWorld();
+
 	std::shared_ptr<World> selectedWorld() const;
 
 	std::shared_ptr<Level> selectedLevel() const;

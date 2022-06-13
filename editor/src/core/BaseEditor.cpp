@@ -58,6 +58,11 @@ std::shared_ptr<World> BaseEditor::openWorld(const std::filesystem::path &path) 
 	world->setCustomData(std::move(customData));
 	_worlds.push_back(world);
 
+	if (world->levels().empty())
+		selectWorld(world);
+	else
+		selectLevel(world->levels().front());
+
 	return world;
 }
 
@@ -94,7 +99,7 @@ void BaseEditor::closeWorld(std::shared_ptr<World> world) {
 	_worlds.erase(it);
 
 	if (selectedWorld() == world)
-		selectWorld({});
+		selectLastWorld();
 }
 
 void BaseEditor::saveSelectedWorld() const {
@@ -122,6 +127,20 @@ void BaseEditor::closeSelectedWorld() {
 		return;
 
 	closeWorld(world);
+}
+
+void BaseEditor::selectLastWorld() {
+	if (_worlds.empty()) {
+		selectWorld({});
+		return;
+	}
+
+	std::shared_ptr<World> world = _worlds.back();
+
+	if (world->levels().empty())
+		selectWorld(world);
+	else
+		selectLevel(world->levels().front());
 }
 
 std::shared_ptr<World> BaseEditor::selectedWorld() const {
