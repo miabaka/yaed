@@ -36,6 +36,7 @@ private:
 	MinimapWindow _minimap;
 	PaletteWindow _palette;
 	ViewportWindow _viewport;
+	bool _worldSelectionLockedByCollapsing = false;
 
 	void drawGlobalMenu();
 };

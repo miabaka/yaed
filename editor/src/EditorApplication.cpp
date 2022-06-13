@@ -47,7 +47,14 @@ bool EditorApplication::update(bool shouldClose) {
 
 				const bool open = ImGui::TreeNodeEx(world.get(), nodeFlags, "%s", world->nameOrFilename().c_str());
 
-				const bool justSelected = ImGui::IsItemActivated() && !ImGui::IsItemToggledOpen();
+				if (ImGui::IsItemToggledOpen())
+					_worldSelectionLockedByCollapsing = true;
+
+				const bool justClicked = ImGui::IsItemDeactivated() && ImGui::IsItemHovered();
+				const bool justSelected = justClicked && !_worldSelectionLockedByCollapsing;
+
+				if (justClicked)
+					_worldSelectionLockedByCollapsing = false;
 
 				if (justSelected)
 					selectWorld(world);
