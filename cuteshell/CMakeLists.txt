@@ -22,7 +22,7 @@ elseif (UNIX AND NOT APPLE)
 
     target_compile_definitions(cuteshell PRIVATE CUTE_DIALOGS_IMPL_GTK)
     target_sources(cuteshell PRIVATE
-            src/CuteShell_unknown.cpp
+            src/CuteShell_nix.cpp
             src/GtkDialogProvider.cpp
             src/GtkFileDialog.cpp)
 else ()
