@@ -7,6 +7,8 @@
 #include <unordered_map>
 #include <glibmm/i18n.h>
 
+namespace fs = std::filesystem;
+
 using namespace cute::shell;
 
 GtkFileDialog::GtkFileDialog(IFileDialog::Type type) {
@@ -54,7 +56,7 @@ void GtkFileDialog::clearExtensionFilters() {
     }
 }
 
-std::filesystem::path GtkFileDialog::getPath(int result) {
+fs::path GtkFileDialog::getPath(int result) {
     if (result == GTK_RESPONSE_ACCEPT) {
         GFile *f = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(_dialog));
 
@@ -62,16 +64,16 @@ std::filesystem::path GtkFileDialog::getPath(int result) {
         std::string path(path_cstr);
         g_free(path_cstr);
 
-        return {path};
+        return fs::u8path(path);
     }
 
     return {};
 }
 
-std::filesystem::path GtkFileDialog::show() {
+fs::path GtkFileDialog::show() {
     gint res = gtk_dialog_run(GTK_DIALOG(_dialog));
 
-    std::filesystem::path path = getPath(res);
+    fs::path path = getPath(res);
 
     gtk_widget_destroy(_dialog);
     while (gtk_events_pending()) gtk_main_iteration();
@@ -79,6 +81,6 @@ std::filesystem::path GtkFileDialog::show() {
     return std::move(path);
 }
 
-std::vector<std::filesystem::path> GtkFileDialog::showForMultiple() {
+std::vector<fs::path> GtkFileDialog::showForMultiple() {
     return {};
 }
