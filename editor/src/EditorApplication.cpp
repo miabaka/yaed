@@ -83,7 +83,7 @@ bool EditorApplication::update(bool shouldClose) {
 
 	const bool dockingLayoutIsSet = (ImGui::DockBuilderGetNode(dockSpaceId) != nullptr);
 
-	if (!dockingLayoutIsSet || _dockingLayoutMustBeReset) {
+	if (_dockingLayoutMustBeReset) {
 		applyDefaultDockingLayout(dockSpaceId);
 		_dockingLayoutMustBeReset = false;
 	}
@@ -128,6 +128,8 @@ void EditorApplication::loadConfig() {
 
 		if (imguiSettings.is_string())
 			ImGui::LoadIniSettingsFromMemory(imguiSettings.get<std::string>().c_str());
+		else
+			_dockingLayoutMustBeReset = true;
 	}
 
 	{
