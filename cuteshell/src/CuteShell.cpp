@@ -1,4 +1,4 @@
-#include <cute/dialogs/CuteDialogs.hpp>
+#include "cute/shell/CuteShell.hpp"
 
 #include "StubDialogProvider.hpp"
 #include "Win32DialogProvider.hpp"
@@ -7,9 +7,9 @@
 #include "GtkDialogProvider.hpp"
 #endif
 
-using namespace cute::dialogs;
+using namespace cute::shell;
 
-std::unique_ptr<IDialogProvider> CuteDialogs::createDialogProvider() {
+std::unique_ptr<IDialogProvider> CuteShell::createDialogProvider() {
 #if defined(CUTE_DIALOGS_IMPL_WIN32)
 	return std::make_unique<Win32DialogProvider>();
 #elif defined(CUTE_DIALOGS_IMPL_GTK)

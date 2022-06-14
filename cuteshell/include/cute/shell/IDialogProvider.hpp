@@ -5,7 +5,7 @@
 
 #include "IFileDialog.hpp"
 
-namespace cute::dialogs {
+namespace cute::shell {
 
 class IDialogProvider {
 public:

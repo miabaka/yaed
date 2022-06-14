@@ -1,8 +1,8 @@
 #pragma once
 
-#include <cute/dialogs/IDialogProvider.hpp>
+#include "cute/shell/IDialogProvider.hpp"
 
-namespace cute::dialogs {
+namespace cute::shell {
 
 class StubDialogProvider : public IDialogProvider {
 public:

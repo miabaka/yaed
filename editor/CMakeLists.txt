@@ -50,4 +50,10 @@ add_executable(editor
         src/main.cpp
         src/RecentlyOpenedManager.cpp)
 
-target_link_libraries(editor PRIVATE fmt glm glfw gl3w imgui stb_image cutedialogs)
+target_link_libraries(editor PRIVATE
+        fmt
+        glm
+        glfw gl3w
+        imgui
+        stb_image
+        cuteshell)

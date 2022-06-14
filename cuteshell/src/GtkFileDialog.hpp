@@ -5,9 +5,9 @@
 #pragma once
 
 #include <gtk/gtk.h>
-#include <cute/dialogs/IFileDialog.hpp>
+#include "cute/shell/IFileDialog.hpp"
 
-namespace cute::dialogs {
+namespace cute::shell {
 
 class GtkFileDialog : public IFileDialog {
 public:

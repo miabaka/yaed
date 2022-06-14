@@ -3,9 +3,9 @@
 #include <memory>
 #include "IDialogProvider.hpp"
 
-namespace cute::dialogs {
+namespace cute::shell {
 
-class CuteDialogs {
+class CuteShell {
 public:
 	static std::unique_ptr<IDialogProvider> createDialogProvider();
 };

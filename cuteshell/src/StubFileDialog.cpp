@@ -1,6 +1,6 @@
 #include "StubFileDialog.hpp"
 
-using namespace cute::dialogs;
+using namespace cute::shell;
 
 namespace fs = std::filesystem;
 

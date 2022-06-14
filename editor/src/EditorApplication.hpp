@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 
-#include <cute/dialogs/IDialogProvider.hpp>
+#include <cute/shell/IDialogProvider.hpp>
 
 #include "ui/window/InspectorWindow.hpp"
 #include "ui/window/LayerListWindow.hpp"
@@ -35,7 +35,7 @@ protected:
 	void onWorldFileOperation(std::shared_ptr<World> world, const std::filesystem::path &path) override;
 
 private:
-	std::unique_ptr<cute::dialogs::IDialogProvider> _dialogProvider;
+	std::unique_ptr<cute::shell::IDialogProvider> _dialogProvider;
 
 	InspectorWindow _inspector;
 	LayerListWindow _layers;

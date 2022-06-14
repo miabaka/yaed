@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <glibmm/i18n.h>
 
-using namespace cute::dialogs;
+using namespace cute::shell;
 
 GtkFileDialog::GtkFileDialog(IFileDialog::Type type) {
     static std::unordered_map<IFileDialog::Type, const char *> names {

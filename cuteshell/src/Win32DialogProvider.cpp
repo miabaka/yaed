@@ -3,7 +3,7 @@
 #include <windows.h>
 #include "Win32FileDialog.hpp"
 
-using namespace cute::dialogs;
+using namespace cute::shell;
 
 Win32DialogProvider::Win32DialogProvider() {
 	CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);

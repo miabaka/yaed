@@ -5,15 +5,15 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 #include <imgui/imgui_stdlib.h>
-#include <cute/dialogs/CuteDialogs.hpp>
+#include <cute/shell/CuteShell.hpp>
 
 namespace fs = std::filesystem;
 
-using cute::dialogs::CuteDialogs;
-using cute::dialogs::IFileDialog;
+using cute::shell::CuteShell;
+using cute::shell::IFileDialog;
 
 EditorApplication::EditorApplication()
-		: _dialogProvider(CuteDialogs::createDialogProvider()) {}
+		: _dialogProvider(CuteShell::createDialogProvider()) {}
 
 bool EditorApplication::update(bool shouldClose) {
 	drawGlobalMenu();

@@ -3,7 +3,7 @@
 #include <filesystem>
 #include <vector>
 
-namespace cute::dialogs {
+namespace cute::shell {
 
 class IFileDialog {
 public:

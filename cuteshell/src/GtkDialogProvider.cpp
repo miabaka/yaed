@@ -7,7 +7,7 @@
 #include <gtk/gtk.h>
 #include "GtkFileDialog.hpp"
 
-using namespace cute::dialogs;
+using namespace cute::shell;
 
 std::unique_ptr<IFileDialog> GtkDialogProvider::createFileDialog(IFileDialog::Type type) {
     return std::make_unique<GtkFileDialog>(type);

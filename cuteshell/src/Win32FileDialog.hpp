@@ -1,10 +1,16 @@
 #pragma once
 
-#include <cute/dialogs/IFileDialog.hpp>
+#include <list>
+#include "cute/shell/IFileDialog.hpp"
 
-namespace cute::dialogs {
+namespace cute::shell {
 
-class StubFileDialog : public IFileDialog {
+class Win32FileDialog : public IFileDialog {
+public:
+	Win32FileDialog(Type type);
+
+	~Win32FileDialog() override;
+
 	void addExtensionFilter(const std::string &name, const std::string &extension) override;
 
 	void addExtensionFilter(const std::wstring &name, const std::string &extension) override;
@@ -14,6 +20,16 @@ class StubFileDialog : public IFileDialog {
 	std::filesystem::path show() override;
 
 	std::vector<std::filesystem::path> showForMultiple() override;
+
+private:
+	struct Filter {
+		std::wstring name;
+		std::wstring extension;
+	};
+
+	Type _type;
+	void *_handle;
+	std::list<Filter> _extensionFilters;
 };
 
 } // namespace cute::dialogs

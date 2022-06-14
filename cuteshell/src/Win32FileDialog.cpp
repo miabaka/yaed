@@ -5,7 +5,7 @@
 #include <windows.h>
 #include <shobjidl.h>
 
-using namespace cute::dialogs;
+using namespace cute::shell;
 
 namespace fs = std::filesystem;
 

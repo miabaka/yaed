@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "cute/dialogs/IDialogProvider.hpp"
+#include "cute/shell/IDialogProvider.hpp"
 
-namespace cute::dialogs {
+namespace cute::shell {
 
 class GtkDialogProvider : public IDialogProvider {
 public:
