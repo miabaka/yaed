@@ -120,7 +120,8 @@ static void writeJsonToFile(const nlohmann::json &json, const fs::path &path) {
 }
 
 void EditorApplication::loadConfig() {
-	ImUtil::loadIniConfig(_imGuiConfigPath);
+	if (!ImUtil::loadIniConfig(_imGuiConfigPath))
+		_dockingLayoutMustBeReset = true;
 
 	nlohmann::json config = readJsonFromFile(_configPath);
 

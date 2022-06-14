@@ -44,19 +44,19 @@ void ImUtil::moveFromTitleBarOnly() {
 	ImGui::SetCursorPos(previousCursorPos);
 }
 
-void ImUtil::loadIniConfig(const fs::path &path) {
-	std::string iniConfig;
+bool ImUtil::loadIniConfig(const fs::path &path) {
+	std::ifstream file(path);
 
-	{
-		std::ifstream file(path);
+	std::stringstream ss;
+	ss << file.rdbuf();
 
-		std::stringstream ss;
-		ss << file.rdbuf();
+	if (!file.good())
+		return false;
 
-		iniConfig = std::move(ss.str());
-	}
-
+	const std::string &iniConfig = ss.str();
 	ImGui::LoadIniSettingsFromMemory(iniConfig.data(), iniConfig.size());
+
+	return true;
 }
 
 void ImUtil::saveIniConfig(const fs::path &path) {

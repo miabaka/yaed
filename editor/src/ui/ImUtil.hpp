@@ -15,7 +15,7 @@ public:
 
 	static void moveFromTitleBarOnly();
 
-	static void loadIniConfig(const std::filesystem::path &path);
+	static bool loadIniConfig(const std::filesystem::path &path);
 
 	static void saveIniConfig(const std::filesystem::path &path);
 };
