@@ -1,6 +1,11 @@
 #include "ImUtil.hpp"
 
+#include <fstream>
+#include <sstream>
+
 #include <glm/common.hpp>
+
+namespace fs = std::filesystem;
 
 glm::vec2 ImUtil::adjustCursorForCentering(glm::vec2 size) {
 	const glm::vec2 initialCursorPos = ImGui::GetCursorPos();
@@ -37,4 +42,31 @@ void ImUtil::moveFromTitleBarOnly() {
 	ImGui::InvisibleButton("_moveFromTitleBarOnly", contentRegionAvail);
 
 	ImGui::SetCursorPos(previousCursorPos);
+}
+
+void ImUtil::loadIniConfig(const fs::path &path) {
+	std::string iniConfig;
+
+	{
+		std::ifstream file(path);
+
+		std::stringstream ss;
+		ss << file.rdbuf();
+
+		iniConfig = std::move(ss.str());
+	}
+
+	ImGui::LoadIniSettingsFromMemory(iniConfig.data(), iniConfig.size());
+}
+
+void ImUtil::saveIniConfig(const fs::path &path) {
+	auto &io = ImGui::GetIO();
+
+	if (!io.WantSaveIniSettings)
+		return;
+
+	io.WantSaveIniSettings = false;
+
+	std::ofstream file(path);
+	file << ImGui::SaveIniSettingsToMemory();
 }

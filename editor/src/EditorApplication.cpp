@@ -5,11 +5,11 @@
 #include <fstream>
 #include <sstream>
 
-#include <nlohmann/json.hpp>
-#include <imgui/imgui.h>
-#include <imgui/imgui_internal.h>
 #include <imgui/imgui_stdlib.h>
+#include <nlohmann/json.hpp>
 #include <cute/shell/CuteShell.hpp>
+
+#include "ui/ImUtil.hpp"
 
 namespace fs = std::filesystem;
 
@@ -18,17 +18,18 @@ using cute::shell::IFileDialog;
 
 EditorApplication::EditorApplication()
 		: _dialogProvider(CuteShell::createDialogProvider()) {
-	_baseConfigPath = CuteShell::getAppDataPath() / "yaed";
+	const fs::path baseConfigPath = CuteShell::getAppDataPath() / "yaed";
 
-	bool configDirectoryExists = fs::exists(_baseConfigPath);
+	bool configDirectoryExists = fs::exists(baseConfigPath);
 
 	if (!configDirectoryExists)
-		configDirectoryExists = fs::create_directory(_baseConfigPath);
+		configDirectoryExists = fs::create_directory(baseConfigPath);
 
 	if (!configDirectoryExists)
 		throw std::runtime_error("Can't create config directory");
 
-	_configPath = _baseConfigPath / "config.json";
+	_configPath = baseConfigPath / "yaed.json";
+	_imGuiConfigPath = baseConfigPath / "imgui.ini";
 
 	loadConfig();
 }
@@ -65,8 +66,8 @@ void EditorApplication::applyDefaultDockingLayout(ImGuiID dockSpaceId) {
 	ImGui::DockBuilderDockWindow("###Layers", topOfRightOfRight);
 	ImGui::DockBuilderDockWindow("###Palette", bottomOfRightOfRight);
 
-	ImGui::DockBuilderSetNodeSize(left, {216, 1});
-	ImGui::DockBuilderSetNodeSize(rightOfRight, {216, 1});
+	ImGui::DockBuilderSetNodeSize(left, {192, 1});
+	ImGui::DockBuilderSetNodeSize(rightOfRight, {192, 1});
 
 	ImGui::DockBuilderFinish(dockSpaceId);
 
@@ -80,8 +81,6 @@ void EditorApplication::applyDefaultDockingLayout(ImGuiID dockSpaceId) {
 
 bool EditorApplication::update(bool shouldClose) {
 	const ImGuiID dockSpaceId = ImGui::DockSpaceOverViewport();
-
-	const bool dockingLayoutIsSet = (ImGui::DockBuilderGetNode(dockSpaceId) != nullptr);
 
 	if (_dockingLayoutMustBeReset) {
 		applyDefaultDockingLayout(dockSpaceId);
@@ -121,28 +120,20 @@ static void writeJsonToFile(const nlohmann::json &json, const fs::path &path) {
 }
 
 void EditorApplication::loadConfig() {
+	ImUtil::loadIniConfig(_imGuiConfigPath);
+
 	nlohmann::json config = readJsonFromFile(_configPath);
 
 	{
-		const auto &imguiSettings = config["ui"]["layout"];
+		const auto &recentFiles = config["common"]["recent_files"];
 
-		if (imguiSettings.is_string())
-			ImGui::LoadIniSettingsFromMemory(imguiSettings.get<std::string>().c_str());
-		else
-			_dockingLayoutMustBeReset = true;
-	}
+		if (recentFiles.is_array()) {
+			for (const auto &file: recentFiles) {
+				if (!file.is_string())
+					continue;
 
-	{
-		const auto &recentFiles = config["ui"]["recent_files"];
-
-		if (!recentFiles.is_array())
-			return;
-
-		for (const auto &file: recentFiles) {
-			if (!file.is_string())
-				continue;
-
-			_recentlyOpened.pokePath(fs::u8path(file.get<std::string>()));
+				_recentlyOpened.pokePath(fs::u8path(file.get<std::string>()));
+			}
 		}
 	}
 
@@ -165,16 +156,9 @@ void EditorApplication::loadConfig() {
 }
 
 void EditorApplication::saveConfig() {
+	ImUtil::saveIniConfig(_imGuiConfigPath);
+
 	nlohmann::json config = readJsonFromFile(_configPath);
-
-	{
-		ImGuiIO &io = ImGui::GetIO();
-
-		if (io.WantSaveIniSettings) {
-			io.WantSaveIniSettings = false;
-			config["ui"]["layout"] = ImGui::SaveIniSettingsToMemory();
-		}
-	}
 
 	{
 		std::vector<std::string> recentFiles;
@@ -182,7 +166,7 @@ void EditorApplication::saveConfig() {
 		for (const fs::path &path: _recentlyOpened.paths())
 			recentFiles.push_back(path.u8string());
 
-		config["ui"]["recent_files"] = recentFiles;
+		config["common"]["recent_files"] = recentFiles;
 	}
 
 	{
