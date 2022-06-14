@@ -29,11 +29,14 @@ static const char *getXdgPath(const std::string &name) {
 
 template<class Container, class Iter = typename Container::const_iterator>
 Container getUntil(Iter &it, Iter end, const std::function<bool(char)> &predicate) {
+    if (it == end || !predicate(*it)) return {};
+
     Container str;
-    str.reserve(std::count_if(it, end, predicate));
+
+    str.resize(std::count_if(it, end, predicate));
 
     auto cur = it;
-    for (int i = 0; !predicate(*cur) && cur != end; cur++, i++)
+    for (int i = 0; predicate(*cur) && cur != end; cur++, i++)
         str[i] = *cur;
 
     it = cur;
@@ -45,17 +48,19 @@ fs::path CuteShell::getAppDataPath() {
     std::string dirPath(getXdgPath(dirName));
 
     std::stringstream dir;
-    for (auto it = dirPath.cbegin(); it != dirPath.cend(); it++) {
+    for (auto it = dirPath.cbegin(); it != dirPath.cend() && *it != '\0';) {
         if (*it != '$') { // write characters until env var
             dir << getUntil<std::string>(it, dirPath.cend(), [](char c) {
-                return c != '$';
+                return c != '$' && c != '\0';
             });
         } else {
             auto var = getUntil<std::string>(it, dirPath.cend(), [](char c) {
-                return c != '/'; // FIXME: there's probably a better way.
+                return c != '/' && c != '\0'; // FIXME: there's probably a better way.
             });
 
-            char const *val = std::getenv(var.c_str());
+            // skip the $ sign
+            char const *val = std::getenv(&var.c_str()[1]);
+
             if (val != nullptr) dir << val;
         }
     }
