@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 
+#include <imgui/imgui_internal.h>
 #include <cute/shell/IDialogProvider.hpp>
 
 #include "ui/window/InspectorWindow.hpp"
@@ -17,7 +18,7 @@ class EditorApplication : public Editor {
 public:
 	EditorApplication();
 
-	~EditorApplication();
+	~EditorApplication() override;
 
 	bool update(bool shouldClose);
 
@@ -45,6 +46,7 @@ private:
 	ViewportWindow _viewport;
 	bool _worldSelectionLockedByCollapsing = false;
 	bool _dockingLayoutMustBeReset = false;
+	bool _worldTreeOpen = true;
 	RecentlyOpenedManager _recentlyOpened;
 	std::filesystem::path _baseConfigPath;
 	std::filesystem::path _configPath;
@@ -52,6 +54,8 @@ private:
 	void loadConfig();
 
 	void saveConfig();
+
+	void applyDefaultDockingLayout(ImGuiID dockSpaceId);
 
 	void drawGlobalMenu();
 

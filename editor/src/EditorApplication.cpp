@@ -37,7 +37,7 @@ EditorApplication::~EditorApplication() {
 	saveConfig();
 }
 
-static void applyDefaultDockingLayout(ImGuiID dockSpaceId) {
+void EditorApplication::applyDefaultDockingLayout(ImGuiID dockSpaceId) {
 	ImGui::DockBuilderRemoveNode(dockSpaceId);
 
 	ImGuiID rootNode = ImGui::DockBuilderAddNode(dockSpaceId, ImGuiDockNodeFlags_DockSpace);
@@ -69,6 +69,13 @@ static void applyDefaultDockingLayout(ImGuiID dockSpaceId) {
 	ImGui::DockBuilderSetNodeSize(rightOfRight, {216, 1});
 
 	ImGui::DockBuilderFinish(dockSpaceId);
+
+	_inspector.setOpen(true);
+	_layers.setOpen(true);
+	_minimap.setOpen(false);
+	_palette.setOpen(true);
+	_viewport.setOpen(true);
+	_worldTreeOpen = true;
 }
 
 bool EditorApplication::update(bool shouldClose) {
@@ -80,8 +87,6 @@ bool EditorApplication::update(bool shouldClose) {
 		applyDefaultDockingLayout(dockSpaceId);
 		_dockingLayoutMustBeReset = false;
 	}
-
-	ImGui::ShowMetricsWindow();
 
 	drawGlobalMenu();
 	drawWorldTreeWindow();
@@ -125,16 +130,35 @@ void EditorApplication::loadConfig() {
 			ImGui::LoadIniSettingsFromMemory(imguiSettings.get<std::string>().c_str());
 	}
 
-	const auto &recentFiles = config["ui"]["recent_files"];
+	{
+		const auto &recentFiles = config["ui"]["recent_files"];
 
-	if (!recentFiles.is_array())
-		return;
+		if (!recentFiles.is_array())
+			return;
 
-	for (const auto &file: recentFiles) {
-		if (!file.is_string())
-			continue;
+		for (const auto &file: recentFiles) {
+			if (!file.is_string())
+				continue;
 
-		_recentlyOpened.pokePath(fs::u8path(file.get<std::string>()));
+			_recentlyOpened.pokePath(fs::u8path(file.get<std::string>()));
+		}
+	}
+
+	{
+		auto &windowVisibility = config["ui"]["window_visibility"];
+
+		auto applyValue = [&windowVisibility](const auto &key, bool &destination) {
+			const auto &value = windowVisibility[key];
+
+			if (value.is_boolean())
+				destination = value.template get<bool>();
+		};
+
+		applyValue("inspector", _inspector.isOpen());
+		applyValue("minimap", _minimap.isOpen());
+		applyValue("palette", _palette.isOpen());
+		applyValue("viewport", _viewport.isOpen());
+		applyValue("world_tree", _worldTreeOpen);
 	}
 }
 
@@ -150,12 +174,25 @@ void EditorApplication::saveConfig() {
 		}
 	}
 
-	std::vector<std::string> recentFiles;
+	{
+		std::vector<std::string> recentFiles;
 
-	for (const fs::path &path: _recentlyOpened.paths())
-		recentFiles.push_back(path.u8string());
+		for (const fs::path &path: _recentlyOpened.paths())
+			recentFiles.push_back(path.u8string());
 
-	config["ui"]["recent_files"] = recentFiles;
+		config["ui"]["recent_files"] = recentFiles;
+	}
+
+	{
+		auto &windowVisibility = config["ui"]["window_visibility"];
+
+		windowVisibility["inspector"] = _inspector.isOpen();
+		windowVisibility["layer_list"] = _layers.isOpen();
+		windowVisibility["minimap"] = _minimap.isOpen();
+		windowVisibility["palette"] = _palette.isOpen();
+		windowVisibility["viewport"] = _viewport.isOpen();
+		windowVisibility["world_tree"] = _worldTreeOpen;
+	}
 
 	writeJsonToFile(config, _configPath);
 }
@@ -280,7 +317,7 @@ void EditorApplication::drawGlobalMenu() {
 			ImGui::MenuItem("Minimap", {}, &_minimap.isOpen());
 			ImGui::MenuItem("Palette", {}, &_palette.isOpen());
 			ImGui::MenuItem("Viewport", {}, &_viewport.isOpen());
-			ImGui::MenuItem("World Tree", {}, true);
+			ImGui::MenuItem("World Tree", {}, &_worldTreeOpen);
 #ifndef NDEBUG
 			ImGui::Separator();
 
@@ -330,9 +367,12 @@ bool EditorApplication::drawRecentlyOpenedMenuItems() {
 }
 
 void EditorApplication::drawWorldTreeWindow() {
+	if (!_worldTreeOpen)
+		return;
+
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {1, 1});
 
-	bool worldTreeIsOpen = ImGui::Begin("World Tree");
+	bool worldTreeIsOpen = ImGui::Begin("World Tree", &_worldTreeOpen);
 
 	ImGui::PopStyleVar();
 
