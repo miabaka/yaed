@@ -4,7 +4,7 @@
 #include <imgui/imgui_stdlib.h>
 
 InspectorWindow::InspectorWindow()
-		: BaseWindow("Inspector") {}
+		: BaseWindow("inspector", "Inspector") {}
 
 void InspectorWindow::setWorld(std::weak_ptr<World> world) {
 	_world = std::move(world);

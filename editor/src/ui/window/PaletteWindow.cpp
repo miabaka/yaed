@@ -3,7 +3,7 @@
 #include <imgui/imgui.h>
 
 PaletteWindow::PaletteWindow()
-		: BaseWindow("Palette") {}
+		: BaseWindow("palette", "Palette") {}
 
 void PaletteWindow::setLevel(BaseEditor &editor, std::shared_ptr<Level> level) {
 	_level = level;

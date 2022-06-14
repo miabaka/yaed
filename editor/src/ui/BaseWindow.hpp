@@ -5,6 +5,10 @@
 
 class BaseWindow : public IWindow {
 public:
+	const std::string &getId() const override;
+
+	const std::string &getIdWithHashPrefix() const override;
+
 	bool &isOpen() override;
 
 	void setOpen(bool open) override;
@@ -34,6 +38,7 @@ protected:
 
 private:
 	std::string _id;
+	std::string _idWithHashPrefix;
 	std::string _actualTitle;
 	std::string _defaultTitle;
 	int _flags;

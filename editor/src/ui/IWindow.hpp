@@ -4,6 +4,10 @@ class IWindow {
 public:
 	virtual ~IWindow() = default;
 
+	virtual const std::string &getId() const = 0;
+
+	virtual const std::string &getIdWithHashPrefix() const = 0;
+
 	virtual bool &isOpen() = 0;
 
 	virtual void setOpen(bool open) = 0;

@@ -6,7 +6,7 @@
 #include "../ImUtil.hpp"
 
 ViewportWindow::ViewportWindow()
-		: BaseWindow("Viewport", ImGuiWindowFlags_HorizontalScrollbar) {}
+		: BaseWindow("viewport", "Viewport", ImGuiWindowFlags_HorizontalScrollbar) {}
 
 void ViewportWindow::setLevel(BaseEditor &editor, std::shared_ptr<Level> level) {
 	_level = level;

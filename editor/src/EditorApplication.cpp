@@ -60,11 +60,11 @@ void EditorApplication::applyDefaultDockingLayout(ImGuiID dockSpaceId) {
 	ImGuiID bottomOfRightOfRight;
 	ImGui::DockBuilderSplitNode(rightOfRight, ImGuiDir_Down, 0.85f, &bottomOfRightOfRight, &topOfRightOfRight);
 
-	ImGui::DockBuilderDockWindow("###Viewport", leftOfRight);
-	ImGui::DockBuilderDockWindow("World Tree", topOfLeft);
-	ImGui::DockBuilderDockWindow("###Inspector", bottomOfLeft);
-	ImGui::DockBuilderDockWindow("###Layers", topOfRightOfRight);
-	ImGui::DockBuilderDockWindow("###Palette", bottomOfRightOfRight);
+	ImGui::DockBuilderDockWindow(_viewport.getIdWithHashPrefix().c_str(), leftOfRight);
+	ImGui::DockBuilderDockWindow("###world_tree", topOfLeft);
+	ImGui::DockBuilderDockWindow(_inspector.getIdWithHashPrefix().c_str(), bottomOfLeft);
+	ImGui::DockBuilderDockWindow(_layers.getIdWithHashPrefix().c_str(), topOfRightOfRight);
+	ImGui::DockBuilderDockWindow(_palette.getIdWithHashPrefix().c_str(), bottomOfRightOfRight);
 
 	ImGui::DockBuilderSetNodeSize(left, {192, 1});
 	ImGui::DockBuilderSetNodeSize(rightOfRight, {192, 1});
@@ -148,10 +148,10 @@ void EditorApplication::loadConfig() {
 				destination = value.template get<bool>();
 		};
 
-		applyValue("inspector", _inspector.isOpen());
-		applyValue("minimap", _minimap.isOpen());
-		applyValue("palette", _palette.isOpen());
-		applyValue("viewport", _viewport.isOpen());
+		applyValue(_inspector.getId(), _inspector.isOpen());
+		applyValue(_minimap.getId(), _minimap.isOpen());
+		applyValue(_palette.getId(), _palette.isOpen());
+		applyValue(_viewport.getId(), _viewport.isOpen());
 		applyValue("world_tree", _worldTreeOpen);
 	}
 }
@@ -173,11 +173,11 @@ void EditorApplication::saveConfig() {
 	{
 		auto &windowVisibility = config["ui"]["window_visibility"];
 
-		windowVisibility["inspector"] = _inspector.isOpen();
-		windowVisibility["layer_list"] = _layers.isOpen();
-		windowVisibility["minimap"] = _minimap.isOpen();
-		windowVisibility["palette"] = _palette.isOpen();
-		windowVisibility["viewport"] = _viewport.isOpen();
+		windowVisibility[_inspector.getId()] = _inspector.isOpen();
+		windowVisibility[_layers.getId()] = _layers.isOpen();
+		windowVisibility[_minimap.getId()] = _minimap.isOpen();
+		windowVisibility[_palette.getId()] = _palette.isOpen();
+		windowVisibility[_viewport.getId()] = _viewport.isOpen();
 		windowVisibility["world_tree"] = _worldTreeOpen;
 	}
 
@@ -359,7 +359,7 @@ void EditorApplication::drawWorldTreeWindow() {
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {1, 1});
 
-	bool worldTreeIsOpen = ImGui::Begin("World Tree", &_worldTreeOpen);
+	bool worldTreeIsOpen = ImGui::Begin("World Tree###world_tree", &_worldTreeOpen);
 
 	ImGui::PopStyleVar();
 

@@ -2,6 +2,14 @@
 
 #include <imgui/imgui.h>
 
+const std::string &BaseWindow::getId() const {
+	return _id;
+}
+
+const std::string &BaseWindow::getIdWithHashPrefix() const {
+	return _idWithHashPrefix;
+}
+
 bool &BaseWindow::isOpen() {
 	return _open;
 }
@@ -11,7 +19,7 @@ void BaseWindow::setOpen(bool open) {
 }
 
 void BaseWindow::setTitle(const std::string &title) {
-	_actualTitle = title + "###" + _id;
+	_actualTitle = title + _idWithHashPrefix;
 }
 
 void BaseWindow::setTitle(const std::string &title, bool useAsDefault) {
@@ -27,12 +35,14 @@ void BaseWindow::restoreDefaultTitle() {
 
 BaseWindow::BaseWindow(const std::string &id, int flags)
 		: _id(id),
+		  _idWithHashPrefix("###" + id),
 		  _flags(flags) {
 	BaseWindow::setTitle(id, true);
 }
 
 BaseWindow::BaseWindow(const std::string &id, const std::string &title, int flags)
 		: _id(id),
+		  _idWithHashPrefix("###" + id),
 		  _flags(flags) {
 	BaseWindow::setTitle(title.empty() ? id : title, true);
 }

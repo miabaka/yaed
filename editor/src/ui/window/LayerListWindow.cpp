@@ -3,7 +3,7 @@
 #include <imgui/imgui.h>
 
 LayerListWindow::LayerListWindow()
-		: BaseWindow("Layers") {}
+		: BaseWindow("layer_list", "Layers") {}
 
 void LayerListWindow::setLevel(std::weak_ptr<Level> level) {
 	_level = std::move(level);

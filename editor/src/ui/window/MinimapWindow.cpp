@@ -3,7 +3,7 @@
 #include "../ImUtil.hpp"
 
 MinimapWindow::MinimapWindow()
-		: BaseWindow("Minimap") {
+		: BaseWindow("minimap", "Minimap") {
 	BaseWindow::setOpen(false);
 }
 
