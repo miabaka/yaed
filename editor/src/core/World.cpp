@@ -20,7 +20,7 @@ const fs::path &World::path() const {
 
 void World::setPath(const fs::path &path) {
 	_path = path;
-	_filename = path.filename().string();
+	_filename = path.filename().u8string();
 }
 
 const std::string &World::filename() const {

@@ -88,7 +88,12 @@ void EditorApplication::saveConfig() {
 		}
 	}
 
-	config["ui"]["recent_files"] = _recentlyOpened.paths();
+	std::vector<std::string> recentFiles;
+
+	for (const fs::path &path: _recentlyOpened.paths())
+		recentFiles.push_back(path.u8string());
+
+	config["ui"]["recent_files"] = recentFiles;
 
 	writeJsonToFile(config, _configPath);
 }
@@ -263,11 +268,11 @@ bool EditorApplication::drawRecentlyOpenedMenuItems() {
 
 		ImGui::PushID(&path);
 
-		if (ImGui::MenuItem(path.filename().string().c_str()))
+		if (ImGui::MenuItem(path.filename().u8string().c_str()))
 			selectedPath = path;
 
 		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip("%s", path.string().c_str());
+			ImGui::SetTooltip("%s", path.u8string().c_str());
 
 		ImGui::PopID();
 	}
@@ -336,10 +341,10 @@ void EditorApplication::drawWorldTreeWindow() {
 
 				{
 					if (ImGui::MenuItem("Copy Path"))
-						ImGui::SetClipboardText(world->path().string().c_str());
+						ImGui::SetClipboardText(world->path().u8string().c_str());
 
 					if (ImGui::IsItemHovered())
-						ImGui::SetTooltip("%s", world->path().string().c_str());
+						ImGui::SetTooltip("%s", world->path().u8string().c_str());
 				}
 
 				ImGui::MenuItem("Show In Explorer", {}, false, false);
