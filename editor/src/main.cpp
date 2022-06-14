@@ -51,8 +51,6 @@ int main() {
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
-			ImGui::DockSpaceOverViewport();
-
 			if (!editor.update(glfwWindowShouldClose(window)))
 				break;
 

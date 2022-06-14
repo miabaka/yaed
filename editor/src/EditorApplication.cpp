@@ -37,6 +37,68 @@ EditorApplication::~EditorApplication() {
 	saveConfig();
 }
 
+static void applyDefaultDockingLayout(ImGuiID dockSpaceId) {
+	ImGui::DockBuilderRemoveNode(dockSpaceId);
+
+	ImGuiID rootNode = ImGui::DockBuilderAddNode(dockSpaceId, ImGuiDockNodeFlags_DockSpace);
+	ImGui::DockBuilderSetNodeSize(rootNode, ImGui::GetMainViewport()->Size);
+
+	ImGuiID left;
+	ImGuiID right;
+	ImGui::DockBuilderSplitNode(rootNode, ImGuiDir_Left, 0.5f, &left, &right);
+
+	ImGuiID leftOfRight;
+	ImGuiID rightOfRight;
+	ImGui::DockBuilderSplitNode(right, ImGuiDir_Right, 0.5f, &rightOfRight, &leftOfRight);
+
+	ImGuiID topOfLeft;
+	ImGuiID bottomOfLeft;
+	ImGui::DockBuilderSplitNode(left, ImGuiDir_Down, 0.33f, &bottomOfLeft, &topOfLeft);
+
+	ImGuiID topOfRightOfRight;
+	ImGuiID bottomOfRightOfRight;
+	ImGui::DockBuilderSplitNode(rightOfRight, ImGuiDir_Down, 0.85f, &bottomOfRightOfRight, &topOfRightOfRight);
+
+	ImGui::DockBuilderDockWindow("###Viewport", leftOfRight);
+	ImGui::DockBuilderDockWindow("World Tree", topOfLeft);
+	ImGui::DockBuilderDockWindow("###Inspector", bottomOfLeft);
+	ImGui::DockBuilderDockWindow("###Layers", topOfRightOfRight);
+	ImGui::DockBuilderDockWindow("###Palette", bottomOfRightOfRight);
+
+	ImGui::DockBuilderSetNodeSize(left, {216, 1});
+	ImGui::DockBuilderSetNodeSize(rightOfRight, {216, 1});
+
+	ImGui::DockBuilderFinish(dockSpaceId);
+}
+
+bool EditorApplication::update(bool shouldClose) {
+	const ImGuiID dockSpaceId = ImGui::DockSpaceOverViewport();
+
+	const bool dockingLayoutIsSet = (ImGui::DockBuilderGetNode(dockSpaceId) != nullptr);
+
+	if (!dockingLayoutIsSet || _dockingLayoutMustBeReset) {
+		applyDefaultDockingLayout(dockSpaceId);
+		_dockingLayoutMustBeReset = false;
+	}
+
+	ImGui::ShowMetricsWindow();
+
+	drawGlobalMenu();
+	drawWorldTreeWindow();
+
+	_inspector.draw();
+	_layers.draw();
+	_minimap.draw();
+	_palette.draw();
+	_viewport.draw();
+
+	return !shouldClose;
+}
+
+void EditorApplication::render() {
+	_viewport.render();
+}
+
 static nlohmann::json readJsonFromFile(const fs::path &path) {
 	std::ifstream file(path);
 
@@ -96,23 +158,6 @@ void EditorApplication::saveConfig() {
 	config["ui"]["recent_files"] = recentFiles;
 
 	writeJsonToFile(config, _configPath);
-}
-
-bool EditorApplication::update(bool shouldClose) {
-	drawGlobalMenu();
-	drawWorldTreeWindow();
-
-	_inspector.draw();
-	_layers.draw();
-	_minimap.draw();
-	_palette.draw();
-	_viewport.draw();
-
-	return !shouldClose;
-}
-
-void EditorApplication::render() {
-	_viewport.render();
 }
 
 void EditorApplication::openWorld() {
@@ -225,7 +270,8 @@ void EditorApplication::drawGlobalMenu() {
 		}
 
 		if (ImGui::BeginMenu("Window")) {
-			ImGui::MenuItem("Restore Default Layout");
+			if (ImGui::MenuItem("Restore Default Layout"))
+				_dockingLayoutMustBeReset = true;
 
 			ImGui::Separator();
 

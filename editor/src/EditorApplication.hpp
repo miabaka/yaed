@@ -44,6 +44,7 @@ private:
 	PaletteWindow _palette;
 	ViewportWindow _viewport;
 	bool _worldSelectionLockedByCollapsing = false;
+	bool _dockingLayoutMustBeReset = false;
 	RecentlyOpenedManager _recentlyOpened;
 	std::filesystem::path _baseConfigPath;
 	std::filesystem::path _configPath;
