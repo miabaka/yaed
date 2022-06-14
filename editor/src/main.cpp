@@ -27,6 +27,9 @@ int main() {
 
 	{
 		ImGuiIO &io = ImGui::GetIO();
+
+		io.IniFilename = nullptr;
+
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 #ifdef _WIN32
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;

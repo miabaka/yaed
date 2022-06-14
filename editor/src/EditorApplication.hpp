@@ -17,6 +17,8 @@ class EditorApplication : public Editor {
 public:
 	EditorApplication();
 
+	~EditorApplication();
+
 	bool update(bool shouldClose);
 
 	void render();
@@ -36,16 +38,19 @@ protected:
 
 private:
 	std::unique_ptr<cute::shell::IDialogProvider> _dialogProvider;
-
 	InspectorWindow _inspector;
 	LayerListWindow _layers;
 	MinimapWindow _minimap;
 	PaletteWindow _palette;
 	ViewportWindow _viewport;
-
 	bool _worldSelectionLockedByCollapsing = false;
-
 	RecentlyOpenedManager _recentlyOpened;
+	std::filesystem::path _baseConfigPath;
+	std::filesystem::path _configPath;
+
+	void loadConfig();
+
+	void saveConfig();
 
 	void drawGlobalMenu();
 

@@ -51,9 +51,10 @@ add_executable(editor
         src/RecentlyOpenedManager.cpp)
 
 target_link_libraries(editor PRIVATE
+        cuteshell
         fmt
+        nlohmann_json::nlohmann_json
         glm
         glfw gl3w
         imgui
-        stb_image
-        cuteshell)
+        stb_image)

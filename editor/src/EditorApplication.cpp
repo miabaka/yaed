@@ -1,7 +1,11 @@
 #include "EditorApplication.hpp"
 
+#include <stdexcept>
 #include <filesystem>
+#include <fstream>
+#include <sstream>
 
+#include <nlohmann/json.hpp>
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 #include <imgui/imgui_stdlib.h>
@@ -13,7 +17,81 @@ using cute::shell::CuteShell;
 using cute::shell::IFileDialog;
 
 EditorApplication::EditorApplication()
-		: _dialogProvider(CuteShell::createDialogProvider()) {}
+		: _dialogProvider(CuteShell::createDialogProvider()) {
+	_baseConfigPath = CuteShell::getAppDataPath() / "yaed";
+
+	bool configDirectoryExists = fs::exists(_baseConfigPath);
+
+	if (!configDirectoryExists)
+		configDirectoryExists = fs::create_directory(_baseConfigPath);
+
+	if (!configDirectoryExists)
+		throw std::runtime_error("Can't create config directory");
+
+	_configPath = _baseConfigPath / "config.json";
+
+	loadConfig();
+}
+
+EditorApplication::~EditorApplication() {
+	saveConfig();
+}
+
+static nlohmann::json readJsonFromFile(const fs::path &path) {
+	std::ifstream file(path);
+
+	nlohmann::json json;
+
+	if (file)
+		file >> json;
+
+	return json;
+}
+
+static void writeJsonToFile(const nlohmann::json &json, const fs::path &path) {
+	std::ofstream file(path);
+	file << std::setw(4) << json;
+}
+
+void EditorApplication::loadConfig() {
+	nlohmann::json config = readJsonFromFile(_configPath);
+
+	{
+		const auto &imguiSettings = config["ui"]["layout"];
+
+		if (imguiSettings.is_string())
+			ImGui::LoadIniSettingsFromMemory(imguiSettings.get<std::string>().c_str());
+	}
+
+	const auto &recentFiles = config["ui"]["recent_files"];
+
+	if (!recentFiles.is_array())
+		return;
+
+	for (const auto &file: recentFiles) {
+		if (!file.is_string())
+			continue;
+
+		_recentlyOpened.pokePath(fs::u8path(file.get<std::string>()));
+	}
+}
+
+void EditorApplication::saveConfig() {
+	nlohmann::json config = readJsonFromFile(_configPath);
+
+	{
+		ImGuiIO &io = ImGui::GetIO();
+
+		if (io.WantSaveIniSettings) {
+			io.WantSaveIniSettings = false;
+			config["ui"]["layout"] = ImGui::SaveIniSettingsToMemory();
+		}
+	}
+
+	config["ui"]["recent_files"] = _recentlyOpened.paths();
+
+	writeJsonToFile(config, _configPath);
+}
 
 bool EditorApplication::update(bool shouldClose) {
 	drawGlobalMenu();
@@ -98,7 +176,7 @@ void EditorApplication::onWorldFileOperation(std::shared_ptr<World> world, const
 void EditorApplication::drawGlobalMenu() {
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
-			ImGui::MenuItem("New...", "ctrl+n");
+			ImGui::MenuItem("New...", "ctrl+n", false, false);
 
 			ImGui::Separator();
 
