@@ -128,7 +128,7 @@ void SthTilemapRendererContext::render() {
 
 		int frame;
 
-		if (tile == Tile::Ladder) {
+		if (isLadderTile(tile)) {
 			Tilemap::tile_t topTile = mainLayerMap(position + glm::ivec2(0, -1));
 			Tilemap::tile_t bottomTile = mainLayerMap(position + glm::ivec2(0, 1));
 
