@@ -32,6 +32,11 @@ glm::vec2 ImUtil::centeredImage(ImTextureID texture, glm::vec2 size, glm::vec2 u
 	return offset;
 }
 
+// TODO: properly implement it
+void ImUtil::moveFromTitleBarOnly() {
+
+}
+
 bool ImUtil::loadIniConfig(const fs::path &path) {
 	std::ifstream file(path);
 
