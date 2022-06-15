@@ -40,8 +40,6 @@ void ViewportWindow::onBeginPost() {
 }
 
 void ViewportWindow::onDraw() {
-	ImUtil::moveFromTitleBarOnly();
-
 	if (_level.expired())
 		return;
 

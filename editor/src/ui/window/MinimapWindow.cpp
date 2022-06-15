@@ -8,5 +8,5 @@ MinimapWindow::MinimapWindow()
 }
 
 void MinimapWindow::onDraw() {
-	ImUtil::moveFromTitleBarOnly();
+
 }

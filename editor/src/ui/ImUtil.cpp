@@ -32,18 +32,6 @@ glm::vec2 ImUtil::centeredImage(ImTextureID texture, glm::vec2 size, glm::vec2 u
 	return offset;
 }
 
-void ImUtil::moveFromTitleBarOnly() {
-	const glm::vec2 previousCursorPos = ImGui::GetCursorPos();
-	const glm::vec2 contentRegionAvail = ImGui::GetContentRegionAvail();
-
-	if (contentRegionAvail.x < 1 || contentRegionAvail.y < 1)
-		return;
-
-	ImGui::InvisibleButton("_moveFromTitleBarOnly", contentRegionAvail);
-
-	ImGui::SetCursorPos(previousCursorPos);
-}
-
 bool ImUtil::loadIniConfig(const fs::path &path) {
 	std::ifstream file(path);
 

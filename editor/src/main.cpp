@@ -29,6 +29,7 @@ int main() {
 		ImGuiIO &io = ImGui::GetIO();
 
 		io.IniFilename = nullptr;
+		io.ConfigWindowsMoveFromTitleBarOnly = true;
 
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 #ifdef _WIN32
