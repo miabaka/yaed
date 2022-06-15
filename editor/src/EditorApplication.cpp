@@ -407,6 +407,23 @@ void EditorApplication::drawWorldTreeWindow() {
 
 			ImGui::PopStyleVar();
 
+			if (ImGui::IsItemToggledOpen())
+				_worldSelectionLockedByCollapsing = true;
+
+			const bool justClicked = ImGui::IsItemDeactivated() && ImGui::IsItemHovered();
+			const bool justMiddleClicked = ImGui::IsItemClicked(ImGuiMouseButton_Middle);
+			const bool justSelected = justClicked && !_worldSelectionLockedByCollapsing;
+
+			// TODO: trigger by mouse up, not down
+			if (justMiddleClicked)
+				worldToClose = world;
+
+			if (justClicked)
+				_worldSelectionLockedByCollapsing = false;
+
+			if (justSelected)
+				selectWorld(world);
+
 			if (ImGui::BeginPopupContextItem()) {
 				ImGui::MenuItem(world->nameOrFilename().c_str(), {}, false, false);
 
@@ -437,18 +454,6 @@ void EditorApplication::drawWorldTreeWindow() {
 
 				ImGui::EndPopup();
 			}
-
-			if (ImGui::IsItemToggledOpen())
-				_worldSelectionLockedByCollapsing = true;
-
-			const bool justClicked = ImGui::IsItemDeactivated() && ImGui::IsItemHovered();
-			const bool justSelected = justClicked && !_worldSelectionLockedByCollapsing;
-
-			if (justClicked)
-				_worldSelectionLockedByCollapsing = false;
-
-			if (justSelected)
-				selectWorld(world);
 
 			if (!open)
 				continue;
