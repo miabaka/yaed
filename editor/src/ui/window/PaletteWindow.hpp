@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "../../core/palette/BrushSelectionManager.hpp"
 #include "../../core/palette/IPaletteIconProvider.hpp"
 #include "../../core/palette/PaletteIconSet.hpp"
 #include "../../core/palette/PaletteTemplate.hpp"
@@ -15,13 +16,9 @@ public:
 
 	void setLevel(BaseEditor &editor, std::shared_ptr<Level> level);
 
-protected:
-	std::weak_ptr<Level> _level;
-	std::weak_ptr<LevelSkin> _levelSkin;
-	std::weak_ptr<const PaletteTemplate> _template;
-	std::weak_ptr<IPaletteIconProvider> _iconProvider;
-	std::weak_ptr<PaletteIconSet> _iconSet;
+	void setBrushSelectionSource(std::weak_ptr<BrushSelectionManager> brushSelection);
 
+protected:
 	void onBeginPre() override;
 
 	void onBeginPost() override;
@@ -29,5 +26,15 @@ protected:
 	void onDraw() override;
 
 private:
+	std::weak_ptr<Level> _level;
+	std::weak_ptr<LevelSkin> _levelSkin;
+	std::weak_ptr<const PaletteTemplate> _template;
+	std::weak_ptr<IPaletteIconProvider> _iconProvider;
+	std::weak_ptr<PaletteIconSet> _iconSet;
+	std::weak_ptr<BrushSelectionManager> _selectionManager;
+
 	void updateIconSet();
+
+	void
+	drawBrush(std::shared_ptr<Brush> brush, bool allowed, PaletteIconSet &iconSet, std::shared_ptr<BrushSelection> selection);
 };

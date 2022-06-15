@@ -9,6 +9,9 @@ struct EditorWorldData : public ICustomData {
 	std::shared_ptr<IWorldExporter> exporter;
 };
 
+BaseEditor::BaseEditor()
+		: _brushSelection(std::make_shared<BrushSelectionManager>()) {}
+
 GameManager &BaseEditor::games() {
 	return _gameManager;
 }
@@ -27,6 +30,10 @@ PaletteIconProviderManager &BaseEditor::paletteIconProviders() {
 
 TilemapRendererManager &BaseEditor::tilemapRenderers() {
 	return _tilemapRendererManager;
+}
+
+std::shared_ptr<BrushSelectionManager> BaseEditor::brushSelection() {
+	return _brushSelection;
 }
 
 const std::vector<std::shared_ptr<World>> &BaseEditor::worlds() const {

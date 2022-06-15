@@ -11,6 +11,8 @@ add_executable(editor
         src/core/palette/BasePaletteIconProvider.cpp
         src/core/palette/Brush.cpp
         src/core/palette/BrushGroup.cpp
+        src/core/palette/BrushSelection.cpp
+        src/core/palette/BrushSelectionManager.cpp
         src/core/palette/PaletteIconSet.cpp
         src/core/palette/PaletteTemplate.cpp
         src/core/palette/PaletteTemplateBuilder.cpp
@@ -24,6 +26,7 @@ add_executable(editor
         src/core/LayerTemplate.cpp
         src/core/Level.cpp
         src/core/LevelSkin.cpp
+        src/core/RecentlyOpenedManager.cpp
         src/core/Tilemap.cpp
         src/core/World.cpp
         src/core/WorldFactoryManager.cpp
@@ -47,8 +50,7 @@ add_executable(editor
         src/ui/ImUtil.cpp
         src/Editor.cpp
         src/EditorApplication.cpp
-        src/main.cpp
-        src/RecentlyOpenedManager.cpp)
+        src/main.cpp)
 
 target_link_libraries(editor PRIVATE
         cuteshell

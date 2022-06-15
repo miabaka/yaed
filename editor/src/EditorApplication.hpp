@@ -6,13 +6,13 @@
 #include <imgui/imgui_internal.h>
 #include <cute/shell/IDialogProvider.hpp>
 
+#include "core/RecentlyOpenedManager.hpp"
 #include "ui/window/InspectorWindow.hpp"
 #include "ui/window/LayerListWindow.hpp"
 #include "ui/window/MinimapWindow.hpp"
 #include "ui/window/PaletteWindow.hpp"
 #include "ui/window/ViewportWindow.hpp"
 #include "Editor.hpp"
-#include "RecentlyOpenedManager.hpp"
 
 class EditorApplication : public Editor {
 public:

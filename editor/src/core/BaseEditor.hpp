@@ -8,6 +8,7 @@
 #include "export/IWorldExporter.hpp"
 #include "format/WorldFormatManager.hpp"
 #include "palette/PaletteIconProviderManager.hpp"
+#include "palette/BrushSelectionManager.hpp"
 #include "render/TilemapRendererManager.hpp"
 #include "game/GameManager.hpp"
 #include "game/BaseGame.hpp"
@@ -18,6 +19,8 @@
 
 class BaseEditor {
 public:
+	BaseEditor();
+
 	virtual ~BaseEditor() = default;
 
 	GameManager &games();
@@ -29,6 +32,8 @@ public:
 	PaletteIconProviderManager &paletteIconProviders();
 
 	TilemapRendererManager &tilemapRenderers();
+
+	std::shared_ptr<BrushSelectionManager> brushSelection();
 
 	const std::vector<std::shared_ptr<World>> &worlds() const;
 
@@ -91,6 +96,7 @@ private:
 	WorldFactoryManager _worldFactoryManager;
 	PaletteIconProviderManager _iconProviderManager;
 	TilemapRendererManager _tilemapRendererManager;
+	std::shared_ptr<BrushSelectionManager> _brushSelection;
 	std::vector<std::shared_ptr<World>> _worlds;
 	std::weak_ptr<World> _selectedWorld;
 	std::weak_ptr<Level> _selectedLevel;

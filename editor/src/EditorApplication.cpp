@@ -32,6 +32,8 @@ EditorApplication::EditorApplication()
 	_imGuiConfigPath = baseConfigPath / "imgui.ini";
 
 	loadConfig();
+
+	_palette.setBrushSelectionSource(brushSelection());
 }
 
 EditorApplication::~EditorApplication() {
