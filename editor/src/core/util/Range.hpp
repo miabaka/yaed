@@ -28,6 +28,10 @@ public:
 		return _stop - _start;
 	}
 
+	bool inclusiveContains(T value) const {
+		return value >= _start && value <= _stop;
+	}
+
 private:
 	T _start;
 	T _stop;

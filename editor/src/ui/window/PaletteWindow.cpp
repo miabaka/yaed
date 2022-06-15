@@ -81,7 +81,7 @@ void PaletteWindow::onDraw() {
 	std::shared_ptr<BrushSelection> selection;
 
 	if (!_selectionManager.expired())
-		selection = _selectionManager.lock()->getSelectionForLevel(*level);
+		selection = _selectionManager.lock()->getSelectionForLevel(*level, *palTemplate);
 
 	ImGui::PushStyleColor(ImGuiCol_Header, 0);
 	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, 0);

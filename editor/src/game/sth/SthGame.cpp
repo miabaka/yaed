@@ -48,8 +48,19 @@ void SthGame::setupLayerTemplates() {
 			Tile::Gem5
 	};
 
-	addLayerTemplate("main", std::make_shared<LayerTemplate>("Main", std::move(mainTiles)));
-	addLayerTemplate("gems", std::make_shared<LayerTemplate>("Gems", std::move(gemTiles)));
+	auto mainLayer = std::make_shared<LayerTemplate>("Main", std::move(mainTiles));
+
+	mainLayer->setDefaultPrimaryTile(Tile::Ground);
+	mainLayer->setDefaultSecondaryTile(Tile::Air);
+
+	addLayerTemplate("main", mainLayer);
+
+	auto gemLayer = std::make_shared<LayerTemplate>("Gems", std::move(gemTiles));
+
+	gemLayer->setDefaultPrimaryTile(Tile::Gem0);
+	gemLayer->setDefaultSecondaryTile(Tile::Air);
+
+	addLayerTemplate("gems", gemLayer);
 }
 
 void SthGame::setupLevelSkins() {
