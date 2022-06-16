@@ -270,7 +270,7 @@ void EditorApplication::drawGlobalMenu() {
 					if (ImGui::MenuItem("Clear This List"))
 						_recentlyOpened.clear();
 				} else {
-					ImGui::MenuItem("(Nothing)", {}, false, false);
+					ImGui::MenuItem("(Empty)", {}, false, false);
 				}
 
 
@@ -436,7 +436,7 @@ void EditorApplication::drawWorldTreeWindow() {
 				ImGui::Separator();
 
 				{
-					if (ImGui::MenuItem("Copy Path"))
+					if (ImGui::MenuItem("Copy Path", {}, false, !world->path().empty()))
 						ImGui::SetClipboardText(world->path().u8string().c_str());
 
 					if (ImGui::IsItemHovered())

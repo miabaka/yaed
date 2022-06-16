@@ -56,6 +56,7 @@ BaseEditor::createWorld(std::shared_ptr<IGame> game, std::shared_ptr<IWorldFacto
 	world->setCustomData(std::move(customData));
 
 	_worlds.push_back(world);
+	selectWorld(world);
 
 	return world;
 }

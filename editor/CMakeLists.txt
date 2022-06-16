@@ -48,10 +48,11 @@ add_executable(editor
         src/ui/window/ViewportWindow.cpp
         src/ui/BaseWindow.cpp
         src/ui/ImUtil.cpp
+        src/ui/NewWorldDialog.cpp
+        src/ui/NewWorldDialogState.cpp
         src/Editor.cpp
         src/EditorApplication.cpp
-        src/main.cpp
-        src/NewWorldDialogState.cpp)
+        src/main.cpp)
 
 target_link_libraries(editor PRIVATE
         cuteshell

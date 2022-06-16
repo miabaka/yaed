@@ -13,7 +13,7 @@
 #include "ui/window/PaletteWindow.hpp"
 #include "ui/window/ViewportWindow.hpp"
 #include "Editor.hpp"
-#include "NewWorldDialogState.hpp"
+#include "ui/NewWorldDialogState.hpp"
 
 class EditorApplication : public Editor {
 public:

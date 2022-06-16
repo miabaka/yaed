@@ -3,9 +3,9 @@
 #include <memory>
 #include <string>
 
-#include "core/format/WorldFormat.hpp"
-#include "core/game/IGame.hpp"
-#include "core/IWorldFactory.hpp"
+#include "../core/format/WorldFormat.hpp"
+#include "../core/game/IGame.hpp"
+#include "../core/IWorldFactory.hpp"
 
 class NewWorldDialogState {
 public:

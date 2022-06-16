@@ -30,10 +30,16 @@ const std::string &World::filename() const {
 }
 
 const std::string &World::nameOrFilename() const {
-	if (_name.empty())
-		return _filename;
+	if (_name.empty()) {
+		if (_filename.empty()) {
+			static const std::string emptyName = "(Unnamed)";
+			return emptyName;
+		}
 
-	return _name;
+		return _filename;
+	}
+
+	return name();
 }
 
 const std::vector<std::shared_ptr<Level>> &World::levels() const {
@@ -60,7 +66,7 @@ void World::setFactory(std::shared_ptr<IWorldFactory> factory) {
 	_factory = std::move(factory);
 }
 
-std::shared_ptr<Level> World::createLevel(std::shared_ptr<LevelSkin> skin, const std::string& name) {
+std::shared_ptr<Level> World::createLevel(std::shared_ptr<LevelSkin> skin, const std::string &name) {
 	if (!(_factory && _game))
 		return {};
 
