@@ -50,7 +50,8 @@ add_executable(editor
         src/ui/ImUtil.cpp
         src/Editor.cpp
         src/EditorApplication.cpp
-        src/main.cpp)
+        src/main.cpp
+        src/NewWorldDialogState.cpp)
 
 target_link_libraries(editor PRIVATE
         cuteshell

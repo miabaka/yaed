@@ -498,6 +498,7 @@ void EditorApplication::drawWorldTreeWindow() {
 void EditorApplication::drawNewWorldDialog() {
 	if (_newWorldDialogMustBeOpen) {
 		_newWorldDialogMustBeOpen = false;
+		_newWorldDialogState.reset();
 		ImGui::OpenPopup("New");
 	}
 
@@ -518,28 +519,25 @@ void EditorApplication::drawNewWorldDialog() {
 
 	ImGui::BeginChild("content", size - glm::vec2{0, 27});
 
-	const float inputOffset = ImGui::GetCursorPosX() + 60;
+	const float inputOffset = ImGui::GetCursorPosX() + 13 + 47;
 
 	ImGui::Text("Common");
 
 	ImGui::Indent(6);
 
 	{
-		static char imBaka[32];
-
 		ImGui::AlignTextToFramePadding();
 		ImGui::Text("Name");
 
 		ImGui::SameLine();
 		ImGui::SetCursorPosX(inputOffset);
 		ImGui::SetNextItemWidth(-7);
-		ImGui::InputTextWithHint("###name", "(Unset)", imBaka, sizeof(imBaka));
+		ImGui::InputTextWithHint("###name", "None", _newWorldDialogState.chosenName());
 	}
 
 	ImGui::Indent(-6);
 
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6);
-
 	ImGui::Text("Generation");
 
 	ImGui::Indent(6);
@@ -553,7 +551,21 @@ void EditorApplication::drawNewWorldDialog() {
 		ImGui::SameLine();
 		ImGui::SetCursorPosX(inputOffset);
 		ImGui::SetNextItemWidth(-7);
-		ImGui::Combo("###game", &imBaka, "Snowy: Treasure Hunter\0");
+
+		if (ImGui::BeginCombo("###game", _newWorldDialogState.selectedGameRawName())) {
+			for (const auto &it: games().games()) {
+				const std::shared_ptr<IGame> &game = it.second;
+
+				ImGui::PushID(game.get());
+
+				if (ImGui::Selectable(game->name().c_str()))
+					_newWorldDialogState.selectGame(game);
+
+				ImGui::PopID();
+			}
+
+			ImGui::EndCombo();
+		}
 
 		ImGui::AlignTextToFramePadding();
 		ImGui::Text("Factory");
@@ -561,7 +573,73 @@ void EditorApplication::drawNewWorldDialog() {
 		ImGui::SameLine();
 		ImGui::SetCursorPosX(inputOffset);
 		ImGui::SetNextItemWidth(-7);
-		ImGui::Combo("###factory", &imBaka, "SthWorldFactory\0");
+
+		const bool canBeSelected = _newWorldDialogState.factoryCanBeSelected();
+
+		ImGui::BeginDisabled(!canBeSelected);
+
+		if (ImGui::BeginCombo("###factory", _newWorldDialogState.selectedFactoryRawName())) {
+			for (const auto &it: worldFactories().factories()) {
+				// TODO: game support check
+				const std::shared_ptr<IWorldFactory> &factory = it.second;
+
+				ImGui::PushID(factory.get());
+
+				if (ImGui::Selectable(factory->name().c_str()))
+					_newWorldDialogState.selectFactory(factory);
+
+				ImGui::PopID();
+			}
+
+			ImGui::EndCombo();
+		}
+
+		ImGui::EndDisabled();
+	}
+
+	ImGui::Indent(-6);
+
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6);
+	ImGui::Text("Export");
+
+	ImGui::Indent(6);
+
+	{
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Format");
+
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("Initial export format, can be changed later");
+
+		ImGui::SameLine();
+		ImGui::SetCursorPosX(inputOffset);
+		ImGui::SetNextItemWidth(-7);
+
+		const bool canBeSelected = _newWorldDialogState.formatCanBeSelected();
+
+		ImGui::BeginDisabled(!canBeSelected);
+
+		if (ImGui::BeginCombo("###format", _newWorldDialogState.selectedFormatRawName())) {
+			if (ImGui::Selectable("None"))
+				_newWorldDialogState.selectFormat({});
+
+			for (const auto &it: worldFormats().formats()) {
+				// TODO: game support check
+				const std::shared_ptr<WorldFormat> &format = it.second;
+				const WorldFormatInfo &info = format->info();
+
+				ImGui::PushID(format.get());
+
+				if (ImGui::Selectable(info.name().c_str()))
+					_newWorldDialogState.selectFormat(format);
+
+				ImGui::PopID();
+			}
+
+			ImGui::EndCombo();
+		}
+
+		ImGui::EndDisabled();
 	}
 
 	ImGui::Indent(-6);
@@ -570,8 +648,21 @@ void EditorApplication::drawNewWorldDialog() {
 
 	ImGui::Separator();
 
-	if (ImGui::Button("OK", {96, 0}))
+	ImGui::BeginDisabled(!_newWorldDialogState.valid());
+
+	if (ImGui::Button("OK", {96, 0})) {
+		const NewWorldDialogState &state = _newWorldDialogState;
+
+		// TODO: don' t close dialog if world creation failed
+		std::shared_ptr<World> world = createWorld(state.selectedGame(), state.selectedFactory(), state.chosenName());
+
+//		if (world)
+//			world.setExporter(...);
+
 		ImGui::CloseCurrentPopup();
+	}
+
+	ImGui::EndDisabled();
 
 	ImGui::SameLine();
 

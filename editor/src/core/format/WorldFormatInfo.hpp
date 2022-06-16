@@ -10,6 +10,8 @@ public:
 
 	const std::string &name() const;
 
+	bool supportsWorldNames() const;
+
 private:
 	std::string _fileExtension;
 	std::string _name;

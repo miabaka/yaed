@@ -13,6 +13,7 @@
 #include "ui/window/PaletteWindow.hpp"
 #include "ui/window/ViewportWindow.hpp"
 #include "Editor.hpp"
+#include "NewWorldDialogState.hpp"
 
 class EditorApplication : public Editor {
 public:
@@ -51,6 +52,7 @@ private:
 	RecentlyOpenedManager _recentlyOpened;
 	std::filesystem::path _configPath;
 	std::filesystem::path _imGuiConfigPath;
+	NewWorldDialogState _newWorldDialogState;
 
 	void loadConfig();
 

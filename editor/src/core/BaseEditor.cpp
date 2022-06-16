@@ -51,7 +51,11 @@ BaseEditor::createWorld(std::shared_ptr<IGame> game, std::shared_ptr<IWorldFacto
 		return {};
 
 	auto customData = std::make_unique<EditorWorldData>();
+
+	world->setFactory(std::move(factory));
 	world->setCustomData(std::move(customData));
+
+	_worlds.push_back(world);
 
 	return world;
 }

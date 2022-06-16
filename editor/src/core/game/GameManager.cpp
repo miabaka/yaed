@@ -18,3 +18,7 @@ std::shared_ptr<IGame> GameManager::findGameById(const std::string &id) const {
 
 	return it->second;
 }
+
+const std::unordered_map<std::string, std::shared_ptr<IGame>> &GameManager::games() const {
+	return _games;
+}

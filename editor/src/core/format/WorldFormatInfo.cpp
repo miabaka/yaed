@@ -11,3 +11,7 @@ const std::string &WorldFormatInfo::fileExtension() const {
 const std::string &WorldFormatInfo::name() const {
 	return _name;
 }
+
+bool WorldFormatInfo::supportsWorldNames() const {
+	return false;
+}
