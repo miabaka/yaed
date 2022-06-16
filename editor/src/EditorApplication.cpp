@@ -98,6 +98,8 @@ bool EditorApplication::update(bool shouldClose) {
 	_palette.draw();
 	_viewport.draw();
 
+	drawNewWorldDialog();
+
 	return !shouldClose;
 }
 
@@ -201,6 +203,7 @@ void EditorApplication::openWorld() {
 	if (selectedPath.empty())
 		return;
 
+	// TODO: handle exceptions and show error dialog
 	BaseEditor::openWorld(selectedPath);
 }
 
@@ -252,7 +255,8 @@ void EditorApplication::onWorldFileOperation(std::shared_ptr<World> world, const
 void EditorApplication::drawGlobalMenu() {
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
-			ImGui::MenuItem("New...", "ctrl+n", false, false);
+			if (ImGui::MenuItem("New...", "ctrl+n"))
+				_newWorldDialogMustBeOpen = true;
 
 			ImGui::Separator();
 
@@ -489,4 +493,90 @@ void EditorApplication::drawWorldTreeWindow() {
 
 	if (worldToClose)
 		closeWorld(worldToClose);
+}
+
+void EditorApplication::drawNewWorldDialog() {
+	if (_newWorldDialogMustBeOpen) {
+		_newWorldDialogMustBeOpen = false;
+		ImGui::OpenPopup("New");
+	}
+
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, {0.5f, 0.5f});
+	ImGui::SetNextWindowSize({268, 300}, ImGuiCond_Appearing);
+
+	ImGui::PushStyleColor(ImGuiCol_PopupBg, ImGui::GetColorU32(ImGuiCol_WindowBg));
+
+	bool newIsOpen = ImGui::BeginPopupModal("New");
+
+	ImGui::PopStyleColor();
+
+	if (!newIsOpen)
+		return;
+
+	const glm::vec2 size = ImGui::GetContentRegionAvail();
+
+	ImGui::BeginChild("content", size - glm::vec2{0, 27});
+
+	const float inputOffset = ImGui::GetCursorPosX() + 60;
+
+	ImGui::Text("Common");
+
+	ImGui::Indent(6);
+
+	{
+		static char imBaka[32];
+
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Name");
+
+		ImGui::SameLine();
+		ImGui::SetCursorPosX(inputOffset);
+		ImGui::SetNextItemWidth(-7);
+		ImGui::InputTextWithHint("###name", "(Unset)", imBaka, sizeof(imBaka));
+	}
+
+	ImGui::Indent(-6);
+
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6);
+
+	ImGui::Text("Generation");
+
+	ImGui::Indent(6);
+
+	{
+		static int imBaka = 0;
+
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Game");
+
+		ImGui::SameLine();
+		ImGui::SetCursorPosX(inputOffset);
+		ImGui::SetNextItemWidth(-7);
+		ImGui::Combo("###game", &imBaka, "Snowy: Treasure Hunter\0");
+
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Factory");
+
+		ImGui::SameLine();
+		ImGui::SetCursorPosX(inputOffset);
+		ImGui::SetNextItemWidth(-7);
+		ImGui::Combo("###factory", &imBaka, "SthWorldFactory\0");
+	}
+
+	ImGui::Indent(-6);
+
+	ImGui::EndChild();
+
+	ImGui::Separator();
+
+	if (ImGui::Button("OK", {96, 0}))
+		ImGui::CloseCurrentPopup();
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Cancel", {96, 0}))
+		ImGui::CloseCurrentPopup();
+
+	ImGui::EndPopup();
 }

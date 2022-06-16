@@ -47,6 +47,7 @@ private:
 	bool _worldSelectionLockedByCollapsing = false;
 	bool _dockingLayoutMustBeReset = false;
 	bool _worldTreeOpen = true;
+	bool _newWorldDialogMustBeOpen = false;
 	RecentlyOpenedManager _recentlyOpened;
 	std::filesystem::path _configPath;
 	std::filesystem::path _imGuiConfigPath;
@@ -60,6 +61,8 @@ private:
 	void drawGlobalMenu();
 
 	bool drawRecentlyOpenedMenuItems();
+
+	void drawNewWorldDialog();
 
 	// TODO: create separate class for this
 	void drawWorldTreeWindow();
