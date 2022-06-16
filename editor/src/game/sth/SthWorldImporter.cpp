@@ -87,9 +87,21 @@ SthWorldImporter::load(
 		const std::filesystem::path &path, const GameManager &gameManager,
 		const WorldFactoryManager &worldFactoryManager) const {
 	std::shared_ptr<IGame> game = gameManager.findGameById("sth");
+
+	// TODO: use something like .findFactoryForGame instead
+	//       also, it would be nice to let the user select a factory if many are available, but idk how
+	//       it's just importer, there's no access to ui
 	std::shared_ptr<IWorldFactory> worldFactory = worldFactoryManager.findFactoryById("sth");
 
-	std::shared_ptr<World> world = worldFactory->createWorld(gameManager, {});
+	if (!(worldFactory && game))
+		return {};
+
+	std::shared_ptr<World> world = worldFactory->createWorld(game, {});
+
+	if (!world)
+		return {};
+
+	world->setFactory(worldFactory);
 
 	std::vector<char> data;
 
@@ -126,9 +138,17 @@ SthWorldImporter::load(
 		if (size != glm::ivec2(40, 30))
 			throw std::runtime_error("Wrong level dimensions");
 
-		auto name = std::to_string(i + 1);
+		const auto name = std::to_string(i + 1);
+		std::shared_ptr<Level> level = world->createLevel(skin, name);
 
-		auto level = worldFactory->createLevel(gameManager, name, skin);
+		// TODO: log import errors somewhere (possibly, for fancy import log ui)
+		//       yeah, ui would be nice
+		//       and yes i know i'm writing right in here...
+		//       You're baka for this :p whyyy 'coz you are suuuper-cute :p welp, i guess i'm fine with that then
+		//       please don't delete this comment btw
+		// TODO: try to import next levels
+		if (!level)
+			break;
 
 		Tilemap &gemLayerMap = level->layers()[0]->tilemap();
 		Tilemap &mainLayerMap = level->layers()[1]->tilemap();

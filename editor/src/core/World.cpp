@@ -1,5 +1,7 @@
 #include "World.hpp"
 
+#include "IWorldFactory.hpp"
+
 namespace fs = std::filesystem;
 
 World::World(std::shared_ptr<IGame> game, std::string name)
@@ -48,4 +50,19 @@ std::shared_ptr<IGame> World::game() {
 
 std::shared_ptr<const IGame> World::game() const {
 	return _game;
+}
+
+std::shared_ptr<IWorldFactory> World::factory() const {
+	return _factory;
+}
+
+void World::setFactory(std::shared_ptr<IWorldFactory> factory) {
+	_factory = std::move(factory);
+}
+
+std::shared_ptr<Level> World::createLevel(std::shared_ptr<LevelSkin> skin, const std::string& name) {
+	if (!(_factory && _game))
+		return {};
+
+	return _factory->createLevel(*_game, name, std::move(skin));
 }

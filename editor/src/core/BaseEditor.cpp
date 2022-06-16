@@ -40,9 +40,15 @@ const std::vector<std::shared_ptr<World>> &BaseEditor::worlds() const {
 	return _worlds;
 }
 
-std::shared_ptr<World> BaseEditor::createWorld(const std::string &factoryId, const std::string &name) {
-	std::shared_ptr<World> world =
-			_worldFactoryManager.findFactoryById(factoryId)->createWorld(_gameManager, name);
+std::shared_ptr<World>
+BaseEditor::createWorld(std::shared_ptr<IGame> game, std::shared_ptr<IWorldFactory> factory, const std::string &name) {
+	if (!(game && factory))
+		return {};
+
+	std::shared_ptr<World> world = factory->createWorld(game, name);
+
+	if (!world)
+		return {};
 
 	auto customData = std::make_unique<EditorWorldData>();
 	world->setCustomData(std::move(customData));

@@ -9,9 +9,11 @@
 #include "util/CustomDataContainer.hpp"
 #include "Level.hpp"
 
+class IWorldFactory;
+
 class World : public CustomDataContainer {
 public:
-	explicit World(std::shared_ptr<IGame> game, std::string name);
+	explicit World(std::shared_ptr<IGame> game, std::string name = {});
 
 	std::string &name();
 
@@ -33,6 +35,12 @@ public:
 
 	std::shared_ptr<const IGame> game() const;
 
+	std::shared_ptr<IWorldFactory> factory() const;
+
+	void setFactory(std::shared_ptr<IWorldFactory> factory);
+
+	std::shared_ptr<Level> createLevel(std::shared_ptr<LevelSkin> skin, const std::string &name = {});
+
 private:
 	std::string _name;
 	std::string _filename;
@@ -40,4 +48,5 @@ private:
 	std::filesystem::path _path;
 	std::vector<std::shared_ptr<Level>> _levels;
 	std::shared_ptr<IGame> _game;
+	std::shared_ptr<IWorldFactory> _factory;
 };

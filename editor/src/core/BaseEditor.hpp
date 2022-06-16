@@ -37,7 +37,8 @@ public:
 
 	const std::vector<std::shared_ptr<World>> &worlds() const;
 
-	std::shared_ptr<World> createWorld(const std::string &factoryId, const std::string &name = "Unnamed");
+	std::shared_ptr<World> createWorld(
+			std::shared_ptr<IGame> game, std::shared_ptr<IWorldFactory> factory, const std::string &name = {});
 
 	std::shared_ptr<World> openWorld(const std::filesystem::path &path);
 
