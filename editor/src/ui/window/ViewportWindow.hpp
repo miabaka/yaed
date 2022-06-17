@@ -11,6 +11,8 @@ public:
 
 	void setLevel(BaseEditor &editor, std::shared_ptr<Level> level);
 
+	void setBrushSelectionSource(std::weak_ptr<BrushSelectionManager> brushSelection);
+
 protected:
 	void onBeginPre() override;
 
@@ -23,4 +25,7 @@ protected:
 private:
 	std::weak_ptr<Level> _level;
 	std::shared_ptr<ITilemapRendererContext> _rendererContext;
+	std::weak_ptr<BrushSelectionManager> _selectionManager;
+
+	void processEdits();
 };

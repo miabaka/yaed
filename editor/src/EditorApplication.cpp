@@ -34,6 +34,7 @@ EditorApplication::EditorApplication()
 	loadConfig();
 
 	_palette.setBrushSelectionSource(brushSelection());
+	_viewport.setBrushSelectionSource(brushSelection());
 }
 
 EditorApplication::~EditorApplication() {

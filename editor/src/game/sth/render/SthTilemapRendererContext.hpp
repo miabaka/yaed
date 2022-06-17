@@ -12,9 +12,9 @@ class SthTilemapRendererContext : public ITilemapRendererContext {
 public:
 	~SthTilemapRendererContext();
 
-	glm::uvec2 tileSize() const override;
+	glm::ivec2 tileSize() const override;
 
-	glm::uvec2 viewportSize() const override;
+	glm::ivec2 viewportSize() const override;
 
 	void *viewportTexture() const override;
 

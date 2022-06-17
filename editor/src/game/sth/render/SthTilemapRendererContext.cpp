@@ -15,11 +15,11 @@ SthTilemapRendererContext::~SthTilemapRendererContext() {
 	glDeleteTextures(1, &_texture);
 }
 
-glm::uvec2 SthTilemapRendererContext::tileSize() const {
+glm::ivec2 SthTilemapRendererContext::tileSize() const {
 	return {40, 40};
 }
 
-glm::uvec2 SthTilemapRendererContext::viewportSize() const {
+glm::ivec2 SthTilemapRendererContext::viewportSize() const {
 	return {1600, 1200};
 }
 

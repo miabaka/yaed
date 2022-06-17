@@ -23,3 +23,22 @@ std::shared_ptr<BrushSelection> BrushSelectionManager::getSelectionForLevel(
 
 	return selection;
 }
+
+std::shared_ptr<BrushSelection> BrushSelectionManager::getSelectionForLevel(const Level &level) const {
+	std::shared_ptr<Layer> layer = level.selectedLayer();
+
+	if (!layer)
+		return {};
+
+	std::shared_ptr<const LayerTemplate> layerTemplate = layer->getTemplate();
+
+	if (!layerTemplate)
+		return {};
+
+	const auto it = _selection.find(layerTemplate);
+
+	if (it == _selection.end())
+		return {};
+
+	return it->second;
+}

@@ -28,16 +28,16 @@ Tilemap::tile_t *Tilemap::data() noexcept {
 	return _tiles.data();
 };
 
-Tilemap::tile_t Tilemap::operator()(int x, int y) const {
-	if (!positionIsValid({x, y}))
-		return 0;
-
-	return _tiles[y * _size.x + x];
-}
-
 Tilemap::tile_t Tilemap::operator()(glm::ivec2 position) const {
 	if (!positionIsValid(position))
 		return 0;
+
+	return _tiles[position.y * _size.x + position.x];
+}
+
+Tilemap::tile_t &Tilemap::operator()(glm::ivec2 position) {
+	if (!positionIsValid(position))
+		return _outOfBoundsTile;
 
 	return _tiles[position.y * _size.x + position.x];
 }

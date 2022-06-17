@@ -24,12 +24,13 @@ void ImUtil::centeredText(const char *text) {
 	ImGui::Text("%s", text);
 }
 
-glm::vec2 ImUtil::centeredImage(ImTextureID texture, glm::vec2 size, glm::vec2 uv0, glm::vec2 uv1) {
-	const auto offset = adjustCursorForCentering(size);
+void ImUtil::centeredImage(ImTextureID texture, glm::vec2 size, glm::vec2 uv0, glm::vec2 uv1) {
+	adjustCursorForCentering(size);
+	const auto initialCursorPos = ImGui::GetCursorPos();
 
 	ImGui::Image(texture, size, uv0, uv1);
 
-	return offset;
+	ImGui::SetCursorPos(initialCursorPos);
 }
 
 // TODO: properly implement it

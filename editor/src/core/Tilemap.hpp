@@ -30,11 +30,12 @@ public:
 
 	const tile_t *data() const noexcept;
 
-	Tilemap::tile_t operator()(int x, int y) const;
-
 	Tilemap::tile_t operator()(glm::ivec2 position) const;
+
+	Tilemap::tile_t &operator()(glm::ivec2 position);
 
 private:
 	std::vector<tile_t> _tiles{};
 	glm::ivec2 _size;
+	tile_t _outOfBoundsTile = 0;
 };

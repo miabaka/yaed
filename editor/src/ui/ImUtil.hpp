@@ -11,7 +11,7 @@ public:
 
 	static void centeredText(const char *text);
 
-	static glm::vec2 centeredImage(ImTextureID texture, glm::vec2 size, glm::vec2 uv0 = {0, 0}, glm::vec2 uv1 = {1, 1});
+	static void centeredImage(ImTextureID texture, glm::vec2 size, glm::vec2 uv0 = {0, 0}, glm::vec2 uv1 = {1, 1});
 
 	static void moveFromTitleBarOnly();
 

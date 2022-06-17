@@ -9,9 +9,9 @@
 
 class ITilemapRendererContext {
 public:
-	virtual glm::uvec2 tileSize() const = 0;
+	virtual glm::ivec2 tileSize() const = 0;
 
-	virtual glm::uvec2 viewportSize() const = 0;
+	virtual glm::ivec2 viewportSize() const = 0;
 
 	virtual void *viewportTexture() const = 0;
 

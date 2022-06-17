@@ -14,6 +14,8 @@ class BrushSelectionManager {
 public:
 	std::shared_ptr<BrushSelection> getSelectionForLevel(const Level &level, const PaletteTemplate &paletteTemplate);
 
+	std::shared_ptr<BrushSelection> getSelectionForLevel(const Level &level) const;
+
 private:
 	std::unordered_map<std::shared_ptr<const LayerTemplate>, std::shared_ptr<BrushSelection>> _selection;
 };
