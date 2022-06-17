@@ -211,19 +211,23 @@ void SthTilemapRendererContext::render() {
 
 			Tilemap::tile_t tile = mainLayerMap(position);
 
-			if (tile < Tile::HiddenExit || (tile > Tile::FakeHeroItem && tile != Tile::Bonus))
+			if (!((tile >= Tile::HiddenExit && tile <= Tile::FakeHeroItem) || tile == Tile::Ice || tile == Tile::Bonus))
 				continue;
 
 			const AtlasEntry *entry;
 
-			if (tile == Tile::Ice)
+			if (tile == Tile::Ice) {
+				if (isBlockTile(mainLayerMap(position + glm::ivec2{0, -1})))
+					continue;
+
 				entry = &iceEntry;
-			else if (isMonsterTile(tile))
+			} else if (isMonsterTile(tile)) {
 				entry = &monsterEntry;
-			else if (isSecondMonsterTile(tile))
+			} else if (isSecondMonsterTile(tile)) {
 				entry = &secondMonsterEntry;
-			else
+			} else {
 				entry = &commonAtlasPair.findEntryForTile(tile);
+			}
 
 			commonTiles.emplace_back(position, entry->firstFrame());
 		}
