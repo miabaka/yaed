@@ -18,6 +18,7 @@ add_executable(editor
         src/core/palette/PaletteTemplateBuilder.cpp
         src/core/render/BaseTilemapRenderer.cpp
         src/core/render/TilemapRendererManager.cpp
+        src/core/tool/PencilTool.cpp
         src/core/util/CustomDataContainer.cpp
         src/core/util/TextureSlice.cpp
         src/core/BaseEditor.cpp
@@ -42,6 +43,7 @@ add_executable(editor
         src/game/sth/SthWorldExporter.cpp
         src/game/sth/SthWorldFactory.cpp
         src/game/sth/SthWorldImporter.cpp
+        src/tool/VisualPencilTool.cpp
         src/ui/window/InspectorWindow.cpp
         src/ui/window/LayerListWindow.cpp
         src/ui/window/MinimapWindow.cpp

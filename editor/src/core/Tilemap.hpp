@@ -17,10 +17,6 @@ public:
 
 	explicit Tilemap(glm::ivec2 size, tile_t value = 0);
 
-	Tilemap(Tilemap &) = delete;
-
-	Tilemap(Tilemap &&) = default;
-
 	~Tilemap() = default;
 
 	static bool sizeIsValid(glm::ivec2 size);

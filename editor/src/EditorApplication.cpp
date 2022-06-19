@@ -544,8 +544,6 @@ void EditorApplication::drawNewWorldDialog() {
 	ImGui::Indent(6);
 
 	{
-		static int imBaka = 0;
-
 		ImGui::AlignTextToFramePadding();
 		ImGui::Text("Game");
 

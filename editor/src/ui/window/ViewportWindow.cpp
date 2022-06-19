@@ -60,8 +60,7 @@ void ViewportWindow::onDraw() {
 
 	ImUtil::centeredImage(_rendererContext->viewportTexture(), _rendererContext->viewportSize(), {0, 1}, {1, 0});
 
-	if (ImGui::IsItemHovered())
-		processEdits();
+	processEdits();
 
 	ImGui::BeginDisabled();
 	ImGui::InvisibleButton("content", _rendererContext->viewportSize());
@@ -84,6 +83,9 @@ void ViewportWindow::processEdits() {
 	const glm::vec2 tileSize = _rendererContext->tileSize();
 	const glm::ivec2 mouseTilePos = glm::floor((mousePos - viewportScreenPos) / tileSize);
 	const glm::vec2 mouseTileScreenPos = viewportScreenPos + glm::vec2(mouseTilePos) * tileSize;
+
+	if (!(ImGui::IsItemHovered() || _drawing))
+		return;
 
 	{
 		ImDrawList &drawList = *ImGui::GetWindowDrawList();
@@ -119,8 +121,18 @@ void ViewportWindow::processEdits() {
 	else if (ImGui::IsMouseDown(ImGuiMouseButton_Right))
 		activeBrush = selection->secondary();
 
-	if (!activeBrush)
+	if (!activeBrush) {
+		_drawing = false;
 		return;
+	}
 
-	layer->tilemap().set(mouseTilePos, activeBrush->range().start());
+	if (!_drawing) {
+		_pencil.discard();
+		_pencil.moveTo(mouseTilePos);
+	}
+
+	_pencil.lineTo(mouseTilePos);
+	_pencil.stroke(layer->tilemap(), *activeBrush);
+
+	_drawing = ImGui::IsItemHovered();
 }
