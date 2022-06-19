@@ -1,5 +1,6 @@
 #include "World.hpp"
 
+#include "export/IWorldExporter.hpp"
 #include "IWorldFactory.hpp"
 
 namespace fs = std::filesystem;
@@ -71,4 +72,12 @@ std::shared_ptr<Level> World::createLevel(std::shared_ptr<LevelSkin> skin, const
 		return {};
 
 	return _factory->createLevel(*_game, name, std::move(skin));
+}
+
+std::shared_ptr<IWorldExporter> World::exporter() const {
+	return _exporter;
+}
+
+void World::setExporter(std::shared_ptr<IWorldExporter> exporter) {
+	_exporter = std::move(exporter);
 }

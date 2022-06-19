@@ -27,6 +27,10 @@ std::shared_ptr<IWorldFactory> NewWorldDialogState::selectedFactory() const {
 	return _selectedFactory.lock();
 }
 
+std::shared_ptr<WorldFormat> NewWorldDialogState::selectedFormat() const {
+	return _selectedFormat.lock();
+}
+
 const char *NewWorldDialogState::selectedGameRawName() const {
 	if (_selectedGame.expired())
 		return "";

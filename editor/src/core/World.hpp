@@ -6,12 +6,13 @@
 #include <vector>
 
 #include "game/IGame.hpp"
-#include "util/CustomDataContainer.hpp"
 #include "Level.hpp"
 
 class IWorldFactory;
 
-class World : public CustomDataContainer {
+class IWorldExporter;
+
+class World {
 public:
 	explicit World(std::shared_ptr<IGame> game, std::string name = {});
 
@@ -41,12 +42,17 @@ public:
 
 	std::shared_ptr<Level> createLevel(std::shared_ptr<LevelSkin> skin, const std::string &name = {});
 
+	std::shared_ptr<IWorldExporter> exporter() const;
+
+	void setExporter(std::shared_ptr<IWorldExporter> exporter);
+
 private:
 	std::string _name;
 	std::string _filename;
 	std::string _nameWithFilename;
 	std::filesystem::path _path;
-	std::vector<std::shared_ptr<Level>> _levels;
-	std::shared_ptr<IGame> _game;
+	std::shared_ptr<IWorldExporter> _exporter;
 	std::shared_ptr<IWorldFactory> _factory;
+	std::shared_ptr<IGame> _game;
+	std::vector<std::shared_ptr<Level>> _levels;
 };

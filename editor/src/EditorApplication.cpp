@@ -657,8 +657,8 @@ void EditorApplication::drawNewWorldDialog() {
 		// TODO: don' t close dialog if world creation failed
 		std::shared_ptr<World> world = createWorld(state.selectedGame(), state.selectedFactory(), state.chosenName());
 
-//		if (world)
-//			world.setExporter(...);
+		if (world)
+			world->setExporter(_newWorldDialogState.selectedFormat()->exporter());
 
 		ImGui::CloseCurrentPopup();
 	}

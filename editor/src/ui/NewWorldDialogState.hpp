@@ -27,6 +27,8 @@ public:
 
 	std::shared_ptr<IWorldFactory> selectedFactory() const;
 
+	std::shared_ptr<WorldFormat> selectedFormat() const;
+
 	bool formatCanBeSelected() const;
 
 	bool factoryCanBeSelected() const;

@@ -50,10 +50,7 @@ BaseEditor::createWorld(std::shared_ptr<IGame> game, std::shared_ptr<IWorldFacto
 	if (!world)
 		return {};
 
-	auto customData = std::make_unique<EditorWorldData>();
-
 	world->setFactory(std::move(factory));
-	world->setCustomData(std::move(customData));
 
 	_worlds.push_back(world);
 	selectWorld(world);
@@ -69,11 +66,7 @@ std::shared_ptr<World> BaseEditor::openWorld(const std::filesystem::path &path) 
 
 	std::shared_ptr<World> world = importer->load(path, _gameManager, _worldFactoryManager);
 
-	auto customData = std::make_unique<EditorWorldData>();
-
-	customData->exporter = _worldFormatManager.findAssociatedExporter(importer);
-
-	world->setCustomData(std::move(customData));
+	world->setExporter(_worldFormatManager.findAssociatedExporter(importer));
 	world->setPath(path);
 
 	_worlds.push_back(world);
@@ -90,12 +83,12 @@ std::shared_ptr<World> BaseEditor::openWorld(const std::filesystem::path &path) 
 }
 
 void BaseEditor::saveWorld(std::shared_ptr<World> world) {
-	auto &customData = world->customData<EditorWorldData>();
+	std::shared_ptr<IWorldExporter> exporter = world->exporter();
 
-	if (!customData.exporter)
+	if (!exporter)
 		return;
 
-	customData.exporter->save(*world, world->path());
+	exporter->save(*world, world->path());
 
 	onWorldSave(world, world->path());
 	onWorldFileOperation(world, world->path());
@@ -103,12 +96,10 @@ void BaseEditor::saveWorld(std::shared_ptr<World> world) {
 
 void BaseEditor::saveWorldAs(
 		std::shared_ptr<World> world, const fs::path &path, std::shared_ptr<IWorldExporter> exporter) {
-	auto &customData = world->customData<EditorWorldData>();
-
 	if (exporter)
-		customData.exporter = exporter;
+		world->setExporter(exporter);
 
-	if (!customData.exporter)
+	if (!world->exporter())
 		return;
 
 	world->setPath(path);
