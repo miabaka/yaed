@@ -27,5 +27,18 @@ SthWorldFactory::createLevel(const IGame &game, std::string name, std::shared_pt
 	auto mainLayer = std::make_shared<Layer>(game.findLayerTemplateById("main"), size);
 	auto gemLayer = std::make_shared<Layer>(game.findLayerTemplateById("gems"), size);
 
+	Tilemap &mainTiles = mainLayer->tilemap();
+	Tilemap &gemTiles = gemLayer->tilemap();
+
+	for (const auto &brushGroup: game.paletteTemplate()->brushGroups()) {
+		for (const auto &brush: brushGroup->brushes()) {
+			if (!brush->unique())
+				continue;
+
+			mainTiles.registerUniqueTileRange(brush->range());
+			gemTiles.registerUniqueTileRange(brush->range());
+		}
+	}
+
 	return std::make_shared<Level>(name, skin, std::vector{gemLayer, mainLayer});
 }

@@ -1,21 +1,22 @@
 #pragma once
 
 #include <string>
-
-#include "../util/Range.hpp"
 #include "../Tilemap.hpp"
 
 class Brush {
 public:
-	typedef Range<Tilemap::tile_t> range_t;
+	using range_t = Tilemap::tile_range_t;
 
-	explicit Brush(std::string name, const range_t &range);
+	Brush(std::string name, const range_t &range, bool unique = false);
 
 	const std::string &name() const;
 
 	const range_t &range() const;
 
+	bool unique() const;
+
 private:
 	std::string _name;
 	range_t _range;
+	bool _unique;
 };

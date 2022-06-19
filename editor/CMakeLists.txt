@@ -28,6 +28,7 @@ add_executable(editor
         src/core/LevelSkin.cpp
         src/core/RecentlyOpenedManager.cpp
         src/core/Tilemap.cpp
+        src/core/UniqueTileAllocator.cpp
         src/core/World.cpp
         src/core/WorldFactoryManager.cpp
         src/game/sth/SthGame.cpp

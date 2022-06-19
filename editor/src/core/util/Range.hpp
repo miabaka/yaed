@@ -27,6 +27,10 @@ public:
 	auto length() const {
 		return _stop - _start;
 	}
+	
+	auto inclusiveLength() const {
+		return _stop - _start + 1;
+	}
 
 	bool inclusiveContains(T value) const {
 		return value >= _start && value <= _stop;

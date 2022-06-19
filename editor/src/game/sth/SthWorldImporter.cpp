@@ -4,8 +4,11 @@
 #include <fstream>
 
 #include "../../core/game/BaseGame.hpp"
+#include "SthInternal.hpp"
 
 namespace fs = std::filesystem;
+
+using namespace SthInternal;
 
 static const char THP_MAGIC[] = {'T', 'H', '\0', '\0'};
 
@@ -157,6 +160,9 @@ SthWorldImporter::load(
 
 		reader.readArrayInto(mainLayerMap.tileCount(), mainLayerMap.data());
 		reader.readArrayInto(gemLayerMap.tileCount(), gemLayerMap.data());
+
+		mainLayerMap.processRawChanges();
+		gemLayerMap.processRawChanges();
 
 		world->addLevel(level);
 		level->setWorld(world);

@@ -12,7 +12,7 @@ class PaletteTemplateBuilder {
 public:
 	PaletteTemplateBuilder &beginGroup(const std::string &name);
 
-	PaletteTemplateBuilder &brush(const std::string &name, Brush::range_t range);
+	PaletteTemplateBuilder &brush(const std::string &name, Brush::range_t range, bool unique = false);
 
 	PaletteTemplateBuilder &submitGroup();
 

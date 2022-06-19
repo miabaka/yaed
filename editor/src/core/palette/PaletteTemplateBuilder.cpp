@@ -5,9 +5,9 @@ PaletteTemplateBuilder &PaletteTemplateBuilder::beginGroup(const std::string &na
 	return *this;
 }
 
-PaletteTemplateBuilder &PaletteTemplateBuilder::brush(const std::string &name, Brush::range_t range) {
+PaletteTemplateBuilder &PaletteTemplateBuilder::brush(const std::string &name, Brush::range_t range, bool unique) {
 	if (_currentGroup)
-		_currentGroup->addBrush(std::make_shared<Brush>(name, range));
+		_currentGroup->addBrush(std::make_shared<Brush>(name, range, unique));
 
 	return *this;
 }

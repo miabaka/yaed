@@ -1,18 +1,23 @@
 #pragma once
 
-#include <cstdint>
+#include <memory>
 #include <stdexcept>
 #include <vector>
+#include <unordered_map>
 
 #include <glm/vec2.hpp>
 
+#include "TilemapDefs.hpp"
+#include "UniqueTileAllocator.hpp"
+
 class Tilemap {
 public:
-	typedef uint16_t tile_t;
+	using tile_t = TilemapDefs::tile_t;
+	using tile_range_t = TilemapDefs::tile_range_t;
 
 	explicit Tilemap(glm::ivec2 size, tile_t value = 0);
 
-	Tilemap(Tilemap &) = default;
+	Tilemap(Tilemap &) = delete;
 
 	Tilemap(Tilemap &&) = default;
 
@@ -34,7 +39,15 @@ public:
 
 	bool set(glm::ivec2 position, Tilemap::tile_t tile);
 
+	void registerUniqueTileRange(tile_range_t range);
+
+	/**
+	 * Must be called after raw (not using set method) tilemap changes
+	 */
+	void processRawChanges();
+
 private:
-	std::vector<tile_t> _tiles{};
+	UniqueTileAllocator _uniqueTiles;
 	glm::ivec2 _size;
+	std::vector<tile_t> _tiles{};
 };

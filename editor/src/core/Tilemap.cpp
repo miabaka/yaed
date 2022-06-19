@@ -39,11 +39,30 @@ Tilemap::tile_t Tilemap::operator()(glm::ivec2 position) const {
 	return _tiles[position.y * _size.x + position.x];
 }
 
-bool Tilemap::set(glm::ivec2 position, Tilemap::tile_t tile) {
+bool Tilemap::set(glm::ivec2 position, Tilemap::tile_t newTile) {
 	if (!positionIsValid(position))
 		return false;
 
-	_tiles[position.y * _size.x + position.x] = tile;
+	tile_t &tile = _tiles[position.y * _size.x + position.x];
+
+	std::optional<tile_t> allocatedTile = _uniqueTiles.alloc(tile, newTile);
+
+	if (!allocatedTile)
+		return false;
+
+	_uniqueTiles.free(tile);
+	tile = *allocatedTile;
 
 	return true;
+}
+
+void Tilemap::registerUniqueTileRange(tile_range_t range) {
+	_uniqueTiles.registerUniqueRange(range);
+}
+
+void Tilemap::processRawChanges() {
+	_uniqueTiles.resetUsage();
+
+	for (const tile_t tile: _tiles)
+		_uniqueTiles.incrementCounterFor(tile);
 }
