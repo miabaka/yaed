@@ -122,5 +122,5 @@ void ViewportWindow::processEdits() {
 	if (!activeBrush)
 		return;
 
-	layer->tilemap()(mouseTilePos) = activeBrush->range().start();
+	layer->tilemap().set(mouseTilePos, activeBrush->range().start());
 }

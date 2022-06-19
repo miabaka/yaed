@@ -32,10 +32,9 @@ public:
 
 	Tilemap::tile_t operator()(glm::ivec2 position) const;
 
-	Tilemap::tile_t &operator()(glm::ivec2 position);
+	bool set(glm::ivec2 position, Tilemap::tile_t tile);
 
 private:
 	std::vector<tile_t> _tiles{};
 	glm::ivec2 _size;
-	tile_t _outOfBoundsTile = 0;
 };

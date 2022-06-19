@@ -28,6 +28,10 @@ Tilemap::tile_t *Tilemap::data() noexcept {
 	return _tiles.data();
 };
 
+const Tilemap::tile_t *Tilemap::data() const noexcept {
+	return _tiles.data();
+}
+
 Tilemap::tile_t Tilemap::operator()(glm::ivec2 position) const {
 	if (!positionIsValid(position))
 		return 0;
@@ -35,13 +39,11 @@ Tilemap::tile_t Tilemap::operator()(glm::ivec2 position) const {
 	return _tiles[position.y * _size.x + position.x];
 }
 
-Tilemap::tile_t &Tilemap::operator()(glm::ivec2 position) {
+bool Tilemap::set(glm::ivec2 position, Tilemap::tile_t tile) {
 	if (!positionIsValid(position))
-		return _outOfBoundsTile;
+		return false;
 
-	return _tiles[position.y * _size.x + position.x];
-}
+	_tiles[position.y * _size.x + position.x] = tile;
 
-const Tilemap::tile_t *Tilemap::data() const noexcept {
-	return _tiles.data();
+	return true;
 }
