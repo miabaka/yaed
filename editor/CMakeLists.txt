@@ -43,6 +43,7 @@ add_executable(editor
         src/game/sth/SthWorldExporter.cpp
         src/game/sth/SthWorldFactory.cpp
         src/game/sth/SthWorldImporter.cpp
+        src/tool/BaseVisualTool.cpp
         src/tool/VisualPencilTool.cpp
         src/ui/window/InspectorWindow.cpp
         src/ui/window/LayerListWindow.cpp
@@ -53,6 +54,7 @@ add_executable(editor
         src/ui/ImUtil.cpp
         src/ui/NewWorldDialog.cpp
         src/ui/NewWorldDialogState.cpp
+        src/ui/ToolHandler.cpp
         src/Editor.cpp
         src/EditorApplication.cpp
         src/main.cpp)

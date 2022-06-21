@@ -32,8 +32,8 @@ void ViewportWindow::setLevel(BaseEditor &editor, std::shared_ptr<Level> level) 
 	_rendererContext->setLevel(level);
 }
 
-void ViewportWindow::setBrushSelectionSource(std::weak_ptr<BrushSelectionManager> brushSelection) {
-	_selectionManager = std::move(brushSelection);
+void ViewportWindow::setBrushSelectionSource(std::weak_ptr<BrushSelectionManager> selectionManager) {
+	_selectionManager = std::move(selectionManager);
 }
 
 void ViewportWindow::onBeginPre() {
@@ -60,7 +60,22 @@ void ViewportWindow::onDraw() {
 
 	ImUtil::centeredImage(_rendererContext->viewportTexture(), _rendererContext->viewportSize(), {0, 1}, {1, 0});
 
-	processEdits();
+	updateTilemapClipRect();
+
+	{
+		std::shared_ptr<BrushSelection> brushSelection;
+
+		if (!_selectionManager.expired())
+			brushSelection = _selectionManager.lock()->getSelectionForLevel(*level);
+
+		ToolHandler::ToolUpdateParams updateParams = {
+				.level = level,
+				.brushSelection = brushSelection,
+				.tileSize =_rendererContext->tileSize(),
+		};
+
+		_toolHandler.update(updateParams);
+	}
 
 	ImGui::BeginDisabled();
 	ImGui::InvisibleButton("content", _rendererContext->viewportSize());
@@ -74,65 +89,6 @@ void ViewportWindow::onRender() {
 	_rendererContext->render();
 }
 
-void ViewportWindow::processEdits() {
-	const glm::vec2 viewportPos = ImGui::GetCursorPos();
-	const glm::vec2 viewportScreenPos = ImGui::GetCursorScreenPos();
-
-	const glm::vec2 mousePos = ImGui::GetMousePos();
-
-	const glm::vec2 tileSize = _rendererContext->tileSize();
-	const glm::ivec2 mouseTilePos = glm::floor((mousePos - viewportScreenPos) / tileSize);
-	const glm::vec2 mouseTileScreenPos = viewportScreenPos + glm::vec2(mouseTilePos) * tileSize;
-
-	if (!(ImGui::IsItemHovered() || _drawing))
-		return;
-
-	{
-		ImDrawList &drawList = *ImGui::GetWindowDrawList();
-
-		drawList.AddRectFilled(
-				mouseTileScreenPos, mouseTileScreenPos + tileSize, ImGui::GetColorU32(ImGuiCol_TextSelectedBg));
-	}
-
-	std::shared_ptr<Level> level = _level.lock();
-
-	if (!level)
-		return;
-
-	std::shared_ptr<Layer> layer = level->selectedLayer();
-
-	if (!layer)
-		return;
-
-	std::shared_ptr<BrushSelectionManager> selectionManager = _selectionManager.lock();
-
-	if (!selectionManager)
-		return;
-
-	std::shared_ptr<BrushSelection> selection = selectionManager->getSelectionForLevel(*level);
-
-	if (!selection)
-		return;
-
-	std::shared_ptr<Brush> activeBrush;
-
-	if (ImGui::IsMouseDown(ImGuiMouseButton_Left))
-		activeBrush = selection->primary();
-	else if (ImGui::IsMouseDown(ImGuiMouseButton_Right))
-		activeBrush = selection->secondary();
-
-	if (!activeBrush) {
-		_drawing = false;
-		return;
-	}
-
-	if (!_drawing) {
-		_pencil.discard();
-		_pencil.moveTo(mouseTilePos);
-	}
-
-	_pencil.lineTo(mouseTilePos);
-	_pencil.stroke(layer->tilemap(), *activeBrush);
-
-	_drawing = ImGui::IsItemHovered();
+void ViewportWindow::updateTilemapClipRect() {
+	
 }
