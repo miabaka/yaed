@@ -30,6 +30,8 @@ SthWorldFactory::createLevel(const IGame &game, std::string name, std::shared_pt
 	Tilemap &mainTiles = mainLayer->tilemap();
 	Tilemap &gemTiles = gemLayer->tilemap();
 
+	mainTiles.setMinimalOccupiedRegionSize({20, 15});
+
 	for (const auto &brushGroup: game.paletteTemplate()->brushGroups()) {
 		for (const auto &brush: brushGroup->brushes()) {
 			if (!brush->unique())
