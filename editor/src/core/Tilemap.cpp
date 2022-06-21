@@ -43,6 +43,9 @@ bool Tilemap::set(glm::ivec2 position, Tilemap::tile_t newTile) {
 	if (!positionIsValid(position))
 		return false;
 
+	if (!(_clipRect.empty() || _clipRect.containsPoint(position)))
+		return false;
+
 	tile_t &tile = _tiles[position.y * _size.x + position.x];
 
 	std::optional<tile_t> allocatedTile = _uniqueTiles.alloc(tile, newTile);
@@ -65,4 +68,8 @@ void Tilemap::processRawChanges() {
 
 	for (const tile_t tile: _tiles)
 		_uniqueTiles.incrementCounterFor(tile);
+}
+
+void Tilemap::setClipRect(IntRect rect) {
+	_clipRect = rect;
 }

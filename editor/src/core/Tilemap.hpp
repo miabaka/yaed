@@ -7,6 +7,7 @@
 
 #include <glm/vec2.hpp>
 
+#include "util/Rect.hpp"
 #include "TilemapDefs.hpp"
 #include "UniqueTileAllocator.hpp"
 
@@ -42,8 +43,11 @@ public:
 	 */
 	void processRawChanges();
 
+	void setClipRect(IntRect rect);
+
 private:
 	UniqueTileAllocator _uniqueTiles;
 	glm::ivec2 _size;
+	IntRect _clipRect;
 	std::vector<tile_t> _tiles{};
 };
