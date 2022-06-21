@@ -30,4 +30,6 @@ private:
 	ToolHandler _toolHandler;
 
 	void updateTilemapClipRect();
+
+	void drawLayerBounds();
 };

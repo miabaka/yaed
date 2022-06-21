@@ -2,7 +2,6 @@
 
 #include <fmt/format.h>
 #include <imgui/imgui.h>
-#include <glm/common.hpp>
 
 #include "../ImUtil.hpp"
 
@@ -59,6 +58,7 @@ void ViewportWindow::onDraw() {
 	}
 
 	ImUtil::centeredImage(_rendererContext->viewportTexture(), _rendererContext->viewportSize(), {0, 1}, {1, 0});
+	drawLayerBounds();
 
 	updateTilemapClipRect();
 
@@ -90,5 +90,30 @@ void ViewportWindow::onRender() {
 }
 
 void ViewportWindow::updateTilemapClipRect() {
-	
+
+}
+
+void ViewportWindow::drawLayerBounds() {
+	if (!_rendererContext)
+		return;
+
+	std::shared_ptr<Level> level = _level.lock();
+
+	if (!level)
+		return;
+
+	std::shared_ptr<Layer> layer = level->selectedLayer();
+
+	if (!layer)
+		return;
+
+	const IntRect region = layer->tilemap().occupiedRegion();
+
+	const glm::vec2 offset = ImGui::GetCursorScreenPos();
+	const glm::vec2 tileSize = _rendererContext->tileSize();
+
+	const glm::vec2 p0 = glm::vec2(region.p0()) * tileSize + offset;
+	const glm::vec2 p1 = glm::vec2(region.p1()) * tileSize + offset;
+
+	ImGui::GetWindowDrawList()->AddRect(p0, p1, ImGui::GetColorU32(ImGuiCol_TextSelectedBg));
 }
