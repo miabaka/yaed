@@ -132,9 +132,14 @@ void Tilemap::computeOccupiedRegion() {
 	upperBound.x += restMinSize.x;
 	lowerBound.y -= restMinSize.y;
 
+	if (upperBound.x > _size.x) {
+		lowerBound.x = _size.x - _minOccupiedRegionSize.x;
+		upperBound.x = _size.x;
+	}
+
 	if (lowerBound.y < 0) {
 		lowerBound.y = 0;
-		upperBound.y = _minOccupiedRegionSize.y + 1;
+		upperBound.y = _minOccupiedRegionSize.y;
 	}
 
 	_occupiedRegion = {lowerBound, upperBound};
