@@ -1,5 +1,7 @@
 #include "Tilemap.hpp"
 
+#include <glm/common.hpp>
+
 Tilemap::Tilemap(glm::ivec2 size, tile_t value)
 		: _size(size) {
 	if (!sizeIsValid(size))
@@ -48,6 +50,15 @@ Tilemap::tile_t Tilemap::get(glm::ivec2 position, glm::ivec2 offset, tile_t defa
 	return _tiles[position.y * _size.x + position.x];
 }
 
+Tilemap::tile_t Tilemap::getOccupied(glm::ivec2 position, glm::ivec2 offset, tile_t defaultTile) const {
+	position += offset;
+
+	if (!(positionIsValid(position) && _occupiedRegion.containsPoint(position)))
+		return defaultTile;
+
+	return _tiles[position.y * _size.x + position.x];
+}
+
 bool Tilemap::set(glm::ivec2 position, Tilemap::tile_t newTile) {
 	if (!positionIsValid(position))
 		return false;
@@ -65,6 +76,9 @@ bool Tilemap::set(glm::ivec2 position, Tilemap::tile_t newTile) {
 	_uniqueTiles.free(tile);
 	tile = *allocatedTile;
 
+	// TODO: optimize based on tile change
+	computeOccupiedRegion();
+
 	return true;
 }
 
@@ -77,8 +91,42 @@ void Tilemap::processRawChanges() {
 
 	for (const tile_t tile: _tiles)
 		_uniqueTiles.incrementCounterFor(tile);
+
+	computeOccupiedRegion();
 }
 
 void Tilemap::setClipRect(IntRect rect) {
 	_clipRect = rect;
+}
+
+IntRect Tilemap::occupiedRegion() const {
+	return _occupiedRegion;
+}
+
+void Tilemap::computeOccupiedRegion() {
+	glm::ivec2 lowerBound{};
+	glm::ivec2 upperBound{};
+
+	for (int i = 0; i < _tiles.size(); i++) {
+		const tile_t tile = _tiles[i];
+
+		if (tile == 0)
+			continue;
+
+		const glm::ivec2 pos = {i % _size.x, i / _size.x};
+
+		lowerBound = glm::min(lowerBound, pos);
+		upperBound = glm::max(upperBound, pos);
+	}
+
+	upperBound += 1;
+
+	const glm::ivec2 regionSize = upperBound - lowerBound;
+	upperBound += _minOccupiedRegionSize - glm::min(_minOccupiedRegionSize, regionSize);
+
+	_occupiedRegion = {lowerBound, upperBound};
+}
+
+void Tilemap::setMinimalOccupiedRegionSize(glm::ivec2 size) {
+	_minOccupiedRegionSize = size;
 }

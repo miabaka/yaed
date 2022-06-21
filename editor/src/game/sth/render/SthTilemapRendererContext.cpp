@@ -167,10 +167,10 @@ void SthTilemapRendererContext::render() {
 		if (!isBlockTile(tile))
 			continue;
 
-		bool hasLeftNeighbor = isBlockTile(mainLayerMap.get(position, {-1, 0}, Tile::Concrete));
-		bool hasRightNeighbor = isBlockTile(mainLayerMap.get(position, {1, 0}, Tile::Concrete));
-		bool hasTopNeighbor = isBlockTile(mainLayerMap.get(position, {0, -1}, Tile::Concrete));
-		bool hasBottomNeighbor = isBlockTile(mainLayerMap.get(position, {0, 1}, Tile::Concrete));
+		bool hasLeftNeighbor = isBlockTile(mainLayerMap.getOccupied(position, {-1, 0}, Tile::Concrete));
+		bool hasRightNeighbor = isBlockTile(mainLayerMap.getOccupied(position, {1, 0}, Tile::Concrete));
+		bool hasTopNeighbor = isBlockTile(mainLayerMap.get(position, {0, -1}, Tile::Air));
+		bool hasBottomNeighbor = isBlockTile(mainLayerMap.getOccupied(position, {0, 1}, Tile::Concrete));
 
 		int baseFrame = blockAtlasPair.findEntryForTile(tile).firstFrame();
 		int variant = (hasBottomNeighbor << 3) | (hasTopNeighbor << 2) | (hasRightNeighbor << 1) | hasLeftNeighbor;

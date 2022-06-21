@@ -36,6 +36,8 @@ public:
 
 	tile_t get(glm::ivec2 position, glm::ivec2 offset, tile_t defaultTile) const;
 
+	tile_t getOccupied(glm::ivec2 position, glm::ivec2 offset, tile_t defaultTile) const;
+
 	bool set(glm::ivec2 position, tile_t tile);
 
 	void registerUniqueTileRange(tile_range_t range);
@@ -47,9 +49,17 @@ public:
 
 	void setClipRect(IntRect rect);
 
+	IntRect occupiedRegion() const;
+
+	void computeOccupiedRegion();
+
+	void setMinimalOccupiedRegionSize(glm::ivec2 size);
+
 private:
 	UniqueTileAllocator _uniqueTiles;
 	glm::ivec2 _size;
+	glm::ivec2 _minOccupiedRegionSize{};
 	IntRect _clipRect;
+	IntRect _occupiedRegion;
 	std::vector<tile_t> _tiles{};
 };
