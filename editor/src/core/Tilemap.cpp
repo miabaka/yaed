@@ -39,6 +39,15 @@ Tilemap::tile_t Tilemap::operator()(glm::ivec2 position) const {
 	return _tiles[position.y * _size.x + position.x];
 }
 
+Tilemap::tile_t Tilemap::get(glm::ivec2 position, glm::ivec2 offset, tile_t defaultTile) const {
+	position += offset;
+
+	if (!positionIsValid(position))
+		return defaultTile;
+
+	return _tiles[position.y * _size.x + position.x];
+}
+
 bool Tilemap::set(glm::ivec2 position, Tilemap::tile_t newTile) {
 	if (!positionIsValid(position))
 		return false;

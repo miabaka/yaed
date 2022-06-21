@@ -31,9 +31,11 @@ public:
 
 	const tile_t *data() const noexcept;
 
-	Tilemap::tile_t operator()(glm::ivec2 position) const;
+	tile_t operator()(glm::ivec2 position) const;
 
-	bool set(glm::ivec2 position, Tilemap::tile_t tile);
+	tile_t get(glm::ivec2 position, glm::ivec2 offset, tile_t defaultTile) const;
+
+	bool set(glm::ivec2 position, tile_t tile);
 
 	void registerUniqueTileRange(tile_range_t range);
 
