@@ -104,7 +104,7 @@ IntRect Tilemap::occupiedRegion() const {
 }
 
 void Tilemap::computeOccupiedRegion() {
-	glm::ivec2 lowerBound{};
+	glm::ivec2 lowerBound = _size;
 	glm::ivec2 upperBound{};
 
 	for (int i = 0; i < _tiles.size(); i++) {
@@ -117,6 +117,11 @@ void Tilemap::computeOccupiedRegion() {
 
 		lowerBound = glm::min(lowerBound, pos);
 		upperBound = glm::max(upperBound, pos);
+	}
+
+	if (lowerBound.x > upperBound.x || lowerBound.y > upperBound.y) {
+		_occupiedRegion = {};
+		return;
 	}
 
 	upperBound += 1;
