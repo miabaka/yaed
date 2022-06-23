@@ -51,8 +51,6 @@ public:
 
 	IntRect occupiedRegion() const;
 
-	void computeOccupiedRegion();
-
 	void setMinimalOccupiedRegionSize(glm::ivec2 size);
 
 private:
@@ -62,4 +60,6 @@ private:
 	IntRect _clipRect;
 	IntRect _occupiedRegion;
 	std::vector<tile_t> _tiles{};
+
+	void computeOccupiedRegion();
 };

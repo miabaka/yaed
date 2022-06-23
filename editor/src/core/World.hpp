@@ -14,6 +14,8 @@ class IWorldExporter;
 
 class World {
 public:
+	friend class WorldUtil;
+
 	explicit World(std::shared_ptr<IGame> game, std::string name = {});
 
 	std::string &name();
@@ -30,8 +32,6 @@ public:
 
 	const std::vector<std::shared_ptr<Level>> &levels() const;
 
-	void addLevel(const std::shared_ptr<Level> &level);
-
 	std::shared_ptr<IGame> game();
 
 	std::shared_ptr<const IGame> game() const;
@@ -39,8 +39,6 @@ public:
 	std::shared_ptr<IWorldFactory> factory() const;
 
 	void setFactory(std::shared_ptr<IWorldFactory> factory);
-
-	std::shared_ptr<Level> createLevel(std::shared_ptr<LevelSkin> skin, const std::string &name = {});
 
 	std::shared_ptr<IWorldExporter> exporter() const;
 
@@ -55,4 +53,6 @@ private:
 	std::shared_ptr<IWorldFactory> _factory;
 	std::shared_ptr<IGame> _game;
 	std::vector<std::shared_ptr<Level>> _levels;
+
+	std::shared_ptr<Level> createLevel(std::shared_ptr<LevelSkin> skin = {}, std::string name = {});
 };

@@ -20,6 +20,8 @@ public:
 
 	const std::map<int, std::shared_ptr<LevelSkin>> &levelSkins() override;
 
+	std::shared_ptr<LevelSkin> defaultLevelSkin() override;
+
 private:
 	std::string _id;
 	std::string _name;

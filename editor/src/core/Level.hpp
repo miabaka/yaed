@@ -13,6 +13,8 @@ class World;
 class Level : public CustomDataContainer {
 	friend class World;
 
+	friend class WorldUtil;
+
 public:
 	Level(std::string name, std::shared_ptr<LevelSkin> skin, std::vector<std::shared_ptr<Layer>> layers);
 
@@ -32,12 +34,12 @@ public:
 
 	std::shared_ptr<World> world();
 
-	void setWorld(std::shared_ptr<World> world);
-
 private:
 	std::string _name;
 	std::shared_ptr<LevelSkin> _skin;
 	std::vector<std::shared_ptr<Layer>> _layers;
 	std::weak_ptr<World> _world;
 	std::weak_ptr<Layer> _selectedLayer;
+
+	void setWorld(std::shared_ptr<World> world);
 };

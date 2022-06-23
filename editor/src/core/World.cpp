@@ -47,10 +47,6 @@ const std::vector<std::shared_ptr<Level>> &World::levels() const {
 	return _levels;
 }
 
-void World::addLevel(const std::shared_ptr<Level> &level) {
-	_levels.push_back(level);
-}
-
 std::shared_ptr<IGame> World::game() {
 	return _game;
 }
@@ -67,11 +63,25 @@ void World::setFactory(std::shared_ptr<IWorldFactory> factory) {
 	_factory = std::move(factory);
 }
 
-std::shared_ptr<Level> World::createLevel(std::shared_ptr<LevelSkin> skin, const std::string &name) {
+std::shared_ptr<Level> World::createLevel(std::shared_ptr<LevelSkin> skin, std::string name) {
 	if (!(_factory && _game))
 		return {};
 
-	return _factory->createLevel(*_game, name, std::move(skin));
+	if (!skin)
+		skin = _game->defaultLevelSkin();
+
+	if (!skin)
+		return {};
+
+	if (name.empty())
+		name = std::to_string(_levels.size() + 1);
+
+	std::shared_ptr<Level> level = _factory->createLevel(*_game, name, std::move(skin));
+
+	if (level)
+		_levels.push_back(level);
+
+	return std::move(level);
 }
 
 std::shared_ptr<IWorldExporter> World::exporter() const {

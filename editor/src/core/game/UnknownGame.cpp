@@ -34,3 +34,7 @@ const std::map<int, std::shared_ptr<LevelSkin>> &UnknownGame::levelSkins() {
 	static std::map<int, std::shared_ptr<LevelSkin>> skins;
 	return skins;
 }
+
+std::shared_ptr<LevelSkin> UnknownGame::defaultLevelSkin() {
+	return {};
+}

@@ -24,6 +24,8 @@ public:
 
 	const std::map<int, std::shared_ptr<LevelSkin>> &levelSkins() override;
 
+	std::shared_ptr<LevelSkin> defaultLevelSkin() override;
+
 protected:
 	KnownGame(std::string name, std::string id);
 

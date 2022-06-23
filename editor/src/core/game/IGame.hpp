@@ -23,4 +23,6 @@ public:
 	virtual std::shared_ptr<LevelSkin> findLevelSkinById(int id) = 0;
 
 	virtual const std::map<int, std::shared_ptr<LevelSkin>> &levelSkins() = 0;
+
+	virtual std::shared_ptr<LevelSkin> defaultLevelSkin() = 0;
 };

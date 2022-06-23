@@ -53,3 +53,12 @@ void KnownGame::setPaletteTemplate(std::shared_ptr<PaletteTemplate> paletteTempl
 const std::map<int, std::shared_ptr<LevelSkin>> &KnownGame::levelSkins() {
 	return _levelSkins;
 }
+
+std::shared_ptr<LevelSkin> KnownGame::defaultLevelSkin() {
+	const auto it = _levelSkins.begin();
+
+	if (it == _levelSkins.end())
+		return {};
+
+	return it->second;
+}

@@ -9,6 +9,7 @@
 #include <nlohmann/json.hpp>
 #include <cute/shell/CuteShell.hpp>
 
+#include "core/WorldUtil.hpp"
 #include "ui/ImUtil.hpp"
 
 namespace fs = std::filesystem;
@@ -433,6 +434,15 @@ void EditorApplication::drawWorldTreeWindow() {
 
 			if (ImGui::BeginPopupContextItem()) {
 				ImGui::MenuItem(world->nameOrFilename().c_str(), {}, false, false);
+
+				ImGui::Separator();
+
+				if (ImGui::MenuItem("New Level")) {
+					std::shared_ptr<Level> level = WorldUtil::createLevel(world);
+
+					if (level)
+						selectLevel(level);
+				}
 
 				ImGui::Separator();
 

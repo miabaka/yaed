@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include "../../core/game/BaseGame.hpp"
+#include "../../core/WorldUtil.hpp"
 #include "SthInternal.hpp"
 
 namespace fs = std::filesystem;
@@ -141,8 +142,7 @@ SthWorldImporter::load(
 		if (size != glm::ivec2(40, 30))
 			throw std::runtime_error("Wrong level dimensions");
 
-		const auto name = std::to_string(i + 1);
-		std::shared_ptr<Level> level = world->createLevel(skin, name);
+		std::shared_ptr<Level> level = WorldUtil::createLevel(world);
 
 		// TODO: log import errors somewhere (possibly, for fancy import log ui)
 		//       yeah, ui would be nice
@@ -163,9 +163,6 @@ SthWorldImporter::load(
 
 		mainLayerMap.processRawChanges();
 		gemLayerMap.processRawChanges();
-
-		world->addLevel(level);
-		level->setWorld(world);
 	}
 
 	return world;

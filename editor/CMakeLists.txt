@@ -32,6 +32,7 @@ add_executable(editor
         src/core/UniqueTileAllocator.cpp
         src/core/World.cpp
         src/core/WorldFactoryManager.cpp
+        src/core/WorldUtil.cpp
         src/game/sth/SthGame.cpp
         src/game/sth/SthPaletteIconProvider.cpp
         src/game/sth/render/AtlasEntry.cpp
