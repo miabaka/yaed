@@ -494,8 +494,12 @@ void EditorApplication::drawWorldTreeWindow() {
 
 					ImGui::Separator();
 
-					if (ImGui::MenuItem("Remove"))
+					if (ImGui::MenuItem("Remove")) {
 						level->markForRemoval();
+
+						if (levelSelection == level)
+							levelSelection = {};
+					}
 
 					ImGui::EndPopup();
 				}
@@ -505,7 +509,8 @@ void EditorApplication::drawWorldTreeWindow() {
 
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
 
-			world->removeMarkedLevels();
+			if (world->removeMarkedLevels() && !selectedLevel())
+				selectFirstLevelOfWorld(world);
 		}
 
 		ImGui::TreePop();

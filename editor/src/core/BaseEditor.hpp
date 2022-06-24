@@ -70,6 +70,11 @@ public:
 	void selectWorld(std::shared_ptr<World> world);
 
 	/**
+	 * Select world and its first level, otherwise select only world and reset the level selection
+	 */
+	void selectFirstLevelOfWorld(std::shared_ptr<World> world);
+
+	/**
 	 * Select level and its world
 	 */
 	void selectLevel(std::shared_ptr<Level> level);
