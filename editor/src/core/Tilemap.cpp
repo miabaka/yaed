@@ -128,18 +128,29 @@ void Tilemap::computeOccupiedRegion() {
 
 	const glm::ivec2 regionSize = upperBound - lowerBound;
 	const glm::ivec2 restMinSize = glm::max({}, _minOccupiedRegionSize - regionSize);
+	const glm::ivec2 halfRestMinSize = restMinSize / 2;
 
-	upperBound.x += restMinSize.x;
-	lowerBound.y -= restMinSize.y;
+	lowerBound -= restMinSize - halfRestMinSize;
+	upperBound += halfRestMinSize;
+
+	if (lowerBound.x < 0) {
+		lowerBound.x = 0;
+		upperBound.x = _minOccupiedRegionSize.x;
+	}
+
+	if (lowerBound.y < 0) {
+		lowerBound.y = 0;
+		upperBound.y = _minOccupiedRegionSize.y;
+	}
 
 	if (upperBound.x > _size.x) {
 		lowerBound.x = _size.x - _minOccupiedRegionSize.x;
 		upperBound.x = _size.x;
 	}
 
-	if (lowerBound.y < 0) {
-		lowerBound.y = 0;
-		upperBound.y = _minOccupiedRegionSize.y;
+	if (upperBound.y > _size.y) {
+		lowerBound.y = _size.y - _minOccupiedRegionSize.y;
+		upperBound.y = _size.y;
 	}
 
 	_occupiedRegion = {lowerBound, upperBound};
