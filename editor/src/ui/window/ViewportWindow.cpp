@@ -68,11 +68,11 @@ void ViewportWindow::onDraw() {
 		if (!_selectionManager.expired())
 			brushSelection = _selectionManager.lock()->getSelectionForLevel(*level);
 
-		ToolHandler::ToolUpdateParams updateParams = {
-				.level = level,
-				.brushSelection = brushSelection,
-				.tileSize =_rendererContext->tileSize(),
-		};
+		ToolHandler::ToolUpdateParams updateParams{};
+
+		updateParams.level = level;
+		updateParams.brushSelection = brushSelection;
+		updateParams.tileSize = _rendererContext->tileSize();
 
 		_toolHandler.update(updateParams);
 	}
