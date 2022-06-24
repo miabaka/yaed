@@ -34,12 +34,17 @@ public:
 
 	std::shared_ptr<World> world();
 
+	bool markedForRemoval() const;
+
+	void markForRemoval(bool marked = true);
+
 private:
 	std::string _name;
 	std::shared_ptr<LevelSkin> _skin;
 	std::vector<std::shared_ptr<Layer>> _layers;
 	std::weak_ptr<World> _world;
 	std::weak_ptr<Layer> _selectedLayer;
+	bool _markedForRemoval = false;
 
 	void setWorld(std::shared_ptr<World> world);
 };

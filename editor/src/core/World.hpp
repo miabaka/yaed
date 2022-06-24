@@ -44,6 +44,8 @@ public:
 
 	void setExporter(std::shared_ptr<IWorldExporter> exporter);
 
+	void removeMarkedLevels();
+
 private:
 	std::string _name;
 	std::string _filename;

@@ -91,3 +91,14 @@ std::shared_ptr<IWorldExporter> World::exporter() const {
 void World::setExporter(std::shared_ptr<IWorldExporter> exporter) {
 	_exporter = std::move(exporter);
 }
+
+void World::removeMarkedLevels() {
+	for (ptrdiff_t nLevel = 0; nLevel < _levels.size(); nLevel++) {
+		if (!_levels[nLevel]->markedForRemoval())
+			continue;
+
+		_levels.erase(_levels.begin() + nLevel);
+
+		nLevel--;
+	}
+}

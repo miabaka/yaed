@@ -39,6 +39,14 @@ std::shared_ptr<World> Level::world() {
 	return _world.lock();
 }
 
+bool Level::markedForRemoval() const {
+	return _markedForRemoval;
+}
+
+void Level::markForRemoval(bool marked) {
+	_markedForRemoval = marked;
+}
+
 void Level::setWorld(std::shared_ptr<World> world) {
 	_world = world;
 }

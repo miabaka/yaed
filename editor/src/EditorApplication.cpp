@@ -489,10 +489,23 @@ void EditorApplication::drawWorldTreeWindow() {
 				if (justSelected)
 					selectLevel(level);
 
+				if (ImGui::BeginPopupContextItem()) {
+					ImGui::MenuItem(level->name().c_str(), {}, false, false);
+
+					ImGui::Separator();
+
+					if (ImGui::MenuItem("Remove"))
+						level->markForRemoval();
+
+					ImGui::EndPopup();
+				}
+
 				ImGui::PopID();
 			}
 
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+
+			world->removeMarkedLevels();
 		}
 
 		ImGui::TreePop();
