@@ -15,10 +15,6 @@ public:
 	void setBrushSelectionSource(std::weak_ptr<BrushSelectionManager> selectionManager);
 
 protected:
-	void onBeginPre() override;
-
-	void onBeginPost() override;
-
 	void onDraw() override;
 
 	void onRender() override;

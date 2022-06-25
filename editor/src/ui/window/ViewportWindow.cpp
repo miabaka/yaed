@@ -6,7 +6,9 @@
 #include "../ImUtil.hpp"
 
 ViewportWindow::ViewportWindow()
-		: BaseWindow("viewport", "Viewport", ImGuiWindowFlags_HorizontalScrollbar) {}
+		: BaseWindow("viewport", "Viewport", ImGuiWindowFlags_HorizontalScrollbar) {
+	BaseWindow::setPadding({1, 1});
+}
 
 void ViewportWindow::setLevel(BaseEditor &editor, std::shared_ptr<Level> level) {
 	_level = level;
@@ -33,14 +35,6 @@ void ViewportWindow::setLevel(BaseEditor &editor, std::shared_ptr<Level> level) 
 
 void ViewportWindow::setBrushSelectionSource(std::weak_ptr<BrushSelectionManager> selectionManager) {
 	_selectionManager = std::move(selectionManager);
-}
-
-void ViewportWindow::onBeginPre() {
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {1, 1});
-}
-
-void ViewportWindow::onBeginPost() {
-	ImGui::PopStyleVar();
 }
 
 void ViewportWindow::onDraw() {
