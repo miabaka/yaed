@@ -7,7 +7,7 @@
 
 ViewportWindow::ViewportWindow()
 		: BaseWindow("viewport", "Viewport", ImGuiWindowFlags_HorizontalScrollbar) {
-	BaseWindow::setPadding({1, 1});
+	BaseWindow::setPadding({1, 0});
 }
 
 void ViewportWindow::setLevel(BaseEditor &editor, std::shared_ptr<Level> level) {

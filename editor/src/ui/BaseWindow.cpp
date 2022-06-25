@@ -58,10 +58,10 @@ void BaseWindow::draw() {
 	onBeginPre();
 
 	{
-		auto padding = _padding;
+		auto padding = _padding + 1.f;
 
-		if (!_previouslyDocked)
-			padding.x += 1;
+		if (_previouslyDocked)
+			padding.x -= 1;
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, padding);
 	}

@@ -4,7 +4,7 @@
 
 LayerListWindow::LayerListWindow()
 		: BaseWindow("layer_list", "Layers") {
-	BaseWindow::setPadding({3, 3});
+	BaseWindow::setPadding({3, 2});
 }
 
 void LayerListWindow::setLevel(std::weak_ptr<Level> level) {
