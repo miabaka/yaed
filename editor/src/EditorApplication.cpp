@@ -361,6 +361,8 @@ bool EditorApplication::drawRecentlyOpenedMenuItems() {
 	return !paths.empty();
 }
 
+// TODO: split into multiple short functions
+// TODO: create separate window class for this
 void EditorApplication::drawWorldTreeWindow() {
 	if (!_worldTreeOpen)
 		return;

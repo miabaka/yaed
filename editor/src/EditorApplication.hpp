@@ -40,6 +40,7 @@ protected:
 
 private:
 	std::unique_ptr<cute::shell::IDialogProvider> _dialogProvider;
+	// TODO: make some kind of window manager
 	InspectorWindow _inspector;
 	LayerListWindow _layers;
 	MinimapWindow _minimap;

@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <glm/vec2.hpp>
+
 class IWindow {
 public:
 	virtual ~IWindow() = default;
@@ -15,6 +18,8 @@ public:
 	virtual void setTitle(const std::string &title) = 0;
 
 	virtual void setTitle(const std::string &title, bool useAsDefault) = 0;
+
+	virtual void setPadding(glm::vec2 padding) = 0;
 
 	virtual void restoreDefaultTitle() = 0;
 

@@ -33,6 +33,10 @@ void BaseWindow::restoreDefaultTitle() {
 	setTitle(_defaultTitle);
 }
 
+void BaseWindow::setPadding(glm::vec2 padding) {
+	_padding = padding;
+}
+
 BaseWindow::BaseWindow(const std::string &id, int flags)
 		: _id(id),
 		  _idWithHashPrefix("###" + id),
@@ -53,12 +57,25 @@ void BaseWindow::draw() {
 
 	onBeginPre();
 
+	{
+		auto padding = _padding;
+
+		if (!_previouslyDocked)
+			padding.x += 1;
+
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, padding);
+	}
+
 	bool collapsed = !ImGui::Begin(_actualTitle.c_str(), &_open, _flags);
+
+	ImGui::PopStyleVar();
 
 	onBeginPost();
 
 	if (!collapsed)
 		onDraw();
+
+	_previouslyDocked = ImGui::GetWindowDockID() != 0;
 
 	ImGui::End();
 }

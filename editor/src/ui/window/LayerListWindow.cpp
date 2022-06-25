@@ -3,18 +3,12 @@
 #include <imgui/imgui.h>
 
 LayerListWindow::LayerListWindow()
-		: BaseWindow("layer_list", "Layers") {}
+		: BaseWindow("layer_list", "Layers") {
+	BaseWindow::setPadding({3, 3});
+}
 
 void LayerListWindow::setLevel(std::weak_ptr<Level> level) {
 	_level = std::move(level);
-}
-
-void LayerListWindow::onBeginPre() {
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {3, 3});
-}
-
-void LayerListWindow::onBeginPost() {
-	ImGui::PopStyleVar();
 }
 
 static bool drawLayer(const Layer &layer, bool selected) {

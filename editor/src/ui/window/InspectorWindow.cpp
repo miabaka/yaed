@@ -15,20 +15,53 @@ void InspectorWindow::setLevel(std::weak_ptr<Level> level) {
 }
 
 void InspectorWindow::onDraw() {
-	const int headerFlags = ImGuiTreeNodeFlags_DefaultOpen;
-
 	std::shared_ptr<World> world = _world.lock();
 	std::shared_ptr<Level> level = _level.lock();
 
-	if (world && ImGui::CollapsingHeader("World", headerFlags))
-		ImGui::InputTextWithHint("Name##World", world->filename().c_str(), world->name());
+	const float inputOffset = ImGui::GetCursorPosX() + 39;
+	const float inputWidth = -6;
 
-	if (level && ImGui::CollapsingHeader("Level", headerFlags)) {
+	if (world) {
+		ImGui::Text("World");
+
+		ImGui::Indent(6);
+
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Name");
+
+		ImGui::SameLine();
+		ImGui::SetCursorPosX(inputOffset);
+		ImGui::SetNextItemWidth(inputWidth);
+		ImGui::InputTextWithHint("###world_name", world->filename().c_str(), world->name());
+
+		ImGui::Indent(-6);
+
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6);
+	}
+
+	if (level) {
 		std::shared_ptr<LevelSkin> levelSkin = level->skin();
 
-		ImGui::InputText("Name##Level", level->name());
+		ImGui::Text("Level");
 
-		if (ImGui::BeginCombo("Skin", levelSkin->name().c_str())) {
+		ImGui::Indent(6);
+
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Name");
+
+		ImGui::SameLine();
+		ImGui::SetCursorPosX(inputOffset);
+		ImGui::SetNextItemWidth(inputWidth);
+		ImGui::InputText("###level_name", level->name());
+
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Skin");
+
+		ImGui::SameLine();
+		ImGui::SetCursorPosX(inputOffset);
+		ImGui::SetNextItemWidth(inputWidth);
+
+		if (ImGui::BeginCombo("###level_skin", levelSkin->name().c_str())) {
 			for (auto &[_, skin]: world->game()->levelSkins()) {
 				const bool alreadySelected = (skin == levelSkin);
 				const bool selected = ImGui::Selectable(skin->name().c_str(), alreadySelected);
@@ -41,5 +74,7 @@ void InspectorWindow::onDraw() {
 
 			ImGui::EndCombo();
 		}
+
+		ImGui::Indent(-6);
 	}
 }

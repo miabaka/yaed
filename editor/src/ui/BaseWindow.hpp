@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <glm/vec2.hpp>
 #include "IWindow.hpp"
 
 class BaseWindow : public IWindow {
@@ -20,6 +21,8 @@ public:
 	void setTitle(const std::string &title) override;
 
 	void setTitle(const std::string &title, bool useAsDefault) override;
+
+	void setPadding(glm::vec2 padding) override;
 
 	void restoreDefaultTitle() override;
 
@@ -43,4 +46,6 @@ private:
 	std::string _defaultTitle;
 	int _flags;
 	bool _open = true;
+	bool _previouslyDocked = false;
+	glm::vec2 _padding = {6, 6};
 };
