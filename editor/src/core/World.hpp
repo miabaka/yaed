@@ -18,7 +18,7 @@ class World {
 public:
 	enum class AutonameMode {
 		All,
-		OnlyUnnamedOrOrdinal
+		OnlyUnnamed
 	};
 
 	explicit World(std::shared_ptr<IGame> game, std::string name = {});

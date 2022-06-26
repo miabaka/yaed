@@ -110,7 +110,7 @@ bool World::removeMarkedLevels() {
 }
 
 void World::autonameLevels(AutonameMode mode) {
-	const bool autonameAll = mode == AutonameMode::All;
+	const bool autonameAll = (mode == AutonameMode::All);
 
 	int number = 1;
 

@@ -450,8 +450,8 @@ void EditorApplication::drawWorldTreeWindow() {
 					if (ImGui::MenuItem("All"))
 						world->autonameLevels(World::AutonameMode::All);
 
-					if (ImGui::MenuItem("Only Unnamed or Ordinal"))
-						world->autonameLevels(World::AutonameMode::OnlyUnnamedOrOrdinal);
+					if (ImGui::MenuItem("Only Unnamed"))
+						world->autonameLevels(World::AutonameMode::OnlyUnnamed);
 
 					ImGui::EndMenu();
 				}
