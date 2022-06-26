@@ -18,3 +18,15 @@ fs::path CuteShell::getAppDataPath() {
 
 	return managedPath;
 }
+
+void CuteShell::revealFile(const fs::path &path) {
+	PIDLIST_ABSOLUTE itemIds;
+	SFGAOF flags;
+
+	if (SHParseDisplayName(path.wstring().c_str(), nullptr, &itemIds, 0, &flags) != S_OK)
+		return;
+
+	SHOpenFolderAndSelectItems(itemIds, 0, nullptr, 0);
+
+	CoTaskMemFree(itemIds);
+}

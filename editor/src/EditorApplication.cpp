@@ -459,14 +459,17 @@ void EditorApplication::drawWorldTreeWindow() {
 				ImGui::Separator();
 
 				{
-					if (ImGui::MenuItem("Copy Path", {}, false, !world->path().empty()))
-						ImGui::SetClipboardText(world->path().u8string().c_str());
+					const fs::path &path = world->path();
+
+					if (ImGui::MenuItem("Copy Path", {}, false, !path.empty()))
+						ImGui::SetClipboardText(path.u8string().c_str());
 
 					if (ImGui::IsItemHovered())
-						ImGui::SetTooltip("%s", world->path().u8string().c_str());
-				}
+						ImGui::SetTooltip("%s", path.u8string().c_str());
 
-				ImGui::MenuItem("Show In Explorer", {}, false, false);
+					if (ImGui::MenuItem("Show In Explorer", {}, false, !path.empty()))
+						CuteShell::revealFile(path);
+				}
 
 				ImGui::Separator();
 

@@ -67,3 +67,5 @@ fs::path CuteShell::getAppDataPath() {
 
     return { dir.str() };
 }
+
+void CuteShell::revealFile(const std::filesystem::path &path) {}
