@@ -15,6 +15,10 @@ const std::string &Level::name() const {
 	return _name;
 }
 
+void Level::setName(const std::string &name) {
+	_name = name;
+}
+
 std::shared_ptr<LevelSkin> Level::skin() const {
 	return _skin;
 }

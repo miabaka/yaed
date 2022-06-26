@@ -446,6 +446,16 @@ void EditorApplication::drawWorldTreeWindow() {
 						selectLevel(level);
 				}
 
+				if (ImGui::BeginMenu("Autoname Levels")) {
+					if (ImGui::MenuItem("All"))
+						world->autonameLevels(World::AutonameMode::All);
+
+					if (ImGui::MenuItem("Only Unnamed or Ordinal"))
+						world->autonameLevels(World::AutonameMode::OnlyUnnamedOrOrdinal);
+
+					ImGui::EndMenu();
+				}
+
 				ImGui::Separator();
 
 				{

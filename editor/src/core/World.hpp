@@ -13,8 +13,13 @@ class IWorldFactory;
 class IWorldExporter;
 
 class World {
-public:
 	friend class WorldUtil;
+
+public:
+	enum class AutonameMode {
+		All,
+		OnlyUnnamedOrOrdinal
+	};
 
 	explicit World(std::shared_ptr<IGame> game, std::string name = {});
 
@@ -45,6 +50,8 @@ public:
 	void setExporter(std::shared_ptr<IWorldExporter> exporter);
 
 	bool removeMarkedLevels();
+
+	void autonameLevels(AutonameMode mode);
 
 private:
 	std::string _name;

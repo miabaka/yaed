@@ -22,6 +22,8 @@ public:
 
 	const std::string &name() const;
 
+	void setName(const std::string &name);
+
 	std::shared_ptr<LevelSkin> skin() const;
 
 	void setSkin(std::shared_ptr<LevelSkin> skin);

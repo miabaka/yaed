@@ -1,6 +1,7 @@
 #include "World.hpp"
 
 #include "export/IWorldExporter.hpp"
+#include "util/StringUtil.hpp"
 #include "IWorldFactory.hpp"
 
 namespace fs = std::filesystem;
@@ -106,4 +107,17 @@ bool World::removeMarkedLevels() {
 	}
 
 	return somethingRemoved;
+}
+
+void World::autonameLevels(AutonameMode mode) {
+	const bool autonameAll = mode == AutonameMode::All;
+
+	int number = 1;
+
+	for (const std::shared_ptr<Level> &level: _levels) {
+		if (autonameAll || StringUtil::isDigitOrEmpty(level->name()))
+			level->setName(std::to_string(number));
+
+		number++;
+	}
 }

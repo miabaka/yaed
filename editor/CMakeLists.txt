@@ -20,6 +20,7 @@ add_executable(editor
         src/core/render/TilemapRendererManager.cpp
         src/core/tool/PencilTool.cpp
         src/core/util/CustomDataContainer.cpp
+        src/core/util/StringUtil.cpp
         src/core/util/TextureSlice.cpp
         src/core/BaseEditor.cpp
         src/core/palette/PaletteIconProviderManager.cpp
