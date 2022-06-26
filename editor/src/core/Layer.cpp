@@ -15,3 +15,7 @@ const Tilemap &Layer::tilemap() const {
 const std::string &Layer::name() const {
 	return _template->layerName();
 }
+
+std::shared_ptr<const LayerTemplate> Layer::getTemplate() const {
+	return _template;
+}

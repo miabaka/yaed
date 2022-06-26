@@ -4,7 +4,7 @@
 #include <set>
 #include <unordered_set>
 
-#include "../BaseWorldExporter.hpp"
+#include "../export/BaseWorldExporter.hpp"
 #include "../IWorldImporter.hpp"
 #include "WorldFormatInfo.hpp"
 
@@ -16,14 +16,14 @@ public:
 
 	std::shared_ptr<IWorldImporter> importer() const;
 
-	std::shared_ptr<BaseWorldExporter> exporter() const;
+	std::shared_ptr<IWorldExporter> exporter() const;
 
 	void setImporter(std::shared_ptr<IWorldImporter> importer);
 
-	void setExporter(std::shared_ptr<BaseWorldExporter> exporter);
+	void setExporter(std::shared_ptr<IWorldExporter> exporter);
 
 private:
 	WorldFormatInfo _info;
 	std::shared_ptr<IWorldImporter> _importer;
-	std::shared_ptr<BaseWorldExporter> _exporter;
+	std::shared_ptr<IWorldExporter> _exporter;
 };

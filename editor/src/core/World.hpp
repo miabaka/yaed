@@ -1,40 +1,67 @@
 #pragma once
 
+#include <filesystem>
 #include <memory>
 #include <string>
 #include <vector>
 
 #include "game/IGame.hpp"
 #include "Level.hpp"
-#include "ICustomWorldData.hpp"
+
+class IWorldFactory;
+
+class IWorldExporter;
 
 class World {
+	friend class WorldUtil;
+
 public:
-	explicit World(std::shared_ptr<IGame> game, std::string name);
+	enum class AutonameMode {
+		All,
+		OnlyUnnamed
+	};
+
+	explicit World(std::shared_ptr<IGame> game, std::string name = {});
+
+	std::string &name();
 
 	const std::string &name() const;
 
+	const std::filesystem::path &path() const;
+
+	const std::string &filename() const;
+
+	const std::string &nameOrFilename() const;
+
+	void setPath(const std::filesystem::path &path);
+
 	const std::vector<std::shared_ptr<Level>> &levels() const;
 
-	void addLevel(const std::shared_ptr<Level> &level);
+	std::shared_ptr<IGame> game();
 
 	std::shared_ptr<const IGame> game() const;
 
-	template<typename T>
-	T &customData() {
-		return *dynamic_cast<T *>(_customData.get());
-	}
+	std::shared_ptr<IWorldFactory> factory() const;
 
-	template<typename T>
-	const T &customData() const {
-		return *dynamic_cast<T *>(_customData.get());
-	}
+	void setFactory(std::shared_ptr<IWorldFactory> factory);
 
-	void setCustomData(std::unique_ptr<ICustomWorldData> customData);
+	std::shared_ptr<IWorldExporter> exporter() const;
+
+	void setExporter(std::shared_ptr<IWorldExporter> exporter);
+
+	bool removeMarkedLevels();
+
+	void autonameLevels(AutonameMode mode);
 
 private:
 	std::string _name;
-	std::vector<std::shared_ptr<Level>> _levels;
+	std::string _filename;
+	std::string _nameWithFilename;
+	std::filesystem::path _path;
+	std::shared_ptr<IWorldExporter> _exporter;
+	std::shared_ptr<IWorldFactory> _factory;
 	std::shared_ptr<IGame> _game;
-	std::unique_ptr<ICustomWorldData> _customData;
+	std::vector<std::shared_ptr<Level>> _levels;
+
+	std::shared_ptr<Level> createLevel(std::shared_ptr<LevelSkin> skin = {}, std::string name = {});
 };

@@ -17,6 +17,8 @@ public:
 
 	const std::string &name() const;
 
+	std::shared_ptr<const LayerTemplate> getTemplate() const;
+
 private:
 	std::shared_ptr<const LayerTemplate> _template;
 	Tilemap _tilemap;

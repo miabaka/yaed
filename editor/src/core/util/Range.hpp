@@ -16,12 +16,24 @@ public:
 			throw std::invalid_argument("Range stop must be greater or equal to range start");
 	}
 
-	T start() {
+	T start() const {
 		return _start;
 	}
 
-	T stop() {
+	T stop() const {
 		return _stop;
+	}
+
+	auto length() const {
+		return _stop - _start;
+	}
+	
+	auto inclusiveLength() const {
+		return _stop - _start + 1;
+	}
+
+	bool inclusiveContains(T value) const {
+		return value >= _start && value <= _stop;
 	}
 
 private:

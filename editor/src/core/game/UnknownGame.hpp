@@ -1,8 +1,8 @@
 #pragma once
 
-#include "IGame.hpp"
+#include "BaseGame.hpp"
 
-class UnknownGame : public IGame {
+class UnknownGame : public BaseGame {
 public:
 	explicit UnknownGame(std::string id);
 
@@ -16,6 +16,13 @@ public:
 
 	std::shared_ptr<const LayerTemplate> findLayerTemplateById(const std::string &id) const override;
 
+	std::shared_ptr<LevelSkin> findLevelSkinById(int id) override;
+
+	const std::map<int, std::shared_ptr<LevelSkin>> &levelSkins() override;
+
+	std::shared_ptr<LevelSkin> defaultLevelSkin() override;
+
 private:
 	std::string _id;
+	std::string _name;
 };

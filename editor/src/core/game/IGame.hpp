@@ -1,10 +1,10 @@
 #pragma once
 
-#include <memory>
-#include <string>
+#include <map>
 
+#include "../palette/PaletteTemplate.hpp"
 #include "../LayerTemplate.hpp"
-#include "../PaletteTemplate.hpp"
+#include "../LevelSkin.hpp"
 
 class IGame {
 public:
@@ -19,4 +19,10 @@ public:
 	virtual std::shared_ptr<const PaletteTemplate> paletteTemplate() const = 0;
 
 	virtual std::shared_ptr<const LayerTemplate> findLayerTemplateById(const std::string &id) const = 0;
+
+	virtual std::shared_ptr<LevelSkin> findLevelSkinById(int id) = 0;
+
+	virtual const std::map<int, std::shared_ptr<LevelSkin>> &levelSkins() = 0;
+
+	virtual std::shared_ptr<LevelSkin> defaultLevelSkin() = 0;
 };

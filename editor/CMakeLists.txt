@@ -1,31 +1,71 @@
 project(editor)
 
 add_executable(editor
+        src/core/export/BaseWorldExporter.cpp
         src/core/format/WorldFormat.cpp
         src/core/format/WorldFormatInfo.cpp
         src/core/format/WorldFormatManager.cpp
         src/core/game/GameManager.cpp
         src/core/game/KnownGame.cpp
         src/core/game/UnknownGame.cpp
+        src/core/palette/BasePaletteIconProvider.cpp
+        src/core/palette/Brush.cpp
+        src/core/palette/BrushGroup.cpp
+        src/core/palette/BrushSelection.cpp
+        src/core/palette/BrushSelectionManager.cpp
+        src/core/palette/PaletteIconSet.cpp
+        src/core/palette/PaletteTemplate.cpp
+        src/core/palette/PaletteTemplateBuilder.cpp
+        src/core/render/BaseTilemapRenderer.cpp
+        src/core/render/TilemapRendererManager.cpp
+        src/core/tool/PencilTool.cpp
+        src/core/util/CustomDataContainer.cpp
+        src/core/util/StringUtil.cpp
+        src/core/util/TextureSlice.cpp
         src/core/BaseEditor.cpp
-        src/core/BaseWorldExporter.cpp
-        src/core/Brush.cpp
-        src/core/BrushGroup.cpp
+        src/core/palette/PaletteIconProviderManager.cpp
         src/core/Layer.cpp
         src/core/LayerTemplate.cpp
         src/core/Level.cpp
-        src/core/PaletteTemplate.cpp
-        src/core/PaletteTemplateBuilder.cpp
+        src/core/LevelSkin.cpp
+        src/core/RecentlyOpenedManager.cpp
         src/core/Tilemap.cpp
+        src/core/UniqueTileAllocator.cpp
         src/core/World.cpp
         src/core/WorldFactoryManager.cpp
-        src/core/WorldManager.cpp
-        src/exporter/TreasureHunterWorldExporter.cpp
-        src/game/TreasureHunterGame.cpp
-        src/importer/TreasureHunterWorldImporter.cpp
-        src/world_factory/TreasureHunterWorldFactory.cpp
+        src/core/WorldUtil.cpp
+        src/game/sth/SthGame.cpp
+        src/game/sth/SthPaletteIconProvider.cpp
+        src/game/sth/render/AtlasEntry.cpp
+        src/game/sth/render/AtlasPair.cpp
+        src/game/sth/render/InputAtlasEntry.cpp
+        src/game/sth/render/SthTilemapRenderer.cpp
+        src/game/sth/render/SthTilemapRendererContext.cpp
+        src/game/sth/render/SthTilemapRendererInternal.cpp
+        src/game/sth/SthWorldExporter.cpp
+        src/game/sth/SthWorldFactory.cpp
+        src/game/sth/SthWorldImporter.cpp
+        src/tool/BaseVisualTool.cpp
+        src/tool/VisualPencilTool.cpp
+        src/ui/window/InspectorWindow.cpp
+        src/ui/window/LayerListWindow.cpp
+        src/ui/window/MinimapWindow.cpp
+        src/ui/window/PaletteWindow.cpp
+        src/ui/window/ViewportWindow.cpp
+        src/ui/BaseWindow.cpp
+        src/ui/ImUtil.cpp
+        src/ui/NewWorldDialog.cpp
+        src/ui/NewWorldDialogState.cpp
+        src/ui/ToolHandler.cpp
         src/Editor.cpp
         src/EditorApplication.cpp
         src/main.cpp)
 
-target_link_libraries(editor PRIVATE glm glfw gl3w imgui)
+target_link_libraries(editor PRIVATE
+        cuteshell
+        fmt
+        nlohmann_json::nlohmann_json
+        glm
+        glfw gl3w
+        imgui
+        stb_image)

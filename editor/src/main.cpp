@@ -14,8 +14,9 @@ int main() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
 
-	GLFWwindow *window = glfwCreateWindow(1280, 720, "Ayaya! Ayaya!", nullptr, nullptr);
+	GLFWwindow *window = glfwCreateWindow(1280, 720, "yaed", nullptr, nullptr);
 
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
@@ -26,15 +27,22 @@ int main() {
 
 	{
 		ImGuiIO &io = ImGui::GetIO();
+
+		io.IniFilename = nullptr;
+
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+#ifdef _WIN32
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+#endif
 	}
+
+	ImGui::StyleColorsLight();
 
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 330 core");
 
 	{
-		EditorApplication app;
+		EditorApplication editor;
 
 		while (true) {
 			glfwPollEvents();
@@ -43,16 +51,25 @@ int main() {
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
-			if (!app.update(glfwWindowShouldClose(window)))
+			if (!editor.update(glfwWindowShouldClose(window)))
 				break;
 
 			ImGui::Render();
 
+			editor.render();
+
+			{
+				glm::ivec2 fbSize;
+				glfwGetFramebufferSize(window, &fbSize.x, &fbSize.y);
+
+				glViewport(0, 0, fbSize.x, fbSize.y);
+			}
+
+			glClearColor(0.f, 0.f, 0.f, 1.f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			app.render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+#ifdef _WIN32
 			{
 				GLFWwindow *previousContext = glfwGetCurrentContext();
 
@@ -61,7 +78,7 @@ int main() {
 
 				glfwMakeContextCurrent(previousContext);
 			}
-
+#endif
 			glfwSwapBuffers(window);
 		}
 	}

@@ -25,14 +25,14 @@ std::shared_ptr<IWorldImporter> WorldFormatManager::findImporterForFile(const st
 	return {};
 }
 
-std::set<std::shared_ptr<BaseWorldExporter>>
+std::set<std::shared_ptr<IWorldExporter>>
 WorldFormatManager::findExportersForWorld(std::shared_ptr<const World> world) const {
 	const std::string &gameId = world->game()->id();
 
-	std::set<std::shared_ptr<BaseWorldExporter>> result;
+	std::set<std::shared_ptr<IWorldExporter>> result;
 
 	for (auto &[_, format]: _worldFormats) {
-		std::shared_ptr<BaseWorldExporter> exporter = format->exporter();
+		std::shared_ptr<IWorldExporter> exporter = format->exporter();
 
 		if (!(exporter && exporter->gameIsSupported(gameId)))
 			continue;
@@ -43,7 +43,7 @@ WorldFormatManager::findExportersForWorld(std::shared_ptr<const World> world) co
 	return result;
 }
 
-std::shared_ptr<BaseWorldExporter>
+std::shared_ptr<IWorldExporter>
 WorldFormatManager::findAssociatedExporter(std::shared_ptr<const IWorldImporter> importer) const {
 	for (auto &[_, format]: _worldFormats) {
 		std::shared_ptr<IWorldImporter> currentImporter = format->importer();
@@ -55,4 +55,8 @@ WorldFormatManager::findAssociatedExporter(std::shared_ptr<const IWorldImporter>
 	}
 
 	return {};
+}
+
+const std::unordered_map<std::string, std::shared_ptr<WorldFormat>> &WorldFormatManager::formats() const {
+	return _worldFormats;
 }

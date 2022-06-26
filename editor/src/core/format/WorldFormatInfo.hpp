@@ -6,9 +6,11 @@ class WorldFormatInfo {
 public:
 	WorldFormatInfo(std::string name, std::string fileExtension);
 
-	const std::string &getFileExtension() const;
+	const std::string &fileExtension() const;
 
-	const std::string &getName() const;
+	const std::string &name() const;
+
+	bool supportsWorldNames() const;
 
 private:
 	std::string _fileExtension;

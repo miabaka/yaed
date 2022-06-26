@@ -12,6 +12,8 @@ public:
 
 	std::shared_ptr<IGame> findGameById(const std::string &id) const;
 
+	const std::unordered_map<std::string, std::shared_ptr<IGame>> &games() const;
+
 private:
 	std::unordered_map<std::string, std::shared_ptr<IGame>> _games;
 };

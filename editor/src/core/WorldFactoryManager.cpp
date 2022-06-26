@@ -16,3 +16,7 @@ std::shared_ptr<IWorldFactory> WorldFactoryManager::findFactoryById(const std::s
 
 	return it->second;
 }
+
+const std::unordered_map<std::string, std::shared_ptr<IWorldFactory>> &WorldFactoryManager::factories() const {
+	return _factories;
+}
