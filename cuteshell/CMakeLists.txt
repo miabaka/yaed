@@ -19,7 +19,7 @@ elseif (UNIX AND NOT APPLE)
     pkg_check_modules(DBus REQUIRED dbus-1)
 
     target_include_directories(cuteshell PRIVATE ${GTK_INCLUDE_DIRS} ${GLIB_INCLUDE_DIRS} ${DBus_INCLUDE_DIRS})
-    target_link_libraries(cuteshell PRIVATE ${GTK_LIBRARIES} ${GLIB_LIBRARIES} ${DBus_LIBRARIES})
+    target_link_libraries(cuteshell PRIVATE fmt ${GTK_LIBRARIES} ${GLIB_LIBRARIES} ${DBus_LIBRARIES})
 
     target_compile_definitions(cuteshell PRIVATE CUTE_DIALOGS_IMPL_GTK)
     target_sources(cuteshell PRIVATE
