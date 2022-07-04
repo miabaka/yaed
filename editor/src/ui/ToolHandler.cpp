@@ -52,10 +52,10 @@ void ToolHandler::handleMouseEvents(glm::vec2 tileSize) {
 		_leaveEventTriggered = true;
 	}
 
-	static const std::pair<ImGuiMouseButton, IVisualTool::MouseButton> buttons[] = {
-			{ImGuiMouseButton_Left,   IVisualTool::MouseButton::Left},
-			{ImGuiMouseButton_Middle, IVisualTool::MouseButton::Middle},
-			{ImGuiMouseButton_Right,  IVisualTool::MouseButton::Right},
+	static const std::pair<ImGuiMouseButton, ITool::MouseButton> buttons[] = {
+			{ImGuiMouseButton_Left,   ITool::MouseButton::Left},
+			{ImGuiMouseButton_Middle, ITool::MouseButton::Middle},
+			{ImGuiMouseButton_Right,  ITool::MouseButton::Right},
 	};
 
 	for (auto[imGuiButton, toolButton]: buttons) {

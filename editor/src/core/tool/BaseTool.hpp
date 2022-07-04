@@ -1,8 +1,8 @@
 #pragma once
 
-#include "IVisualTool.hpp"
+#include "ITool.hpp"
 
-class BaseVisualTool : public IVisualTool {
+class BaseTool : public ITool {
 public:
 	void handleMouseEnter() override;
 

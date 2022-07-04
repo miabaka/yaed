@@ -6,8 +6,7 @@
 #include <glm/vec2.hpp>
 
 #include "../core/Level.hpp"
-#include "../tool/IVisualTool.hpp"
-#include "../tool/VisualPencilTool.hpp"
+#include "../tool/PencilTool.hpp"
 
 class ToolHandler {
 public:
@@ -20,8 +19,8 @@ public:
 	void update(const ToolUpdateParams &params);
 
 private:
-	VisualPencilTool _tool;
-	std::unordered_set<IVisualTool::MouseButton> _pressedButtons;
+	PencilTool _tool;
+	std::unordered_set<ITool::MouseButton> _pressedButtons;
 	glm::vec2 _previousLocalMousePos;
 	glm::vec2 _previousLocalMouseTilePos;
 	bool _previouslyHovered = false;

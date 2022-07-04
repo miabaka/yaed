@@ -13,17 +13,17 @@ add_executable(editor
         src/core/palette/BrushGroup.cpp
         src/core/palette/BrushSelection.cpp
         src/core/palette/BrushSelectionManager.cpp
+        src/core/palette/PaletteIconProviderManager.cpp
         src/core/palette/PaletteIconSet.cpp
         src/core/palette/PaletteTemplate.cpp
         src/core/palette/PaletteTemplateBuilder.cpp
         src/core/render/BaseTilemapRenderer.cpp
         src/core/render/TilemapRendererManager.cpp
-        src/core/tool/PencilTool.cpp
+        src/core/tool/BaseTool.cpp
         src/core/util/CustomDataContainer.cpp
         src/core/util/StringUtil.cpp
         src/core/util/TextureSlice.cpp
         src/core/BaseEditor.cpp
-        src/core/palette/PaletteIconProviderManager.cpp
         src/core/Layer.cpp
         src/core/LayerTemplate.cpp
         src/core/Level.cpp
@@ -34,19 +34,18 @@ add_executable(editor
         src/core/World.cpp
         src/core/WorldFactoryManager.cpp
         src/core/WorldUtil.cpp
-        src/game/sth/SthGame.cpp
-        src/game/sth/SthPaletteIconProvider.cpp
         src/game/sth/render/AtlasEntry.cpp
         src/game/sth/render/AtlasPair.cpp
         src/game/sth/render/InputAtlasEntry.cpp
         src/game/sth/render/SthTilemapRenderer.cpp
         src/game/sth/render/SthTilemapRendererContext.cpp
         src/game/sth/render/SthTilemapRendererInternal.cpp
+        src/game/sth/SthGame.cpp
+        src/game/sth/SthPaletteIconProvider.cpp
         src/game/sth/SthWorldExporter.cpp
         src/game/sth/SthWorldFactory.cpp
         src/game/sth/SthWorldImporter.cpp
-        src/tool/BaseVisualTool.cpp
-        src/tool/VisualPencilTool.cpp
+        src/tool/PencilTool.cpp
         src/ui/window/InspectorWindow.cpp
         src/ui/window/LayerListWindow.cpp
         src/ui/window/MinimapWindow.cpp
