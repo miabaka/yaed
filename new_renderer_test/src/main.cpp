@@ -1,5 +1,6 @@
 #define GLFW_INCLUDE_NONE
 
+#include <cstdint>
 #include <sstream>
 #include <fstream>
 #include <filesystem>
@@ -8,8 +9,17 @@
 
 #include <GLFW/glfw3.h>
 #include <GL/gl3w.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/glm.hpp>
 
 namespace fs = std::filesystem;
+
+struct __attribute__((packed)) InputTile {
+	glm::i16vec2 position;
+	int16_t material;
+	int16_t scaleIndex;
+};
 
 static void addShader(GLuint program, GLenum type, const char *source) {
 	GLuint shader = glCreateShader(type);
@@ -61,8 +71,30 @@ static GLuint createShaderProgram() {
 }
 
 static GLuint createVertexArray() {
+	static const InputTile tiles[] = {
+			{{0, 0}, 0, 0},
+			{{1, 1}, 0, 0},
+			{{2, 1}, 0, 1},
+			{{3, 2}, 0, 2}
+	};
+
+	GLuint vbo;
+	glGenBuffers(1, &vbo);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(tiles), tiles, GL_STATIC_DRAW);
+
 	GLuint vao;
 	glGenVertexArrays(1, &vao);
+
+	glBindVertexArray(vao);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribDivisor(0, 1);
+	glVertexAttribIPointer(0, 4, GL_UNSIGNED_SHORT, sizeof(InputTile), static_cast<void *>(0));
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 
 	return vao;
 }
@@ -85,16 +117,22 @@ int main() {
 	gl3wInit();
 
 	GLuint shaderProgram = createShaderProgram();
+
 	glUseProgram(shaderProgram);
 
-	GLuint dummyVao = createVertexArray();
-	glBindVertexArray(dummyVao);
+	{
+		glm::mat4 projection = glm::ortho(0.f, 20.f, 15.f, 0.f);
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "uProjection"), 1, false, glm::value_ptr(projection));
+	}
+
+	GLuint vao = createVertexArray();
+	glBindVertexArray(vao);
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 
 		glClear(GL_COLOR_BUFFER_BIT);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+		glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, 4, 4);
 
 		glfwSwapBuffers(window);
 	}
