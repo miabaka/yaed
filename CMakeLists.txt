@@ -20,6 +20,6 @@ add_subdirectory(glfw)
 
 add_subdirectory(cuteshell)
 add_subdirectory(cutegl)
-add_subdirectory(cutegl-example)
+add_subdirectory(cutegl_example)
 add_subdirectory(editor)
 add_subdirectory(new_renderer_test)
