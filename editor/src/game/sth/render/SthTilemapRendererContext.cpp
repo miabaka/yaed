@@ -60,6 +60,13 @@ static inline bool isAnyMonsterTile(Tilemap::tile_t tile) {
 	return isMonsterTile(tile) || isSecondMonsterTile(tile);
 }
 
+static inline bool isAnyTeleportTile(Tilemap::tile_t tile) {
+	return (tile >= Tile::TeleportIn0 && tile <= Tile::TeleportInE)
+	       || (tile >= Tile::TeleportOut0 && tile <= Tile::TeleportOutE)
+	       || tile == Tile::HiddenExit
+	       || tile == Tile::LockedExit;
+}
+
 static inline bool isGemTile(Tilemap::tile_t tile) {
 	return tile >= Tile::Gem0 && tile <= Tile::Gem5;
 }
@@ -214,6 +221,19 @@ void SthTilemapRendererContext::render() {
 
 			tiles.emplace_back(position, iceMaterial);
 		}
+	}
+
+	for (int i = 0; i < mainLayerMap.tileCount(); i++) {
+		const glm::ivec2 position = {i % size.x, i / size.x};
+
+		const Tilemap::tile_t tile = mainLayerMap(position);
+
+		if (!isAnyTeleportTile(tile))
+			continue;
+
+		const uint16_t material = atlas.findEntryForTile(tile).firstFrame();
+
+		tiles.emplace_back(position, material);
 	}
 
 	for (int i = 0; i < mainLayerMap.tileCount(); i++) {
