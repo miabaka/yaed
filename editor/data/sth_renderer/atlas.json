@@ -1,0 +1,209 @@
+{
+	"size": [1280, 2048],
+	"entries": {
+		"bonus": {
+			"position": [0, 0],
+			"frame_size": [64, 64],
+			"frames_per_line": 4,
+			"frame_count": 32,
+			"tiles": [483]
+		},
+		"hero": {
+			"position": [256, 0],
+			"frame_size": [64, 64],
+			"frames_per_line": 4,
+			"frame_count": 32,
+			"tiles": [11]
+		},
+		"bomb": {
+			"position": [512, 0],
+			"frame_size": [64, 64],
+			"frames_per_line": 4,
+			"frame_count": 32,
+			"tiles": [271]
+		},
+		"fake_hero": {
+			"position": [768, 0],
+			"frame_size": [64, 64],
+			"frames_per_line": 4,
+			"frame_count": 32,
+			"tiles": [272]
+		},
+		"key": {
+			"position": [1024, 0],
+			"frame_size": [64, 64],
+			"frames_per_line": 4,
+			"frame_count": 32,
+			"tiles": [268]
+		},
+		"trap": {
+			"position": [0, 512],
+			"frame_size": [64, 64],
+			"frames_per_line": 4,
+			"frame_count": 32,
+			"tiles": [269]
+		},
+		"monster2": {
+			"position": [256, 512],
+			"frame_size": [64, 64],
+			"frames_per_line": 4,
+			"frame_count": 32,
+			"tiles": [
+				146, 147, 148, 149, 150,
+				151, 152, 153, 154, 155,
+				156, 157, 158, 159, 160,
+				161, 162, 163, 164, 165
+			]
+		},
+		"monster": {
+			"position": [512, 512],
+			"frame_size": [64, 64],
+			"frames_per_line": 4,
+			"frame_count": 32,
+			"tiles": [
+				142, 143, 144, 145
+			]
+		},
+		"exit": {
+			"position": [768, 512],
+			"frame_size": [64, 64],
+			"frames_per_line": 4,
+			"frame_count": 32,
+			"tiles": [9]
+		},
+		"closed_exit": {
+			"position": [1024, 512],
+			"frame_size": [64, 64],
+			"frames_per_line": 4,
+			"frame_count": 32,
+			"tiles": [10]
+		},
+		"gem": {
+			"position": [0, 1024],
+			"frame_size": [64, 64],
+			"frames_per_line": 4,
+			"frame_count": 32,
+			"tiles": [373]
+		},
+		"gem2": {
+			"position": [256, 1024],
+			"frame_size": [64, 64],
+			"frames_per_line": 4,
+			"frame_count": 32,
+			"tiles": [374]
+		},
+		"gem3": {
+			"position": [512, 1024],
+			"frame_size": [64, 64],
+			"frames_per_line": 4,
+			"frame_count": 32,
+			"tiles": [375]
+		},
+		"gem4": {
+			"position": [768, 1024],
+			"frame_size": [64, 64],
+			"frames_per_line": 4,
+			"frame_count": 32,
+			"tiles": [376]
+		},
+		"gem5": {
+			"position": [1024, 1024],
+			"frame_size": [64, 64],
+			"frames_per_line": 4,
+			"frame_count": 32,
+			"tiles": [377]
+		},
+		"gem6": {
+			"position": [0, 1536],
+			"frame_size": [64, 64],
+			"frames_per_line": 4,
+			"frame_count": 32,
+			"tiles": [378]
+		},
+		"pointer": {
+			"position": [256, 1536],
+			"frame_size": [64, 64],
+			"frames_per_line": 4,
+			"frame_count": 32,
+			"tiles": [500]
+		},
+		"ice": {
+			"position": [512, 1536],
+			"frame_size": [64, 64],
+			"frames_per_line": 4,
+			"frame_count": 32,
+			"tiles": [501]
+		},
+		"teleport_in": {
+			"position": [768, 1536],
+			"frame_size": [64, 64],
+			"frames_per_line": 4,
+			"frame_count": 16,
+			"tiles": [
+				12, 13, 14, 15, 16,
+				17, 18, 19, 20, 21,
+				22, 23, 24, 25, 26
+			]
+		},
+		"teleport_out": {
+			"position": [768, 1792],
+			"frame_size": [64, 64],
+			"frames_per_line": 4,
+			"frame_count": 16,
+			"tiles": [
+				27, 28, 29, 30, 31,
+				32, 33, 34, 35, 36,
+				37, 38, 39, 40, 41
+			]
+		},
+		"block": {
+			"position": [1024, 1536],
+			"frame_size": [40, 40],
+			"frames_per_line": 6,
+			"frame_count": 16,
+			"tiles": [
+				1, 4, 5
+			]
+		},
+		"block2": {
+			"position": [1024, 1616],
+			"frame_size": [40, 40],
+			"frames_per_line": 6,
+			"frame_count": 16,
+			"first_frame_offset": 4,
+			"tiles": [2]
+		},
+		"concrete": {
+			"position": [1024, 1736],
+			"frame_size": [40, 40],
+			"frames_per_line": 6,
+			"frame_count": 16,
+			"first_frame_offset": 2,
+			"tiles": [3]
+		},
+		"rope_knob": {
+			"position": [1024, 1856],
+			"frame_size": [64, 64],
+			"frame_count": 3,
+			"tiles": [502]
+		},
+		"ladder_knob": {
+			"position": [1024, 1920],
+			"frame_size": [64, 64],
+			"frame_count": 3,
+			"tiles": [503]
+		},
+		"rope": {
+			"position": [1024, 1984],
+			"frame_size": [40, 40],
+			"tiles": [8]
+		},
+		"ladder": {
+			"position": [1064, 1984],
+			"frame_size": [40, 40],
+			"tiles": [
+				6, 7
+			]
+		}
+	}
+}

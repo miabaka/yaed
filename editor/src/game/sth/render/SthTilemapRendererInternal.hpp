@@ -6,7 +6,7 @@
 #include <GL/gl3w.h>
 
 #include "../../../core/Level.hpp"
-#include "AtlasPair.hpp"
+#include "Atlas.hpp"
 
 class SthTilemapRendererInternal {
 public:
@@ -16,27 +16,27 @@ public:
 				  y(static_cast<GLshort>(position.y)),
 				  material(static_cast<GLshort>(material)) {}
 
-		GLshort x;
-		GLshort y;
-		GLshort material;
+		GLushort x;
+		GLushort y;
+		GLushort material;
 	};
 
 	SthTilemapRendererInternal();
 
 	~SthTilemapRendererInternal();
 
-	const AtlasPair &getAtlasPairFor(const Level &level, AtlasPair::Tag tag) const;
+	const Atlas &getAtlas();
 
-	void drawTiles(const AtlasPair &atlasPair, const std::vector<TileInstance> &tiles, float opacity = 1.f) const;
+	void drawTiles(const std::vector<TileInstance> &tiles, float opacity = 1.f) const;
 
 private:
-	AtlasPair _commonAtlasPair;
-	AtlasPair _ladderAndRopeAtlasPair;
-	AtlasPair _knobAtlasPair;
-	AtlasPair _blockAtlasPair;
+	Atlas _atlas;
+
 	GLuint _program = 0;
 	GLuint _vao = 0;
 	GLuint _vbo = 0;
+	GLuint _texAtlas = 0;
+	GLuint _texFrameOffsets = 0;
 
 	void setupVbo();
 
@@ -44,5 +44,5 @@ private:
 
 	void setupProgram();
 
-	void setupAtlasPairs();
+	void loadAtlas();
 };

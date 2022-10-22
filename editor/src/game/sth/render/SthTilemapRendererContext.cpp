@@ -56,8 +56,16 @@ static inline bool isSecondMonsterTile(Tilemap::tile_t tile) {
 	       || (tile >= Tile::SecondMonsterRespawn0 && tile <= Tile::SecondMonsterRespawn9);
 }
 
+static inline bool isAnyMonsterTile(Tilemap::tile_t tile) {
+	return isMonsterTile(tile) || isSecondMonsterTile(tile);
+}
+
 static inline bool isGemTile(Tilemap::tile_t tile) {
 	return tile >= Tile::Gem0 && tile <= Tile::Gem5;
+}
+
+static inline bool isItemTile(Tilemap::tile_t tile) {
+	return tile == Tile::KeyItem || tile == Tile::TrapItem || tile == Tile::BombItem || tile == Tile::FakeHeroItem;
 }
 
 void SthTilemapRendererContext::render() {
@@ -74,163 +82,164 @@ void SthTilemapRendererContext::render() {
 
 	glm::ivec2 size = gemLayerMap.size();
 
-	const AtlasPair &commonAtlasPair = _renderer->getAtlasPairFor(*level, AtlasPair::Tag::Common);
-	const AtlasPair &ladderAndRopeAtlasPair = _renderer->getAtlasPairFor(*level, AtlasPair::Tag::LadderAndRope);
-	const AtlasPair &knobAtlasPair = _renderer->getAtlasPairFor(*level, AtlasPair::Tag::Knobs);
-	const AtlasPair &blockAtlasPair = _renderer->getAtlasPairFor(*level, AtlasPair::Tag::Blocks);
+	const Atlas &atlas = _renderer->getAtlas();
 
 	// TODO: use preallocated memory
-	std::vector<SthTilemapRendererInternal::TileInstance> ladderAndRopeTiles;
-	std::vector<SthTilemapRendererInternal::TileInstance> knobTiles;
-	std::vector<SthTilemapRendererInternal::TileInstance> gemTiles;
-	std::vector<SthTilemapRendererInternal::TileInstance> blockTiles;
-	std::vector<SthTilemapRendererInternal::TileInstance> commonTiles;
+	std::vector<SthTilemapRendererInternal::TileInstance> tiles;
 
-	ladderAndRopeTiles.reserve(1200);
-	knobTiles.reserve(1200);
-	gemTiles.reserve(1200);
-	blockTiles.reserve(1200);
-	commonTiles.reserve(2400);
+	tiles.reserve(4800);
 
-	for (int i = 0; i < gemLayerMap.tileCount(); i++) {
-		glm::ivec2 position = {i % size.x, i / size.x};
+	{
+		const uint16_t ropeKnobMaterial = atlas.findEntryForTile(502).firstFrame();
+		const uint16_t ladderKnobMaterial = atlas.findEntryForTile(503).firstFrame();
 
-		Tilemap::tile_t tile = gemLayerMap(position);
+		for (int i = 0; i < mainLayerMap.tileCount(); i++) {
+			const glm::ivec2 position = {i % size.x, i / size.x};
 
-		if (tile < Tile::Gem0 || tile > Tile::Gem5)
-			continue;
+			const Tilemap::tile_t tile = mainLayerMap(position);
 
-		int frame = commonAtlasPair.findEntryForTile(tile).firstFrame();
-
-		gemTiles.emplace_back(position, frame);
-	}
-
-	for (int i = 0; i < mainLayerMap.tileCount(); i++) {
-		glm::ivec2 position = {i % size.x, i / size.x};
-
-		Tilemap::tile_t tile = mainLayerMap(position);
-
-		if (!(isLadderTile(tile) || tile == Tile::Rope))
-			continue;
-
-		int frame = ladderAndRopeAtlasPair.findEntryForTile(tile).firstFrame();
-
-		ladderAndRopeTiles.emplace_back(position, frame);
-	}
-
-	const int firstRopeKnobFrame = knobAtlasPair.findEntryForTile(512).firstFrame();
-	const int firstLadderKnobFrame = knobAtlasPair.findEntryForTile(513).firstFrame();
-
-	for (int i = 0; i < mainLayerMap.tileCount(); i++) {
-		glm::ivec2 position = {i % size.x, i / size.x};
-
-		Tilemap::tile_t tile = mainLayerMap(position);
-
-		int frame;
-
-		if (isLadderTile(tile)) {
-			Tilemap::tile_t topTile = mainLayerMap(position + glm::ivec2(0, -1));
-			Tilemap::tile_t bottomTile = mainLayerMap(position + glm::ivec2(0, 1));
-
-			bool hasTopNeighbor = isLadderTile(topTile);
-			bool hasBottomNeighbor = isLadderTile(bottomTile);
-
-			if (hasTopNeighbor && hasBottomNeighbor)
+			if (!(isLadderTile(tile) || tile == Tile::Rope))
 				continue;
 
-			frame = firstLadderKnobFrame + ((hasTopNeighbor << 1) | hasBottomNeighbor);
-		} else if (tile == Tile::Rope) {
-			Tilemap::tile_t leftTile = mainLayerMap(position + glm::ivec2(-1, 0));
-			Tilemap::tile_t rightTile = mainLayerMap(position + glm::ivec2(1, 0));
+			const uint16_t material = atlas.findEntryForTile(tile).firstFrame();
 
-			bool hasLeftNeighbor = (leftTile == Tile::Rope);
-			bool hasRightNeighbor = (rightTile == Tile::Rope);
+			tiles.emplace_back(position, material);
 
-			if (hasLeftNeighbor && hasRightNeighbor)
-				continue;
+			if (tile == Tile::Rope) {
+				const Tilemap::tile_t leftTile = mainLayerMap(position + glm::ivec2(-1, 0));
+				const Tilemap::tile_t rightTile = mainLayerMap(position + glm::ivec2(1, 0));
 
-			frame = firstRopeKnobFrame + ((hasLeftNeighbor << 1) | hasRightNeighbor);
-		} else {
-			continue;
+				const bool hasLeftNeighbor = (leftTile == Tile::Rope);
+				const bool hasRightNeighbor = (rightTile == Tile::Rope);
+
+				if (hasLeftNeighbor && hasRightNeighbor)
+					continue;
+
+				tiles.emplace_back(position, ropeKnobMaterial + ((hasLeftNeighbor << 1) | hasRightNeighbor));
+			} else {
+				const Tilemap::tile_t topTile = mainLayerMap(position + glm::ivec2(0, -1));
+				const Tilemap::tile_t bottomTile = mainLayerMap(position + glm::ivec2(0, 1));
+
+				const bool hasTopNeighbor = isLadderTile(topTile);
+				const bool hasBottomNeighbor = isLadderTile(bottomTile);
+
+				if (hasTopNeighbor && hasBottomNeighbor)
+					continue;
+
+				tiles.emplace_back(position, ladderKnobMaterial + ((hasTopNeighbor << 1) | hasBottomNeighbor));
+			}
 		}
-
-		knobTiles.emplace_back(position, frame);
-	}
-
-	static const int blockDockingMapping[] = {0, 4, 2, 9, 1, 8, 5, 11, 3, 7, 6, 13, 10, 14, 12, 15};
-
-	for (int i = 0; i < gemLayerMap.tileCount(); i++) {
-		glm::ivec2 position = {i % size.x, i / size.x};
-
-		Tilemap::tile_t tile = mainLayerMap(position);
-
-		if (!isBlockTile(tile))
-			continue;
-
-		bool hasLeftNeighbor = isBlockTile(mainLayerMap.getOccupied(position, {-1, 0}, Tile::Concrete));
-		bool hasRightNeighbor = isBlockTile(mainLayerMap.getOccupied(position, {1, 0}, Tile::Concrete));
-		bool hasTopNeighbor = isBlockTile(mainLayerMap.get(position, {0, -1}, Tile::Air));
-		bool hasBottomNeighbor = isBlockTile(mainLayerMap.getOccupied(position, {0, 1}, Tile::Concrete));
-
-		int baseFrame = blockAtlasPair.findEntryForTile(tile).firstFrame();
-		int variant = (hasBottomNeighbor << 3) | (hasTopNeighbor << 2) | (hasRightNeighbor << 1) | hasLeftNeighbor;
-
-		int frame = baseFrame + blockDockingMapping[variant];
-
-		blockTiles.emplace_back(position, frame);
 	}
 
 	{
-		const AtlasEntry &gemSignEntry = commonAtlasPair.findEntryForTile(518);
+		const uint16_t &pointerMaterial = atlas.findEntryForTile(500).firstFrame();
 
 		for (int i = 0; i < mainLayerMap.tileCount(); i++) {
-			glm::ivec2 position = {i % size.x, i / size.x};
+			const glm::ivec2 position = {i % size.x, i / size.x};
 
-			Tilemap::tile_t tile = mainLayerMap(position);
+			const Tilemap::tile_t tile = mainLayerMap(position);
 
 			if (isSolidTile(tile))
 				continue;
 
-			Tilemap::tile_t bottomMainTile = mainLayerMap(position + glm::ivec2{0, 1});
-			Tilemap::tile_t bottomGemTile = gemLayerMap(position + glm::ivec2{0, 1});
+			const Tilemap::tile_t bottomMainTile = mainLayerMap(position + glm::ivec2{0, 1});
+			const Tilemap::tile_t bottomGemTile = gemLayerMap(position + glm::ivec2{0, 1});
 
 			if (!(isBlockTile(bottomMainTile) && isGemTile(bottomGemTile)))
 				continue;
 
-			commonTiles.emplace_back(position, gemSignEntry.firstFrame());
+			tiles.emplace_back(position, pointerMaterial);
+		}
+	}
+
+	for (int i = 0; i < gemLayerMap.tileCount(); i++) {
+		const glm::ivec2 position = {i % size.x, i / size.x};
+
+		const Tilemap::tile_t tile = gemLayerMap(position);
+
+		if (!isGemTile(tile))
+			continue;
+
+		const uint16_t material = atlas.findEntryForTile(tile).firstFrame();
+
+		tiles.emplace_back(position, material);
+	}
+
+	for (int i = 0; i < mainLayerMap.tileCount(); i++) {
+		const glm::ivec2 position = {i % size.x, i / size.x};
+
+		const Tilemap::tile_t tile = mainLayerMap(position);
+
+		if (!isItemTile(tile))
+			continue;
+
+		const uint16_t material = atlas.findEntryForTile(tile).firstFrame();
+
+		tiles.emplace_back(position, material);
+	}
+
+	{
+		static const uint16_t neighborsToOffset[] = {0, 4, 2, 9, 1, 8, 5, 11, 3, 7, 6, 13, 10, 14, 12, 15};
+
+		for (int i = 0; i < mainLayerMap.tileCount(); i++) {
+			const glm::ivec2 position = {i % size.x, i / size.x};
+
+			const Tilemap::tile_t tile = mainLayerMap(position);
+
+			if (!isBlockTile(tile))
+				continue;
+
+			const bool hasLeftNeighbor = isBlockTile(mainLayerMap.getOccupied(position, {-1, 0}, Tile::Concrete));
+			const bool hasRightNeighbor = isBlockTile(mainLayerMap.getOccupied(position, {1, 0}, Tile::Concrete));
+			const bool hasTopNeighbor = isBlockTile(mainLayerMap.get(position, {0, -1}, Tile::Air));
+			const bool hasBottomNeighbor = isBlockTile(mainLayerMap.getOccupied(position, {0, 1}, Tile::Concrete));
+
+			const uint16_t neighbors =
+					(hasBottomNeighbor << 3) | (hasTopNeighbor << 2) | (hasRightNeighbor << 1) | hasLeftNeighbor;
+
+			const uint16_t baseMaterial = atlas.findEntryForTile(tile).firstFrame();
+
+			tiles.emplace_back(position, baseMaterial + neighborsToOffset[neighbors]);
 		}
 	}
 
 	{
-		const AtlasEntry &iceEntry = commonAtlasPair.findEntryForTile(517);
-		const AtlasEntry &monsterEntry = commonAtlasPair.findEntryForTile(514);
-		const AtlasEntry &secondMonsterEntry = commonAtlasPair.findEntryForTile(513);
+		const int &iceMaterial = atlas.findEntryForTile(501).firstFrame();
 
 		for (int i = 0; i < mainLayerMap.tileCount(); i++) {
-			glm::ivec2 position = {i % size.x, i / size.x};
+			const glm::ivec2 position = {i % size.x, i / size.x};
 
-			Tilemap::tile_t tile = mainLayerMap(position);
-
-			if (!((tile >= Tile::HiddenExit && tile <= Tile::FakeHeroItem) || tile == Tile::Ice || tile == Tile::Bonus))
+			if (mainLayerMap(position) != Tile::Ice)
 				continue;
 
-			const AtlasEntry *entry;
-
-			if (tile == Tile::Ice) {
-				if (isBlockTile(mainLayerMap(position + glm::ivec2{0, -1})))
-					continue;
-
-				entry = &iceEntry;
-			} else if (isMonsterTile(tile)) {
-				entry = &monsterEntry;
-			} else if (isSecondMonsterTile(tile)) {
-				entry = &secondMonsterEntry;
-			} else {
-				entry = &commonAtlasPair.findEntryForTile(tile);
-			}
-
-			commonTiles.emplace_back(position, entry->firstFrame());
+			tiles.emplace_back(position, iceMaterial);
 		}
+	}
+
+	for (int i = 0; i < mainLayerMap.tileCount(); i++) {
+		const glm::ivec2 position = {i % size.x, i / size.x};
+
+		const Tilemap::tile_t tile = mainLayerMap(position);
+
+		if (!isAnyMonsterTile(tile))
+			continue;
+
+		const uint16_t material = atlas.findEntryForTile(tile).firstFrame();
+
+		tiles.emplace_back(position, material);
+	}
+
+	for (int i = 0; i < mainLayerMap.tileCount(); i++) {
+		const glm::ivec2 position = {i % size.x, i / size.x};
+
+		const Tilemap::tile_t tile = mainLayerMap(position);
+
+		if (tile != Tile::Hero)
+			continue;
+
+		const uint16_t material = atlas.findEntryForTile(tile).firstFrame();
+
+		tiles.emplace_back(position, material);
 	}
 
 	GLint previousFbo;
@@ -245,20 +254,7 @@ void SthTilemapRendererContext::render() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	const bool gemLayerSelected = (level->selectedLayer() == level->layers()[0]);
-	const float commonLayerOpacity = gemLayerSelected ? 0.5f : 1.f;
-
-	_renderer->drawTiles(ladderAndRopeAtlasPair, ladderAndRopeTiles, commonLayerOpacity);
-	_renderer->drawTiles(knobAtlasPair, knobTiles, commonLayerOpacity);
-
-	if (!gemLayerSelected)
-		_renderer->drawTiles(commonAtlasPair, gemTiles);
-
-	_renderer->drawTiles(blockAtlasPair, blockTiles, commonLayerOpacity);
-	_renderer->drawTiles(commonAtlasPair, commonTiles, commonLayerOpacity);
-
-	if (gemLayerSelected)
-		_renderer->drawTiles(commonAtlasPair, gemTiles);
+	_renderer->drawTiles(tiles, 1.f);
 
 	glDisable(GL_BLEND);
 

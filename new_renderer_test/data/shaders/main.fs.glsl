@@ -1,6 +1,6 @@
 #version 330 core
 
-flat in int vMaterial;
+flat in uint vMaterial;
 in vec2 vTexCoords;
 
 out vec4 outColor;

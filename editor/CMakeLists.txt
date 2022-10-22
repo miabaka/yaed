@@ -34,9 +34,7 @@ add_executable(editor
         src/core/World.cpp
         src/core/WorldFactoryManager.cpp
         src/core/WorldUtil.cpp
-        src/game/sth/render/AtlasEntry.cpp
-        src/game/sth/render/AtlasPair.cpp
-        src/game/sth/render/InputAtlasEntry.cpp
+        src/game/sth/render/Atlas.cpp
         src/game/sth/render/SthTilemapRenderer.cpp
         src/game/sth/render/SthTilemapRendererContext.cpp
         src/game/sth/render/SthTilemapRendererInternal.cpp

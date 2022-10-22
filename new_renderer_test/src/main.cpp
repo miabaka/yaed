@@ -16,9 +16,8 @@
 namespace fs = std::filesystem;
 
 struct __attribute__((packed)) InputTile {
-	glm::i16vec2 position;
-	int16_t material;
-	int16_t scaleIndex;
+	glm::u16vec2 position;
+	uint16_t material;
 };
 
 static void addShader(GLuint program, GLenum type, const char *source) {
@@ -72,10 +71,10 @@ static GLuint createShaderProgram() {
 
 static GLuint createVertexArray() {
 	static const InputTile tiles[] = {
-			{{0, 0}, 0, 0},
-			{{1, 1}, 0, 0},
-			{{2, 1}, 0, 1},
-			{{3, 2}, 0, 2}
+			{{0, 0}, 0},
+			{{1, 1}, 0},
+			{{2, 1}, 1},
+			{{3, 2}, 0}
 	};
 
 	GLuint vbo;
@@ -91,7 +90,7 @@ static GLuint createVertexArray() {
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribDivisor(0, 1);
-	glVertexAttribIPointer(0, 4, GL_UNSIGNED_SHORT, sizeof(InputTile), static_cast<void *>(0));
+	glVertexAttribIPointer(0, 3, GL_UNSIGNED_SHORT, sizeof(InputTile), static_cast<void *>(0));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
