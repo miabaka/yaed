@@ -142,7 +142,7 @@ SthWorldImporter::load(
 		if (size != glm::ivec2(40, 30))
 			throw std::runtime_error("Wrong level dimensions");
 
-		std::shared_ptr<Level> level = WorldUtil::createLevel(world);
+		std::shared_ptr<Level> level = WorldUtil::createLevel(world, skin);
 
 		// TODO: log import errors somewhere (possibly, for fancy import log ui)
 		//       yeah, ui would be nice
