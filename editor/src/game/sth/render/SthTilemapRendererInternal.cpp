@@ -1,7 +1,11 @@
 #include "SthTilemapRendererInternal.hpp"
 
+#include <filesystem>
+
 #include <fmt/core.h>
 #include <stb/image.h>
+
+#include "../../../core/util/StringUtil.hpp"
 
 namespace fs = std::filesystem;
 
@@ -16,8 +20,11 @@ SthTilemapRendererInternal::~SthTilemapRendererInternal() {
 	glDeleteProgram(_program);
 	glDeleteVertexArrays(1, &_vao);
 	glDeleteBuffers(1, &_vbo);
-	glDeleteTextures(1, &_texAtlas);
+
 	glDeleteTextures(1, &_texFrameOffsets);
+
+	for (auto &[_, texture]: _atlasTextures)
+		glDeleteTextures(1, &texture);
 }
 
 const Atlas &SthTilemapRendererInternal::getAtlas() {
@@ -53,6 +60,15 @@ void SthTilemapRendererInternal::drawTiles(const std::vector<TileInstance> &tile
 
 	glBindVertexArray(0);
 	glUseProgram(0);
+}
+
+void SthTilemapRendererInternal::selectAtlasForSkin(int skinId) {
+	auto it = _atlasTextures.find(skinId);
+
+	if (it == _atlasTextures.end())
+		return;
+
+	_texAtlas = it->second;
 }
 
 void SthTilemapRendererInternal::setupVbo() {
@@ -123,19 +139,19 @@ void SthTilemapRendererInternal::setupProgram() {
 	glUseProgram(0);
 }
 
-void SthTilemapRendererInternal::loadAtlas() {
+static GLuint loadTexture(const fs::path &path) {
 	glm::ivec2 size;
 	int channelCount;
 
-	void *pixelData = stbi_load("data/sth_renderer/textures/0.png", &size.x, &size.y, &channelCount, STBI_rgb_alpha);
+	void *pixelData = stbi_load(path.u8string().c_str(), &size.x, &size.y, &channelCount, STBI_rgb_alpha);
 
 	if (!pixelData)
-		return;
+		return 0;
 
-	GLuint texAtlas;
-	glGenTextures(1, &texAtlas);
+	GLuint texture;
+	glGenTextures(1, &texture);
 
-	glBindTexture(GL_TEXTURE_2D, texAtlas);
+	glBindTexture(GL_TEXTURE_2D, texture);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -145,10 +161,22 @@ void SthTilemapRendererInternal::loadAtlas() {
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixelData);
 	stbi_image_free(pixelData);
 
-	GLuint texFrameOffsets;
-	glGenTextures(1, &texFrameOffsets);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
-	glBindTexture(GL_TEXTURE_1D, texFrameOffsets);
+	return texture;
+}
+
+static bool isAtlasTexturePath(const fs::path &path) {
+	if (!(path.has_extension() && path.extension() == ".png"))
+		return false;
+
+	return StringUtil::isDigit(path.stem().u8string());
+}
+
+void SthTilemapRendererInternal::loadAtlas() {
+	glGenTextures(1, &_texFrameOffsets);
+
+	glBindTexture(GL_TEXTURE_1D, _texFrameOffsets);
 
 	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -162,8 +190,16 @@ void SthTilemapRendererInternal::loadAtlas() {
 			frameOffsets.data()
 	);
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_1D, 0);
 
-	_texAtlas = texAtlas;
-	_texFrameOffsets = texFrameOffsets;
+	for (auto &entry: fs::directory_iterator("data/sth_renderer/textures")) {
+		const fs::path &path = entry;
+
+		if (!isAtlasTexturePath(path))
+			continue;
+
+		int skinId = StringUtil::parseInt(path.stem().u8string());
+
+		_atlasTextures[skinId] = loadTexture(path);
+	}
 }

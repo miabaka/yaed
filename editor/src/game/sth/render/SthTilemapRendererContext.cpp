@@ -274,6 +274,7 @@ void SthTilemapRendererContext::render() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	_renderer->selectAtlasForSkin(level->skin()->id());
 	_renderer->drawTiles(tiles, 1.f);
 
 	glDisable(GL_BLEND);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <vector>
 
 #include <GL/gl3w.h>
@@ -29,14 +29,16 @@ public:
 
 	void drawTiles(const std::vector<TileInstance> &tiles, float opacity = 1.f) const;
 
+	void selectAtlasForSkin(int skinId);
+
 private:
 	Atlas _atlas;
-
+	std::unordered_map<int, GLuint> _atlasTextures;
 	GLuint _program = 0;
 	GLuint _vao = 0;
 	GLuint _vbo = 0;
-	GLuint _texAtlas = 0;
 	GLuint _texFrameOffsets = 0;
+	GLuint _texAtlas = 0;
 
 	void setupVbo();
 
