@@ -11,9 +11,9 @@ using namespace SthInternal;
 
 // TODO: properly generate icon sets using tilemap renderer, brush definitions and some internal overrides
 SthPaletteIconProvider::SthPaletteIconProvider() {
-	loadIconSet("data/fallback_palette_icons/sth_0.png", Skin::MummiesTreasures);
-	loadIconSet("data/fallback_palette_icons/sth_1.png", Skin::CyclopsOnGuard);
-	loadIconSet("data/fallback_palette_icons/sth_2.png", Skin::NorthernLegends);
+	loadIconSet("data/fallback_palette_icons/sth/0.png", Skin::MummiesTreasures);
+	loadIconSet("data/fallback_palette_icons/sth/1.png", Skin::CyclopsOnGuard);
+	loadIconSet("data/fallback_palette_icons/sth/2.png", Skin::NorthernLegends);
 }
 
 SthPaletteIconProvider::~SthPaletteIconProvider() {
