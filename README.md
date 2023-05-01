@@ -1,6 +1,6 @@
 # yaed
 
-![](https://user-images.githubusercontent.com/109112234/197661857-598ed5c7-8755-4b0c-9133-80acdee613d0.png)
+![](https://user-images.githubusercontent.com/109112234/235519159-d3cf018b-bb82-4186-850c-1325c2092415.png)
 
 A **y**et **a**nother level **ed**itor for some old tile-based games including:
 
