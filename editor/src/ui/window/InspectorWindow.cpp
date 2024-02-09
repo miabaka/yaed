@@ -32,7 +32,7 @@ void InspectorWindow::onDraw() {
 		ImGui::SameLine();
 		ImGui::SetCursorPosX(inputOffset);
 		ImGui::SetNextItemWidth(inputWidth);
-		ImGui::InputTextWithHint("###world_name", world->filename().c_str(), world->name());
+		ImGui::InputTextWithHint("###world_name", world->filename().c_str(), &world->name());
 
 		ImGui::Indent(-6);
 
@@ -52,7 +52,7 @@ void InspectorWindow::onDraw() {
 		ImGui::SameLine();
 		ImGui::SetCursorPosX(inputOffset);
 		ImGui::SetNextItemWidth(inputWidth);
-		ImGui::InputText("###level_name", level->name());
+		ImGui::InputText("###level_name", &level->name());
 
 		ImGui::AlignTextToFramePadding();
 		ImGui::Text("Skin");

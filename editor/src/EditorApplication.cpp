@@ -576,7 +576,7 @@ void EditorApplication::drawNewWorldDialog() {
 		ImGui::SameLine();
 		ImGui::SetCursorPosX(inputOffset);
 		ImGui::SetNextItemWidth(-7);
-		ImGui::InputTextWithHint("###name", "None", _newWorldDialogState.chosenName());
+		ImGui::InputTextWithHint("###name", "None", &_newWorldDialogState.chosenName());
 	}
 
 	ImGui::Indent(-6);
