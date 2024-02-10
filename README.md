@@ -2,31 +2,24 @@
 
 ![](https://user-images.githubusercontent.com/109112234/235519159-d3cf018b-bb82-4186-850c-1325c2092415.png)
 
-A **y**et **a**nother level **ed**itor for some old tile-based games including:
+A yet another simple level editor for some tile-based games
+
+## Supported games
 
 - Snowy: Treasure Hunter
 
-Currently, its user interface based on Dear ImGui library, but will be rewritten using custom toolkit in near future, and the level renderer itself based on OpenGL 3.3
+## TODO
 
-## Supported Games
-
-- [ ] Gold Sprinter
-- [x] Snowy: Treasure Hunter
-  - [X] Basic tile editing
-  - [X] Level rendering
-  - [ ] Level reordering
-  - [X] Teleport and monster allocation
-  - [ ] Teleport and monster linking
-  - [X] World / level creation
-  - [X] World export
-  - [X] World import
-- [ ] Snowy: Treasure Hunter III
-
-## Tested Platforms
-
-- Windows 11 21H2 (x86, msvc, Visual Studio 2022)
-- Windows 11 21H2 (x86_64, clang, MSYS2 Clang)
-- Windows 11 21H2 (x86_64, clang, MSYS2 MinGW)
-- Windows 11 21H2 (x86_64, gcc, MSYS2 MinGW)
-- Arch Linux (x86_64, gcc)
-- Elbrus Linux 7.1 (e2k, lcc 1.26.15)
+- [ ] Remove copyrighted assets
+  - [ ] Write tool that automatically generates necessary texture atlases from original game distribution 
+- [ ] Refactor with C++20 features 
+- [ ] Properly implement file dialogs, using XDG Desktop Portal on Linux
+- [ ] Improve stability
+- [ ] Implement proper tile linking (portal ins/outs, monster respawn points, etc)
+- [ ] Implement necessary editing tools
+  - [ ] Flood fill
+  - [ ] Select (with boolean operations tho)
+  - [ ] Move
+- [ ] Implement copy-paste
+- [ ] Implement undo/redo buffer
+- [ ] Rewrite GUI in in-house cuteui toolkit
