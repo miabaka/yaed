@@ -2,9 +2,6 @@ cmake_minimum_required(VERSION 3.20)
 
 project(yaed)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-
 set(GLFW_BUILD_EXAMPLES OFF)
 set(GLFW_BUILD_TESTS OFF)
 set(GLFW_BUILD_DOCS OFF)
@@ -18,10 +15,6 @@ add_subdirectory(third_party/imgui)
 add_subdirectory(third_party/json)
 add_subdirectory(third_party/stb)
 
-add_subdirectory(cutegl)
 add_subdirectory(cuteshell)
-add_subdirectory(cuteui)
-add_subdirectory(cutegl_example)
-add_subdirectory(cuteui_example)
+
 add_subdirectory(editor)
-add_subdirectory(new_renderer_test)

@@ -1,5 +1,8 @@
 project(cuteshell)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
 add_library(cuteshell STATIC
         src/CuteShell.cpp
         src/StubDialogProvider.cpp
