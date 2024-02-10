@@ -5,60 +5,128 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_executable(editor
         src/core/export/BaseWorldExporter.cpp
+        src/core/export/BaseWorldExporter.hpp
+        src/core/export/IWorldExporter.hpp
         src/core/format/WorldFormat.cpp
+        src/core/format/WorldFormat.hpp
         src/core/format/WorldFormatInfo.cpp
+        src/core/format/WorldFormatInfo.hpp
         src/core/format/WorldFormatManager.cpp
+        src/core/format/WorldFormatManager.hpp
+        src/core/game/BaseGame.hpp
         src/core/game/GameManager.cpp
+        src/core/game/GameManager.hpp
+        src/core/game/IGame.hpp
         src/core/game/KnownGame.cpp
         src/core/game/UnknownGame.cpp
         src/core/palette/BasePaletteIconProvider.cpp
+        src/core/palette/BasePaletteIconProvider.hpp
         src/core/palette/Brush.cpp
+        src/core/palette/Brush.hpp
         src/core/palette/BrushGroup.cpp
+        src/core/palette/BrushGroup.hpp
         src/core/palette/BrushSelection.cpp
+        src/core/palette/BrushSelection.hpp
         src/core/palette/BrushSelectionManager.cpp
+        src/core/palette/BrushSelectionManager.hpp
+        src/core/palette/IPaletteIconProvider.hpp
         src/core/palette/PaletteIconProviderManager.cpp
+        src/core/palette/PaletteIconProviderManager.hpp
         src/core/palette/PaletteIconSet.cpp
+        src/core/palette/PaletteIconSet.hpp
         src/core/palette/PaletteTemplate.cpp
+        src/core/palette/PaletteTemplate.hpp
         src/core/palette/PaletteTemplateBuilder.cpp
+        src/core/palette/PaletteTemplateBuilder.hpp
         src/core/render/BaseTilemapRenderer.cpp
+        src/core/render/BaseTilemapRenderer.hpp
+        src/core/render/ITilemapRenderer.hpp
+        src/core/render/ITilemapRendererContext.hpp
         src/core/render/TilemapRendererManager.cpp
+        src/core/render/TilemapRendererManager.hpp
         src/core/tool/BaseTool.cpp
+        src/core/tool/BaseTool.hpp
+        src/core/tool/ITool.hpp
         src/core/util/CustomDataContainer.cpp
+        src/core/util/CustomDataContainer.hpp
+        src/core/util/ICustomData.hpp
+        src/core/util/Range.hpp
+        src/core/util/Rect.hpp
         src/core/util/StringUtil.cpp
+        src/core/util/StringUtil.hpp
         src/core/util/TextureSlice.cpp
+        src/core/util/TextureSlice.hpp
         src/core/BaseEditor.cpp
+        src/core/BaseEditor.hpp
+        src/core/IWorldFactory.hpp
+        src/core/IWorldImporter.hpp
         src/core/Layer.cpp
+        src/core/Layer.hpp
         src/core/LayerTemplate.cpp
+        src/core/LayerTemplate.hpp
         src/core/Level.cpp
+        src/core/Level.hpp
         src/core/LevelSkin.cpp
+        src/core/LevelSkin.hpp
         src/core/RecentlyOpenedManager.cpp
+        src/core/RecentlyOpenedManager.hpp
         src/core/Tilemap.cpp
+        src/core/Tilemap.hpp
+        src/core/TilemapDefs.hpp
         src/core/UniqueTileAllocator.cpp
+        src/core/UniqueTileAllocator.hpp
         src/core/World.cpp
+        src/core/World.hpp
         src/core/WorldFactoryManager.cpp
+        src/core/WorldFactoryManager.hpp
         src/core/WorldUtil.cpp
+        src/core/WorldUtil.hpp
         src/game/sth/render/Atlas.cpp
+        src/game/sth/render/Atlas.hpp
         src/game/sth/render/SthTilemapRenderer.cpp
+        src/game/sth/render/SthTilemapRenderer.hpp
         src/game/sth/render/SthTilemapRendererContext.cpp
+        src/game/sth/render/SthTilemapRendererContext.hpp
         src/game/sth/render/SthTilemapRendererInternal.cpp
+        src/game/sth/render/SthTilemapRendererInternal.hpp
         src/game/sth/SthGame.cpp
+        src/game/sth/SthGame.hpp
+        src/game/sth/SthInternal.hpp
         src/game/sth/SthPaletteIconProvider.cpp
+        src/game/sth/SthPaletteIconProvider.hpp
         src/game/sth/SthWorldExporter.cpp
+        src/game/sth/SthWorldExporter.hpp
         src/game/sth/SthWorldFactory.cpp
+        src/game/sth/SthWorldFactory.hpp
         src/game/sth/SthWorldImporter.cpp
+        src/game/sth/SthWorldImporter.hpp
         src/tool/PencilTool.cpp
+        src/tool/PencilTool.hpp
         src/ui/window/InspectorWindow.cpp
+        src/ui/window/InspectorWindow.hpp
         src/ui/window/LayerListWindow.cpp
+        src/ui/window/LayerListWindow.hpp
         src/ui/window/MinimapWindow.cpp
+        src/ui/window/MinimapWindow.hpp
         src/ui/window/PaletteWindow.cpp
+        src/ui/window/PaletteWindow.hpp
         src/ui/window/ViewportWindow.cpp
+        src/ui/window/ViewportWindow.hpp
         src/ui/BaseWindow.cpp
+        src/ui/BaseWindow.hpp
         src/ui/ImUtil.cpp
+        src/ui/ImUtil.hpp
+        src/ui/IWindow.hpp
         src/ui/NewWorldDialog.cpp
+        src/ui/NewWorldDialog.hpp
         src/ui/NewWorldDialogState.cpp
+        src/ui/NewWorldDialogState.hpp
         src/ui/ToolHandler.cpp
+        src/ui/ToolHandler.hpp
         src/Editor.cpp
+        src/Editor.hpp
         src/EditorApplication.cpp
+        src/EditorApplication.hpp
         src/main.cpp)
 
 target_link_libraries(editor PRIVATE

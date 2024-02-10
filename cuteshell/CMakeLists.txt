@@ -4,6 +4,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_library(cuteshell STATIC
+        include/cute/shell/CuteShell.hpp
+        include/cute/shell/IDialogProvider.hpp
+        include/cute/shell/IFileDialog.hpp
         src/CuteShell.cpp
         src/StubDialogProvider.cpp
         src/StubFileDialog.cpp)
@@ -13,7 +16,9 @@ if (WIN32)
     target_sources(cuteshell PRIVATE
             src/CuteShell_win32.cpp
             src/Win32DialogProvider.cpp
-            src/Win32FileDialog.cpp)
+            src/Win32DialogProvider.hpp
+            src/Win32FileDialog.cpp
+            src/Win32FileDialog.hpp)
 elseif (UNIX AND NOT APPLE)
     find_package(PkgConfig REQUIRED)
 
@@ -28,7 +33,9 @@ elseif (UNIX AND NOT APPLE)
     target_sources(cuteshell PRIVATE
             src/CuteShell_nix.cpp
             src/GtkDialogProvider.cpp
-            src/GtkFileDialog.cpp)
+            src/GtkDialogProvider.hpp
+            src/GtkFileDialog.cpp
+            src/GtkFileDialog.hpp)
 else ()
     target_sources(cuteshell PRIVATE src/CuteShell_unknown.cpp)
 endif ()
