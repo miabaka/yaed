@@ -23,7 +23,7 @@ public:
 
 	bool update(bool shouldClose);
 
-	void render();
+	void renderOffscreenViews();
 
 	void openWorld();
 

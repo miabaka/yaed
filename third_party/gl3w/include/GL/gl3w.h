@@ -45,17 +45,13 @@ extern "C" {
 
 #define GL3W_OK 0
 #define GL3W_ERROR_INIT -1
-#define GL3W_ERROR_LIBRARY_OPEN -2
 #define GL3W_ERROR_OPENGL_VERSION -3
 
 typedef void (*GL3WglProc)(void);
 typedef GL3WglProc (*GL3WGetProcAddressProc)(const char *proc);
 
 /* gl3w api */
-GL3W_API int gl3wInit(void);
-GL3W_API int gl3wInit2(GL3WGetProcAddressProc proc);
-GL3W_API int gl3wIsSupported(int major, int minor);
-GL3W_API GL3WglProc gl3wGetProcAddress(const char *proc);
+GL3W_API int gl3wInit(GL3WGetProcAddressProc proc);
 
 /* gl3w internal state */
 union GL3WProcs {

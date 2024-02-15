@@ -105,7 +105,7 @@ bool EditorApplication::update(bool shouldClose) {
 	return !shouldClose;
 }
 
-void EditorApplication::render() {
+void EditorApplication::renderOffscreenViews() {
 	_viewport.render();
 }
 

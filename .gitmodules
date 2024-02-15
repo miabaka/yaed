@@ -1,6 +1,3 @@
-[submodule "glfw"]
-	path = third_party/glfw
-	url = https://github.com/glfw/glfw
 [submodule "glm"]
 	path = third_party/glm
 	url = https://github.com/g-truc/glm
@@ -10,3 +7,6 @@
 [submodule "json"]
 	path = third_party/json
 	url = https://github.com/nlohmann/json
+[submodule "third_party/SDL"]
+	path = third_party/SDL
+	url = https://github.com/libsdl-org/SDL
