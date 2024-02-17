@@ -7,37 +7,23 @@ add_library(cuteshell STATIC
         include/cute/shell/CuteShell.hpp
         include/cute/shell/IDialogProvider.hpp
         include/cute/shell/IFileDialog.hpp
-        src/CuteShell.cpp
-        src/StubDialogProvider.cpp
-        src/StubFileDialog.cpp)
+        src/CuteShell.cpp)
 
 if (WIN32)
-    target_compile_definitions(cuteshell PRIVATE CUTE_DIALOGS_IMPL_WIN32)
+    target_compile_definitions(cuteshell PRIVATE CUTE_SHELL_WIN32_IMPL)
     target_sources(cuteshell PRIVATE
-            src/CuteShell_win32.cpp
-            src/Win32DialogProvider.cpp
-            src/Win32DialogProvider.hpp
-            src/Win32FileDialog.cpp
-            src/Win32FileDialog.hpp)
-elseif (UNIX AND NOT APPLE)
-    find_package(PkgConfig REQUIRED)
-
-    pkg_check_modules(GTK REQUIRED gtk+-3.0)
-    pkg_check_modules(GLIB REQUIRED glibmm-2.4)
-    pkg_check_modules(DBus REQUIRED dbus-1)
-
-    target_include_directories(cuteshell PRIVATE ${GTK_INCLUDE_DIRS} ${GLIB_INCLUDE_DIRS} ${DBus_INCLUDE_DIRS})
-    target_link_libraries(cuteshell PRIVATE fmt ${GTK_LIBRARIES} ${GLIB_LIBRARIES} ${DBus_LIBRARIES})
-
-    target_compile_definitions(cuteshell PRIVATE CUTE_DIALOGS_IMPL_GTK)
-    target_sources(cuteshell PRIVATE
-            src/CuteShell_nix.cpp
-            src/GtkDialogProvider.cpp
-            src/GtkDialogProvider.hpp
-            src/GtkFileDialog.cpp
-            src/GtkFileDialog.hpp)
+            src/win32/CuteShell.cpp
+            src/win32/Win32DialogProvider.cpp
+            src/win32/Win32DialogProvider.hpp
+            src/win32/Win32FileDialog.cpp
+            src/win32/Win32FileDialog.hpp)
 else ()
-    target_sources(cuteshell PRIVATE src/CuteShell_unknown.cpp)
+    target_sources(cuteshell PRIVATE
+            src/stub/CuteShell.cpp
+            src/stub/StubDialogProvider.cpp
+            src/stub/StubDialogProvider.hpp
+            src/stub/StubFileDialog.cpp
+            src/stub/StubFileDialog.hpp)
 endif ()
 
 target_include_directories(cuteshell PUBLIC include)

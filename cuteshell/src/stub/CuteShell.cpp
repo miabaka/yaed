@@ -8,4 +8,4 @@ fs::path CuteShell::getAppDataPath() {
 	return fs::current_path();
 }
 
-void CuteShell::revealFile(const std::filesystem::path &path) {}
+void CuteShell::revealFile(const fs::path &path) {}
