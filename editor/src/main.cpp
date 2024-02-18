@@ -1,9 +1,13 @@
-#include <SDL.h>
+#include <string>
+#include <string_view>
+
 #include <GL/gl3w.h>
+#include <SDL.h>
+#include <fmt/core.h>
 #include <glm/vec2.hpp>
 #include <imgui/imgui.h>
-#include <imgui/imgui_impl_sdl2.h>
 #include <imgui/imgui_impl_opengl3.h>
+#include <imgui/imgui_impl_sdl2.h>
 
 #include "EditorApplication.hpp"
 
@@ -11,6 +15,14 @@ using glm::ivec2;
 
 static constexpr ivec2 DEFAULT_WINDOW_SIZE = {1280, 720};
 static const char DEFAULT_WINDOW_TITLE[] = "yaed";
+
+static void showError(const std::string &message) {
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, DEFAULT_WINDOW_TITLE, message.c_str(), nullptr);
+}
+
+static void showSdlError(std::string_view context) {
+	showError(fmt::format("{}: {}", context, SDL_GetError()));
+}
 
 static bool pollEvents(SDL_Window *window) {
 	SDL_Event event;
@@ -37,10 +49,11 @@ static bool pollEvents(SDL_Window *window) {
 	return shouldClose;
 }
 
-// TODO: show errors in message boxes
-int main(int argc, char **argv) {
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
+int main(int, char **) {
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
+		showSdlError("Failed to initialize SDL");
 		return 1;
+	}
 
 	// enable native ime
 	SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
@@ -62,11 +75,21 @@ int main(int argc, char **argv) {
 	);
 
 	if (!window) {
+		showSdlError("Failed to create SDL window");
 		SDL_Quit();
-		return 2;
+		return 1;
 	}
 
 	SDL_GLContext glContext = SDL_GL_CreateContext(window);
+
+	if (!glContext) {
+		showSdlError("Failed to create OpenGL context");
+
+		SDL_DestroyWindow(window);
+		SDL_Quit();
+
+		return 1;
+	}
 
 	SDL_GL_MakeCurrent(window, glContext);
 
@@ -75,9 +98,13 @@ int main(int argc, char **argv) {
 		SDL_GL_SetSwapInterval(1);
 
 	if (gl3wInit(reinterpret_cast<GL3WGetProcAddressProc>(SDL_GL_GetProcAddress)) != GL3W_OK) {
+		showError("Failed to load OpenGL extensions");
+
+		SDL_GL_DeleteContext(glContext);
 		SDL_DestroyWindow(window);
 		SDL_Quit();
-		return 3;
+
+		return 1;
 	}
 
 	ImGui::CreateContext();
