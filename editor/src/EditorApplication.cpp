@@ -198,7 +198,7 @@ void EditorApplication::openWorld() {
 		dialog->addExtensionFilter(info.name(), "*." + info.fileExtension());
 	}
 
-	dialog->addExtensionFilter(L"All files", "*.*");
+	dialog->addExtensionFilter("All files", "*.*");
 
 	const fs::path selectedPath = dialog->show();
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <filesystem>
+#include <string_view>
 #include <vector>
 
 namespace cute::shell {
@@ -15,9 +16,7 @@ public:
 
 	virtual ~IFileDialog() = default;
 
-	virtual void addExtensionFilter(const std::string &name, const std::string &extension) = 0;
-
-	virtual void addExtensionFilter(const std::wstring &name, const std::string &extension) = 0;
+	virtual void addExtensionFilter(std::string_view name, std::string_view extension) = 0;
 
 	virtual void clearExtensionFilters() = 0;
 

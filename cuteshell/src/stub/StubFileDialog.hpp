@@ -5,9 +5,7 @@
 namespace cute::shell {
 
 class StubFileDialog : public IFileDialog {
-	void addExtensionFilter(const std::string &name, const std::string &extension) override;
-
-	void addExtensionFilter(const std::wstring &name, const std::string &extension) override;
+	void addExtensionFilter(std::string_view name, std::string_view extension) override;
 
 	void clearExtensionFilters() override;
 

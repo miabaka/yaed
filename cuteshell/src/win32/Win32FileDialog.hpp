@@ -1,19 +1,20 @@
 #pragma once
 
 #include <list>
+
+#include <windows.h>
+#include <shobjidl.h>
+#include <wrl.h>
+
 #include "cute/shell/IFileDialog.hpp"
 
 namespace cute::shell {
 
 class Win32FileDialog : public IFileDialog {
 public:
-	Win32FileDialog(Type type);
+	explicit Win32FileDialog(Type type);
 
-	~Win32FileDialog() override;
-
-	void addExtensionFilter(const std::string &name, const std::string &extension) override;
-
-	void addExtensionFilter(const std::wstring &name, const std::string &extension) override;
+	void addExtensionFilter(std::string_view name, std::string_view extension) override;
 
 	void clearExtensionFilters() override;
 
@@ -27,8 +28,7 @@ private:
 		std::wstring extension;
 	};
 
-	Type _type;
-	void *_handle;
+	Microsoft::WRL::ComPtr<::IFileDialog> _handle;
 	std::list<Filter> _extensionFilters;
 };
 

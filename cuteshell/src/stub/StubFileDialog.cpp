@@ -4,9 +4,7 @@ using namespace cute::shell;
 
 namespace fs = std::filesystem;
 
-void StubFileDialog::addExtensionFilter(const std::string &name, const std::string &extension) {}
-
-void StubFileDialog::addExtensionFilter(const std::wstring &name, const std::string &extension) {}
+void StubFileDialog::addExtensionFilter(std::string_view name, std::string_view extension) {}
 
 void StubFileDialog::clearExtensionFilters() {}
 
