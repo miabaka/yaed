@@ -1,6 +1,6 @@
 project(editor)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_executable(editor
@@ -137,3 +137,9 @@ target_link_libraries(editor PRIVATE
         gl3w
         imgui
         stb_image)
+
+if (MSVC)
+    target_compile_options(editor PRIVATE /Zc:char8_t-)
+else ()
+    target_compile_options(editor PRIVATE -fno-char8_t)
+endif ()
