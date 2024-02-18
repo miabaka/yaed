@@ -1,5 +1,3 @@
-#define GLFW_INCLUDE_NONE
-
 #include <SDL.h>
 #include <GL/gl3w.h>
 #include <glm/vec2.hpp>
