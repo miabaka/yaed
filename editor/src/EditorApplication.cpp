@@ -16,9 +16,11 @@ namespace fs = std::filesystem;
 
 using cute::shell::CuteShell;
 using cute::shell::IFileDialog;
+using cute::shell::window_handle_t;
 
-EditorApplication::EditorApplication()
-		: _dialogProvider(CuteShell::createDialogProvider()) {
+EditorApplication::EditorApplication(window_handle_t window)
+		: _dialogProvider(CuteShell::createDialogProvider()),
+		  _window(window) {
 	const fs::path baseConfigPath = CuteShell::getAppDataPath() / "yaed";
 
 	bool configDirectoryExists = fs::exists(baseConfigPath);
@@ -193,6 +195,8 @@ void EditorApplication::saveConfig() {
 void EditorApplication::openWorld() {
 	std::unique_ptr<IFileDialog> dialog = _dialogProvider->createFileDialog(IFileDialog::Type::Open);
 
+	dialog->setParentWindow(_window);
+
 	for (const auto &[_, format]: worldFormats().formats()) {
 		const WorldFormatInfo &info = format->info();
 		dialog->addExtensionFilter(info.name(), "*." + info.fileExtension());
@@ -216,6 +220,8 @@ void EditorApplication::saveWorldAs(std::shared_ptr<World> world) {
 	const std::string &gameId = world->game()->id();
 
 	std::unique_ptr<IFileDialog> dialog = _dialogProvider->createFileDialog(IFileDialog::Type::Save);
+
+	dialog->setParentWindow(_window);
 
 	for (const auto &[_, format]: worldFormats().formats()) {
 		const WorldFormatInfo &info = format->info();

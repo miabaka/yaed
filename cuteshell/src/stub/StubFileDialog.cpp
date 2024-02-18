@@ -15,3 +15,5 @@ fs::path StubFileDialog::show() {
 std::vector<fs::path> StubFileDialog::showForMultiple() {
 	return {};
 }
+
+void StubFileDialog::setParentWindow(window_handle_t window) {}

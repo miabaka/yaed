@@ -3,9 +3,11 @@
 #include <filesystem>
 #include <memory>
 
-#include "IDialogProvider.hpp"
-
 namespace cute::shell {
+
+using window_handle_t = void *;
+
+class IDialogProvider;
 
 class CuteShell {
 public:

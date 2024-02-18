@@ -4,6 +4,8 @@
 #include <string_view>
 #include <vector>
 
+#include "CuteShell.hpp"
+
 namespace cute::shell {
 
 class IFileDialog {
@@ -23,6 +25,8 @@ public:
 	virtual std::filesystem::path show() = 0;
 
 	virtual std::vector<std::filesystem::path> showForMultiple() = 0;
+	
+	virtual void setParentWindow(window_handle_t window) = 0;
 };
 
 } // namespace cute::dialogs

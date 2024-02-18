@@ -22,6 +22,8 @@ public:
 
 	std::vector<std::filesystem::path> showForMultiple() override;
 
+	void setParentWindow(window_handle_t window) override;
+
 private:
 	struct Filter {
 		std::wstring name;
@@ -30,6 +32,7 @@ private:
 
 	Microsoft::WRL::ComPtr<::IFileDialog> _handle;
 	std::list<Filter> _extensionFilters;
+	HWND _parentWindow = nullptr;
 };
 
 } // namespace cute::dialogs

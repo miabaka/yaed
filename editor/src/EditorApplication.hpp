@@ -17,7 +17,7 @@
 
 class EditorApplication : public Editor {
 public:
-	EditorApplication();
+	explicit EditorApplication(cute::shell::window_handle_t window);
 
 	~EditorApplication() override;
 
@@ -46,14 +46,15 @@ private:
 	MinimapWindow _minimap;
 	PaletteWindow _palette;
 	ViewportWindow _viewport;
-	bool _worldSelectionLockedByCollapsing = false;
-	bool _dockingLayoutMustBeReset = false;
-	bool _worldTreeOpen = true;
-	bool _newWorldDialogMustBeOpen = false;
 	RecentlyOpenedManager _recentlyOpened;
 	std::filesystem::path _configPath;
 	std::filesystem::path _imGuiConfigPath;
 	NewWorldDialogState _newWorldDialogState;
+	bool _worldSelectionLockedByCollapsing = false;
+	bool _dockingLayoutMustBeReset = false;
+	bool _worldTreeOpen = true;
+	bool _newWorldDialogMustBeOpen = false;
+	cute::shell::window_handle_t _window;
 
 	void loadConfig();
 

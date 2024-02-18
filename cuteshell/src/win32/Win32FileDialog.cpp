@@ -59,7 +59,7 @@ fs::path Win32FileDialog::show() {
 		_handle->SetFileTypes(fileTypes.size(), fileTypes.data());
 	}
 
-	if (!SUCCEEDED(_handle->Show(nullptr)))
+	if (!SUCCEEDED(_handle->Show(_parentWindow)))
 		return {};
 
 	ComPtr<IShellItem> item;
@@ -80,4 +80,8 @@ fs::path Win32FileDialog::show() {
 
 std::vector<fs::path> Win32FileDialog::showForMultiple() {
 	return {};
+}
+
+void Win32FileDialog::setParentWindow(window_handle_t window) {
+	_parentWindow = static_cast<HWND>(window);
 }

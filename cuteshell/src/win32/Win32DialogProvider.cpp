@@ -7,7 +7,7 @@
 using namespace cute::shell;
 
 Win32DialogProvider::Win32DialogProvider() {
-	if (!SUCCEEDED(CoInitializeEx(nullptr, COINIT_MULTITHREADED | COINIT_DISABLE_OLE1DDE)))
+	if (!SUCCEEDED(CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE)))
 		throw std::runtime_error("cuteshell: Failed to initialize COM");
 }
 

@@ -12,6 +12,8 @@ class StubFileDialog : public IFileDialog {
 	std::filesystem::path show() override;
 
 	std::vector<std::filesystem::path> showForMultiple() override;
+
+	void setParentWindow(window_handle_t window) override;
 };
 
 } // namespace cute::dialogs

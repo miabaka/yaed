@@ -3,15 +3,17 @@
 
 #include <GL/gl3w.h>
 #include <SDL.h>
+#include <SDL_syswm.h>
 #include <fmt/core.h>
 #include <glm/vec2.hpp>
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_opengl3.h>
-#include <imgui/imgui_impl_sdl2.h>
 
+#include <imgui/imgui_impl_sdl2.h>
 #include "EditorApplication.hpp"
 
 using glm::ivec2;
+using cute::shell::window_handle_t;
 
 static constexpr ivec2 DEFAULT_WINDOW_SIZE = {1280, 720};
 static const char DEFAULT_WINDOW_TITLE[] = "yaed";
@@ -47,6 +49,21 @@ static bool pollEvents(SDL_Window *window) {
 	}
 
 	return shouldClose;
+}
+
+static window_handle_t extractRawHandleFromSdlWindow(SDL_Window *window) {
+#ifdef _WIN32
+	SDL_SysWMinfo wmInfo;
+
+	SDL_VERSION(&wmInfo.version);
+
+	if (!SDL_GetWindowWMInfo(window, &wmInfo))
+		return {};
+
+	return wmInfo.info.win.window;
+#else
+	return {};
+#endif
 }
 
 int main(int, char **) {
@@ -125,7 +142,7 @@ int main(int, char **) {
 	ImGui_ImplOpenGL3_Init("#version 330 core");
 
 	{
-		EditorApplication editor;
+		EditorApplication editor(extractRawHandleFromSdlWindow(window));
 
 		bool windowShown = false;
 
