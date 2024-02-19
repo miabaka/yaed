@@ -1,6 +1,9 @@
 #include "Win32FileDialog.hpp"
 
+#include <algorithm>
+#include <limits>
 #include <vector>
+
 #include <fmt/core.h>
 
 using namespace cute::shell;
@@ -33,17 +36,22 @@ Win32FileDialog::Win32FileDialog(Type type) {
 		_handle->SetOptions(FOS_PICKFOLDERS);
 }
 
-static std::wstring convertUtf8ToUtf16(std::string_view src) {
-	std::wstring dst;
+static std::wstring convertUtf8ToUtf16(const std::string_view src) {
+	// truncate source string to avoid int overflow
+	const int truncatedSrcSize = static_cast<int>(std::min(
+			src.size(),
+			static_cast<size_t>(std::numeric_limits<int>::max())
+	));
 
-	int charCount = MultiByteToWideChar(CP_UTF8, 0, src.data(), src.size(), nullptr, 0);
+	const int charCount = MultiByteToWideChar(CP_UTF8, 0, src.data(), truncatedSrcSize, nullptr, 0);
 
 	if (charCount < 1)
-		return dst;
+		return {};
 
+	std::wstring dst;
 	dst.resize(charCount);
 
-	if (MultiByteToWideChar(CP_UTF8, 0, src.data(), src.size(), dst.data(), charCount) != charCount)
+	if (MultiByteToWideChar(CP_UTF8, 0, src.data(), truncatedSrcSize, dst.data(), charCount) != charCount)
 		return {};
 
 	return dst;
