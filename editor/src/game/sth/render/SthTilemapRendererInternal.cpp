@@ -198,7 +198,7 @@ void SthTilemapRendererInternal::loadAtlas() {
 		if (!isAtlasTexturePath(path))
 			continue;
 
-		int skinId = StringUtil::parseInt(path.stem().u8string());
+		int skinId = std::stoi(path.stem().u8string());
 
 		_atlasTextures[skinId] = loadTexture(path);
 	}

@@ -1,12 +1,10 @@
 #pragma once
 
-#include <string>
+#include <string_view>
 
 class StringUtil {
 public:
-	static bool isDigit(const std::string &str);
+	static bool isDigit(std::string_view str);
 
-	static bool isDigitOrEmpty(const std::string &str);
-
-	static int parseInt(const std::string &str);
+	static bool isDigitOrEmpty(std::string_view str);
 };
