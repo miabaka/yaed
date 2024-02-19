@@ -33,11 +33,27 @@ Win32FileDialog::Win32FileDialog(Type type) {
 		_handle->SetOptions(FOS_PICKFOLDERS);
 }
 
-// TODO: proper conversion from utf-8
+static std::wstring convertUtf8ToUtf16(std::string_view src) {
+	std::wstring dst;
+
+	int charCount = MultiByteToWideChar(CP_UTF8, 0, src.data(), src.size(), nullptr, 0);
+
+	if (charCount < 1)
+		return dst;
+
+	dst.resize(charCount);
+
+	if (MultiByteToWideChar(CP_UTF8, 0, src.data(), src.size(), dst.data(), charCount) != charCount)
+		return {};
+
+	return dst;
+}
+
 void Win32FileDialog::addExtensionFilter(std::string_view name, std::string_view extension) {
-	std::wstring wideName(name.begin(), name.end());
-	std::wstring wideExtension(extension.begin(), extension.end());
-	_extensionFilters.emplace_back(Filter{std::move(wideName), std::move(wideExtension)});
+	_extensionFilters.emplace_back(Filter{
+			convertUtf8ToUtf16(name),
+			convertUtf8ToUtf16(extension)
+	});
 }
 
 void Win32FileDialog::clearExtensionFilters() {
