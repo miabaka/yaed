@@ -56,6 +56,12 @@ private:
 	bool _newWorldDialogMustBeOpen = false;
 	cute::shell::window_handle_t _window;
 
+#ifndef NDEBUG
+	bool _imguiDemoVisible = false;
+	bool _imguiMetricsVisible = false;
+	bool _imguiStyleEditorVisible = false;
+#endif
+
 	void loadConfig();
 
 	void saveConfig();

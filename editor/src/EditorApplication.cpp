@@ -102,6 +102,21 @@ bool EditorApplication::update(bool shouldClose) {
 	_palette.draw();
 	_viewport.draw();
 
+#ifndef NDEBUG
+	if (_imguiDemoVisible)
+		ImGui::ShowDemoWindow(&_imguiDemoVisible);
+
+	if (_imguiMetricsVisible)
+		ImGui::ShowMetricsWindow(&_imguiMetricsVisible);
+
+	if (_imguiStyleEditorVisible) {
+		if (ImGui::Begin("Style Editor", &_imguiStyleEditorVisible))
+			ImGui::ShowStyleEditor();
+
+		ImGui::End();
+	}
+#endif
+
 	drawNewWorldDialog();
 
 	return !shouldClose;
@@ -323,10 +338,9 @@ void EditorApplication::drawGlobalMenu() {
 			ImGui::Separator();
 
 			if (ImGui::BeginMenu("Dear ImGui")) {
-				ImGui::MenuItem("Demo", {}, false);
-				ImGui::MenuItem("Metrics/Debugger", {}, false);
-				ImGui::MenuItem("Style Editor", {}, false);
-
+				ImGui::MenuItem("Demo", {}, &_imguiDemoVisible);
+				ImGui::MenuItem("Metrics/Debugger", {}, &_imguiMetricsVisible);
+				ImGui::MenuItem("Style Editor", {}, &_imguiStyleEditorVisible);
 				ImGui::EndMenu();
 			}
 #endif
