@@ -1,15 +1,14 @@
 #include "PaletteIconProviderManager.hpp"
 
 #include <stdexcept>
-#include <fmt/format.h>
+#include <fmt/core.h>
 
 void PaletteIconProviderManager::registerProvider(std::shared_ptr<IPaletteIconProvider> provider) {
-	using fmt::format;
 	using std::runtime_error;
 
 	for (const std::string &gameId: provider->supportedGameIds()) {
 		if (_providers.find(gameId) != _providers.end())
-			throw runtime_error(format("Palette icon provider for game id '{}' is already registered", gameId));
+			throw runtime_error(fmt::format("Palette icon provider for game id '{}' is already registered", gameId));
 
 		_providers[gameId] = provider;
 	}
