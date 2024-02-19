@@ -11,6 +11,8 @@ std::set<std::string> SthWorldExporter::supportedGameIds() const {
 	return {"sth"};
 }
 
+// bruh gal wtf
+// FIXME: basically unreadable, unsafe and endian-dependent
 void SthWorldExporter::save(const World &world, const std::filesystem::path &path) const {
 	std::ofstream file(path, std::ios::binary);
 
@@ -32,7 +34,13 @@ void SthWorldExporter::save(const World &world, const std::filesystem::path &pat
 		for (auto i = level->layers().rbegin(); i != level->layers().rend(); i++) {
 			const auto &layer = *i;
 			const auto &tilemap = layer->tilemap();
-			file.write(reinterpret_cast<const char *>(tilemap.data()), sizeof(Tilemap::tile_t) * tilemap.tileCount());
+
+			const auto &tiles = tilemap.tiles();
+
+			file.write(
+					reinterpret_cast<const char *>(tiles.data()),
+					static_cast<std::streamsize>(tiles.size_bytes())
+			);
 		}
 	}
 

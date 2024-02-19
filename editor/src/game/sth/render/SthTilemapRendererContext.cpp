@@ -100,8 +100,8 @@ void SthTilemapRendererContext::render() {
 		const uint16_t ropeKnobMaterial = atlas.findEntryForTile(502).firstFrame();
 		const uint16_t ladderKnobMaterial = atlas.findEntryForTile(503).firstFrame();
 
-		for (int i = 0; i < mainLayerMap.tileCount(); i++) {
-			const glm::ivec2 position = {i % size.x, i / size.x};
+		for (size_t nTile = 0; nTile < mainLayerMap.tileCount(); nTile++) {
+			const glm::ivec2 position = {nTile % size.x, nTile / size.x};
 
 			const Tilemap::tile_t tile = mainLayerMap(position);
 

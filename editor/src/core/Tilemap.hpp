@@ -1,9 +1,9 @@
 #pragma once
 
 #include <memory>
+#include <span>
 #include <stdexcept>
 #include <vector>
-#include <unordered_map>
 
 #include <glm/vec2.hpp>
 
@@ -20,22 +20,31 @@ public:
 
 	~Tilemap() = default;
 
-	static bool sizeIsValid(glm::ivec2 size);
+	[[nodiscard]]
+	static bool isSizeValid(glm::ivec2 size);
 
-	bool positionIsValid(glm::ivec2 position) const;
+	[[nodiscard]]
+	bool isPositionValid(glm::ivec2 position) const;
 
+	[[nodiscard]]
 	size_t tileCount() const;
 
+	[[nodiscard]]
 	glm::ivec2 size() const;
 
-	tile_t *data() noexcept;
+	[[nodiscard]]
+	std::span<tile_t> tiles();
 
-	const tile_t *data() const noexcept;
+	[[nodiscard]]
+	std::span<const tile_t> tiles() const;
 
+	[[nodiscard]]
 	tile_t operator()(glm::ivec2 position) const;
 
+	[[nodiscard]]
 	tile_t get(glm::ivec2 position, glm::ivec2 offset, tile_t defaultTile) const;
 
+	[[nodiscard]]
 	tile_t getOccupied(glm::ivec2 position, glm::ivec2 offset, tile_t defaultTile) const;
 
 	bool set(glm::ivec2 position, tile_t tile);
@@ -49,6 +58,7 @@ public:
 
 	void setClipRect(IntRect rect);
 
+	[[nodiscard]]
 	IntRect occupiedRegion() const;
 
 	void setMinimalOccupiedRegionSize(glm::ivec2 size);

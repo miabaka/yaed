@@ -2,6 +2,7 @@
 
 #include <cstring>
 #include <fstream>
+#include <span>
 
 #include "../../core/game/BaseGame.hpp"
 #include "../../core/WorldUtil.hpp"
@@ -44,6 +45,12 @@ public:
 	void readArrayInto(size_t count, T *data) {
 		while (count--)
 			*(data++) = read<T>();
+	}
+
+	template<typename T>
+	void readArrayInto(std::span<T> data) {
+		for (auto &v: data)
+			v = read<T>();
 	}
 
 	void skip(size_t count) {
@@ -158,8 +165,8 @@ SthWorldImporter::load(
 
 		static_assert(std::is_same<Tilemap::tile_t, uint16_t>());
 
-		reader.readArrayInto(mainLayerMap.tileCount(), mainLayerMap.data());
-		reader.readArrayInto(gemLayerMap.tileCount(), gemLayerMap.data());
+		reader.readArrayInto(mainLayerMap.tiles());
+		reader.readArrayInto(gemLayerMap.tiles());
 
 		mainLayerMap.processRawChanges();
 		gemLayerMap.processRawChanges();
