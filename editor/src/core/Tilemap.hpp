@@ -68,8 +68,11 @@ private:
 	glm::ivec2 _size;
 	glm::ivec2 _minOccupiedRegionSize{};
 	IntRect _clipRect;
-	IntRect _occupiedRegion;
+	mutable IntRect _occupiedRegion;
+	mutable bool _occupiedRegionDirty = true;
 	std::vector<tile_t> _tiles{};
 
-	void computeOccupiedRegion();
+	void invalidateOccupiedRegion();
+
+	void updateOccupiedRegion() const;
 };

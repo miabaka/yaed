@@ -76,8 +76,7 @@ bool Tilemap::set(glm::ivec2 position, Tilemap::tile_t newTile) {
 	_uniqueTiles.free(tile);
 	tile = *allocatedTile;
 
-	// TODO: optimize based on tile change
-	computeOccupiedRegion();
+	invalidateOccupiedRegion();
 
 	return true;
 }
@@ -92,7 +91,7 @@ void Tilemap::processRawChanges() {
 	for (const tile_t tile: _tiles)
 		_uniqueTiles.incrementCounterFor(tile);
 
-	computeOccupiedRegion();
+	invalidateOccupiedRegion();
 }
 
 void Tilemap::setClipRect(IntRect rect) {
@@ -100,10 +99,18 @@ void Tilemap::setClipRect(IntRect rect) {
 }
 
 IntRect Tilemap::occupiedRegion() const {
+	updateOccupiedRegion();
 	return _occupiedRegion;
 }
 
-void Tilemap::computeOccupiedRegion() {
+void Tilemap::invalidateOccupiedRegion() {
+	_occupiedRegionDirty = true;
+}
+
+void Tilemap::updateOccupiedRegion() const {
+	if (!_occupiedRegionDirty)
+		return;
+
 	glm::ivec2 lowerBound = _size;
 	glm::ivec2 upperBound{};
 
@@ -154,6 +161,7 @@ void Tilemap::computeOccupiedRegion() {
 	}
 
 	_occupiedRegion = {lowerBound, upperBound};
+	_occupiedRegionDirty = false;
 }
 
 void Tilemap::setMinimalOccupiedRegionSize(glm::ivec2 size) {
