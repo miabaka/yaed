@@ -1,4 +1,6 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.20...3.27)
+
+set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
 
 project(yaed)
 
