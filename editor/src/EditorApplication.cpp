@@ -214,18 +214,26 @@ void EditorApplication::openWorld() {
 
 	for (const auto &[_, format]: worldFormats().formats()) {
 		const WorldFormatInfo &info = format->info();
-		dialog->addExtensionFilter(info.name(), "*." + info.fileExtension());
+
+		dialog->addFilter({
+			.name = format->importer()->name(),
+			.displayName = info.name(),
+			.mask = "*." + info.fileExtension()
+		});
 	}
 
-	dialog->addExtensionFilter("All files", "*.*");
+	dialog->addFilter({
+		.displayName = "All files",
+		.mask = "*.*"
+	});
 
-	const fs::path selectedPath = dialog->show();
+	IFileDialog::ShowResult result = dialog->show();
 
-	if (selectedPath.empty())
+	if (result.paths.empty())
 		return;
 
 	// TODO: handle exceptions and show error dialog
-	BaseEditor::openWorld(selectedPath);
+	BaseEditor::openWorld(result.paths[0]);
 }
 
 void EditorApplication::saveWorldAs(std::shared_ptr<World> world) {
@@ -245,15 +253,30 @@ void EditorApplication::saveWorldAs(std::shared_ptr<World> world) {
 		if (!(exporter && exporter->gameIsSupported(gameId)))
 			continue;
 
-		dialog->addExtensionFilter(info.name(), "*." + info.fileExtension());
+		dialog->addFilter({
+			.name = exporter->name(),
+			.displayName = info.name(),
+			.mask = "*." + info.fileExtension()
+		});
 	}
 
-	const fs::path selectedPath = dialog->show();
+	IFileDialog::ShowResult result = dialog->show();
 
-	if (selectedPath.empty())
+	if (result.paths.empty())
 		return;
 
-	BaseEditor::saveWorldAs(world, selectedPath);
+	std::shared_ptr<IWorldExporter> exporterOverride;
+
+	for (const auto &exporter: worldFormats().findExportersForWorld(world)) {
+		if (exporter->name() != result.filterName)
+			continue;
+
+		exporterOverride = exporter;
+
+		break;
+	}
+
+	BaseEditor::saveWorldAs(world, result.paths[0], exporterOverride);
 }
 
 void EditorApplication::saveSelectedWorldAs() {
@@ -661,51 +684,6 @@ void EditorApplication::drawNewWorldDialog() {
 
 	ImGui::Indent(-6);
 
-	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6);
-	ImGui::Text("Export");
-
-	ImGui::Indent(6);
-
-	{
-		ImGui::AlignTextToFramePadding();
-		ImGui::Text("Format");
-
-		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip("Initial export format, can be changed later");
-
-		ImGui::SameLine();
-		ImGui::SetCursorPosX(inputOffset);
-		ImGui::SetNextItemWidth(-7);
-
-		const bool canBeSelected = _newWorldDialogState.formatCanBeSelected();
-
-		ImGui::BeginDisabled(!canBeSelected);
-
-		if (ImGui::BeginCombo("###format", _newWorldDialogState.selectedFormatRawName())) {
-			if (ImGui::Selectable("None"))
-				_newWorldDialogState.selectFormat({});
-
-			for (const auto &it: worldFormats().formats()) {
-				// TODO: game support check
-				const std::shared_ptr<WorldFormat> &format = it.second;
-				const WorldFormatInfo &info = format->info();
-
-				ImGui::PushID(format.get());
-
-				if (ImGui::Selectable(info.name().c_str()))
-					_newWorldDialogState.selectFormat(format);
-
-				ImGui::PopID();
-			}
-
-			ImGui::EndCombo();
-		}
-
-		ImGui::EndDisabled();
-	}
-
-	ImGui::Indent(-6);
-
 	ImGui::EndChild();
 
 	ImGui::Separator();
@@ -717,13 +695,6 @@ void EditorApplication::drawNewWorldDialog() {
 
 		// TODO: don' t close dialog if world creation failed
 		std::shared_ptr<World> world = createWorld(state.selectedGame(), state.selectedFactory(), state.chosenName());
-
-		if (world) {
-			std::shared_ptr<WorldFormat> format = _newWorldDialogState.selectedFormat();
-
-			if (format)
-				world->setExporter(format->exporter());
-		}
 
 		ImGui::CloseCurrentPopup();
 	}

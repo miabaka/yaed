@@ -4,7 +4,6 @@ void NewWorldDialogState::reset() {
 	_chosenName.clear();
 	_selectedGame.reset();
 	_selectedFactory.reset();
-	_selectedFormat.reset();
 }
 
 bool NewWorldDialogState::valid() const {
@@ -27,10 +26,6 @@ std::shared_ptr<IWorldFactory> NewWorldDialogState::selectedFactory() const {
 	return _selectedFactory.lock();
 }
 
-std::shared_ptr<WorldFormat> NewWorldDialogState::selectedFormat() const {
-	return _selectedFormat.lock();
-}
-
 const char *NewWorldDialogState::selectedGameRawName() const {
 	if (_selectedGame.expired())
 		return "";
@@ -38,20 +33,7 @@ const char *NewWorldDialogState::selectedGameRawName() const {
 	return _selectedGame.lock()->name().c_str();
 }
 
-
-const char *NewWorldDialogState::selectedFormatRawName() const {
-	if (_selectedFormat.expired())
-		return "None";
-
-	return _selectedFormat.lock()->info().name().c_str();
-}
-
-
 bool NewWorldDialogState::factoryCanBeSelected() const {
-	return !_selectedGame.expired();
-}
-
-bool NewWorldDialogState::formatCanBeSelected() const {
 	return !_selectedGame.expired();
 }
 
@@ -72,9 +54,4 @@ void NewWorldDialogState::selectGame(std::weak_ptr<IGame> game) {
 void NewWorldDialogState::selectFactory(std::weak_ptr<IWorldFactory> factory) {
 	// TODO: game support check
 	_selectedFactory = std::move(factory);
-}
-
-void NewWorldDialogState::selectFormat(std::weak_ptr<WorldFormat> format) {
-	// TODO: game support check
-	_selectedFormat = std::move(format);
 }

@@ -5,13 +5,11 @@
 namespace cute::shell {
 
 class StubFileDialog : public IFileDialog {
-	void addExtensionFilter(std::string_view name, std::string_view extension) override;
+	void addFilter(const Filter &filter) override;
 
-	void clearExtensionFilters() override;
+	void clearFilters() override;
 
-	std::filesystem::path show() override;
-
-	std::vector<std::filesystem::path> showForMultiple() override;
+	ShowResult show() override;
 
 	void setParentWindow(window_handle_t window) override;
 };

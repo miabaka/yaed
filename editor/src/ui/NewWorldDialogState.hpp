@@ -3,7 +3,6 @@
 #include <memory>
 #include <string>
 
-#include "../core/format/WorldFormat.hpp"
 #include "../core/game/IGame.hpp"
 #include "../core/IWorldFactory.hpp"
 
@@ -21,15 +20,9 @@ public:
 
 	const char *selectedFactoryRawName() const;
 
-	const char *selectedFormatRawName() const;
-
 	std::shared_ptr<IGame> selectedGame() const;
 
 	std::shared_ptr<IWorldFactory> selectedFactory() const;
-
-	std::shared_ptr<WorldFormat> selectedFormat() const;
-
-	bool formatCanBeSelected() const;
 
 	bool factoryCanBeSelected() const;
 
@@ -37,11 +30,8 @@ public:
 
 	void selectFactory(std::weak_ptr<IWorldFactory> factory);
 
-	void selectFormat(std::weak_ptr<WorldFormat> format);
-
 private:
 	std::string _chosenName;
 	std::weak_ptr<IGame> _selectedGame;
 	std::weak_ptr<IWorldFactory> _selectedFactory;
-	std::weak_ptr<WorldFormat> _selectedFormat;
 };

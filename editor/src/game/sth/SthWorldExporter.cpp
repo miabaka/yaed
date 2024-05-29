@@ -3,7 +3,7 @@
 #include <fstream>
 
 const std::string &SthWorldExporter::name() const {
-	static std::string name = "WorldExporter";
+	static std::string name = "SthWorldExporter";
 	return name;
 }
 

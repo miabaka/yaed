@@ -3,7 +3,8 @@
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 
-#include <list>
+#include <optional>
+#include <vector>
 
 #include <windows.h>
 #include <shobjidl.h>
@@ -17,25 +18,26 @@ class Win32FileDialog : public IFileDialog {
 public:
 	explicit Win32FileDialog(Type type);
 
-	void addExtensionFilter(std::string_view name, std::string_view extension) override;
+	void addFilter(const Filter &filter) override;
 
-	void clearExtensionFilters() override;
+	void clearFilters() override;
 
-	std::filesystem::path show() override;
-
-	std::vector<std::filesystem::path> showForMultiple() override;
+	ShowResult show() override;
 
 	void setParentWindow(window_handle_t window) override;
 
 private:
 	struct Filter {
-		std::wstring name;
-		std::wstring extension;
+		std::string name;
+		std::wstring displayName;
+		std::wstring mask;
 	};
 
-	Microsoft::WRL::ComPtr<::IFileDialog> _handle;
-	std::list<Filter> _extensionFilters;
+	Microsoft::WRL::ComPtr<::IFileDialog> _wrappedDialog;
+	std::vector<Filter> _filters;
 	HWND _parentWindow = nullptr;
+
+	std::optional<std::string> getSelectedFilterName();
 };
 
 } // namespace cute::dialogs
