@@ -60,7 +60,7 @@ static window_handle_t extractRawHandleFromSdlWindow(SDL_Window *window) {
 	if (!SDL_GetWindowWMInfo(window, &wmInfo))
 		return {};
 
-	return wmInfo.info.win.window;
+	return reinterpret_cast<window_handle_t>(wmInfo.info.win.window);
 #else
 	return {};
 #endif

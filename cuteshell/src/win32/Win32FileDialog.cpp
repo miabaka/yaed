@@ -107,5 +107,5 @@ std::vector<fs::path> Win32FileDialog::showForMultiple() {
 }
 
 void Win32FileDialog::setParentWindow(window_handle_t window) {
-	_parentWindow = static_cast<HWND>(window);
+	_parentWindow = reinterpret_cast<HWND>(window);
 }

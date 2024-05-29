@@ -1,11 +1,12 @@
 #pragma once
 
+#include <cstdint>
 #include <filesystem>
 #include <memory>
 
 namespace cute::shell {
 
-using window_handle_t = void *;
+using window_handle_t = uintptr_t;
 
 class IDialogProvider;
 
