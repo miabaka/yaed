@@ -19,6 +19,7 @@ public:
     struct Filter {
         std::string_view name;
         std::string_view displayName;
+		// TODO: replace with list of extensions and/or mime-types
         std::string_view mask;
     };
 
