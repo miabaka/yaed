@@ -61,16 +61,8 @@ IFileDialog::ShowResult XdgFileDialog::show() {
 	requestProxy->uponSignal("Response")
 			.onInterface("org.freedesktop.portal.Request")
 			.call(
-					[&](uint32_t response, const std::map<std::string, sdbus::Variant> &results) {
-						for (auto &uri: results.at("uris").get<std::vector<std::string>>())
-							result.paths.emplace_back(makePathFromUri(uri));
-
-						auto currentFilter = results.at("current_filter").get<RawFilter>();
-						auto itExistingFilter = std::ranges::find(_filters, currentFilter);
-
-						if (itExistingFilter != _filters.end())
-							result.filterName = _filterNames[itExistingFilter - _filters.begin()];
-
+					[&](unsigned int code, const PortalResponseData &data) {
+						readPortalResponse(static_cast<PortalResponseCode>(code), data, result);
 						connection->leaveEventLoop();
 					}
 			);
@@ -84,6 +76,34 @@ IFileDialog::ShowResult XdgFileDialog::show() {
 
 void XdgFileDialog::setParentWindow(window_handle_t window) {
 
+}
+
+// TODO: return error in case some of the required data fields don't exist
+void XdgFileDialog::readPortalResponse(
+		PortalResponseCode code, const PortalResponseData &data, ShowResult &out) {
+	using UriList = std::vector<std::string>;
+
+	if (code != PortalResponseCode::Success)
+		return;
+
+	auto itUris = data.find("uris");
+	auto itCurrentFilter = data.find("current_filter");
+
+	if (itUris != data.end() && itUris->second.containsValueOfType<UriList>()) {
+		for (auto &uri: itUris->second.get<UriList>())
+			out.paths.emplace_back(makePathFromUri(uri));
+	}
+
+	if (itCurrentFilter == data.end() || !itCurrentFilter->second.containsValueOfType<RawFilter>())
+		return;
+
+	auto itKnownFilterMatch = std::ranges::find(
+			_filters, itCurrentFilter->second.get<RawFilter>());
+
+	if (itKnownFilterMatch == _filters.end())
+		return;
+
+	out.filterName = _filterNames[itKnownFilterMatch - _filters.begin()];
 }
 
 static std::string makeGlobPatternCaseInsensitive(std::string_view pattern) {
