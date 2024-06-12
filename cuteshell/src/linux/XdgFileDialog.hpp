@@ -17,7 +17,7 @@ public:
 
 	ShowResult show() override;
 
-	void setParentWindow(window_handle_t window) override;
+	void setParentWindow(WindowHandle window) override;
 
 private:
 	using RawFilterPattern = sdbus::Struct<unsigned int, std::string>;
@@ -34,6 +34,7 @@ private:
 	std::vector<RawFilter> _filters;
 	std::vector<std::string> _filterNames;
 	const Type _type;
+	WindowHandle _parentWindow;
 
 	void readPortalResponse(PortalResponseCode code, const PortalResponseData &data, ShowResult &out);
 };

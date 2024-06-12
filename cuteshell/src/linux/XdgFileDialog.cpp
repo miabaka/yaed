@@ -1,5 +1,7 @@
 #include "XdgFileDialog.hpp"
 
+#include <utility>
+
 using namespace cute::shell;
 
 namespace fs = std::filesystem;
@@ -43,7 +45,7 @@ IFileDialog::ShowResult XdgFileDialog::show() {
 			_type == Type::Save ? "SaveFile" : "OpenFile"
 	);
 
-	methodCall << "" << "" << std::map<std::string, sdbus::Variant>{
+	methodCall << _parentWindow << "" << std::map<std::string, sdbus::Variant>{
 			{"filters", _filters}
 	};
 
@@ -74,8 +76,8 @@ IFileDialog::ShowResult XdgFileDialog::show() {
 	return result;
 }
 
-void XdgFileDialog::setParentWindow(window_handle_t window) {
-
+void XdgFileDialog::setParentWindow(WindowHandle window) {
+	_parentWindow = std::move(window);
 }
 
 // TODO: return error in case some of the required data fields don't exist

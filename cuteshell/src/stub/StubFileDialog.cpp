@@ -12,4 +12,4 @@ IFileDialog::ShowResult StubFileDialog::show() {
 	return {};
 }
 
-void StubFileDialog::setParentWindow(window_handle_t window) {}
+void StubFileDialog::setParentWindow(WindowHandle window) {}

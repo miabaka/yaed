@@ -36,7 +36,7 @@ public:
 
     virtual ShowResult show() = 0;
 
-    virtual void setParentWindow(window_handle_t window) = 0;
+    virtual void setParentWindow(WindowHandle window) = 0;
 };
 
 } // namespace cute::dialogs

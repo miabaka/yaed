@@ -3,10 +3,15 @@
 #include <cstdint>
 #include <filesystem>
 #include <memory>
+#include <string>
 
 namespace cute::shell {
 
-using window_handle_t = uintptr_t;
+#ifdef CUTE_SHELL_LINUX
+using WindowHandle = std::string;
+#else
+using WindowHandle = uintptr_t;
+#endif
 
 class IDialogProvider;
 

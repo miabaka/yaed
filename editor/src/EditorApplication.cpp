@@ -1,10 +1,11 @@
 #include "EditorApplication.hpp"
 
-#include <stdexcept>
 #include <filesystem>
 #include <fstream>
-#include <sstream>
+#include <stdexcept>
+#include <utility>
 
+#include <sstream>
 #include <imgui/imgui_stdlib.h>
 #include <nlohmann/json.hpp>
 #include <cute/shell/CuteShell.hpp>
@@ -16,11 +17,11 @@ namespace fs = std::filesystem;
 
 using cute::shell::CuteShell;
 using cute::shell::IFileDialog;
-using cute::shell::window_handle_t;
+using cute::shell::WindowHandle;
 
-EditorApplication::EditorApplication(window_handle_t window)
+EditorApplication::EditorApplication(WindowHandle window)
 		: _dialogProvider(CuteShell::createDialogProvider()),
-		  _window(window) {
+		  _window(std::move(window)) {
 	const fs::path baseConfigPath = CuteShell::getAppDataPath() / "yaed";
 
 	bool configDirectoryExists = fs::exists(baseConfigPath);

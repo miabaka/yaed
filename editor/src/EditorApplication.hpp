@@ -17,7 +17,7 @@
 
 class EditorApplication : public Editor {
 public:
-	explicit EditorApplication(cute::shell::window_handle_t window);
+	explicit EditorApplication(cute::shell::WindowHandle window);
 
 	~EditorApplication() override;
 
@@ -54,7 +54,7 @@ private:
 	bool _dockingLayoutMustBeReset = false;
 	bool _worldTreeOpen = true;
 	bool _newWorldDialogMustBeOpen = false;
-	cute::shell::window_handle_t _window;
+	cute::shell::WindowHandle _window;
 
 #ifndef NDEBUG
 	bool _imguiDemoVisible = false;

@@ -11,7 +11,7 @@ class StubFileDialog : public IFileDialog {
 
 	ShowResult show() override;
 
-	void setParentWindow(window_handle_t window) override;
+	void setParentWindow(WindowHandle window) override;
 };
 
 } // namespace cute::dialogs

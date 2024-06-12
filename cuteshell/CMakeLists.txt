@@ -19,7 +19,11 @@ else ()
 endif ()
 
 if (WIN32)
-    target_compile_definitions(cuteshell PRIVATE CUTE_SHELL_WIN32_DIALOGS)
+    target_compile_definitions(cuteshell
+            PUBLIC
+            CUTE_SHELL_WIN32
+            PRIVATE
+            CUTE_SHELL_WIN32_DIALOGS)
 
     target_sources(cuteshell PRIVATE
             src/win32/CuteShell.cpp
@@ -30,7 +34,11 @@ if (WIN32)
 elseif (UNIX AND NOT APPLE)
     find_package(sdbus-c++ REQUIRED)
 
-    target_compile_definitions(cuteshell PRIVATE CUTE_SHELL_XDG_DIALOGS)
+    target_compile_definitions(cuteshell
+            PUBLIC
+            CUTE_SHELL_LINUX
+            PRIVATE
+            CUTE_SHELL_XDG_DIALOGS)
 
     target_sources(cuteshell PRIVATE
             src/linux/CuteShell.cpp

@@ -13,7 +13,7 @@
 #include "EditorApplication.hpp"
 
 using glm::ivec2;
-using cute::shell::window_handle_t;
+using cute::shell::WindowHandle;
 
 static constexpr ivec2 DEFAULT_WINDOW_SIZE = {1280, 720};
 static const char DEFAULT_WINDOW_TITLE[] = "yaed";
@@ -51,7 +51,7 @@ static bool pollEvents(SDL_Window *window) {
 	return shouldClose;
 }
 
-static window_handle_t extractRawHandleFromSdlWindow(SDL_Window *window) {
+static WindowHandle extractRawHandleFromSdlWindow(SDL_Window *window) {
 #ifdef _WIN32
 	SDL_SysWMinfo wmInfo;
 
