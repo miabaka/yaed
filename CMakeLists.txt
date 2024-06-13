@@ -12,6 +12,10 @@ add_subdirectory(third_party/json)
 add_subdirectory(third_party/SDL)
 add_subdirectory(third_party/stb)
 
+if (UNIX AND NOT APPLE)
+    add_subdirectory(third_party/sdbus-cpp)
+endif ()
+
 add_subdirectory(cuteshell)
 
 add_subdirectory(editor)

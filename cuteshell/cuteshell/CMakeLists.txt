@@ -32,8 +32,6 @@ if (WIN32)
             src/win32/Win32FileDialog.cpp
             src/win32/Win32FileDialog.hpp)
 elseif (UNIX AND NOT APPLE)
-    find_package(sdbus-c++ REQUIRED)
-
     target_compile_definitions(cuteshell
             PUBLIC
             CUTE_SHELL_LINUX
