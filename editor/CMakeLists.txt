@@ -130,12 +130,14 @@ add_executable(editor
         src/main.cpp)
 
 target_link_libraries(editor PRIVATE
+        SDL2-static
+        SDL2main
         cuteshell
         fmt
-        nlohmann_json::nlohmann_json
-        glm
         gl3w
+        glm
         imgui
+        nlohmann_json::nlohmann_json
         stb_image)
 
 if (MSVC)
