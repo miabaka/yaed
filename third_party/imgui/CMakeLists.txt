@@ -25,4 +25,4 @@ target_link_libraries(imgui
         gl3w
         PUBLIC
         glm
-        SDL2-static SDL2main)
+        SDL2-static)

@@ -133,6 +133,7 @@ target_link_libraries(editor PRIVATE
         SDL2-static
         SDL2main
         cuteshell
+        cuteshell_sdl2
         fmt
         gl3w
         glm
