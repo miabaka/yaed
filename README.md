@@ -12,14 +12,18 @@ A yet another simple level editor for some tile-based games
 
 - [ ] Remove copyrighted assets
   - [ ] Write tool that automatically generates necessary texture atlases from original game distribution 
-- [ ] Refactor with C++20 features 
+- [ ] Refactor with C++20 features
 - [ ] Properly implement file dialogs, using XDG Desktop Portal on Linux
+  - [x] Implement XDG Desktop Portal-based backed
+  - [ ] Make dialogs non-blocking 
 - [ ] Improve stability
+- [ ] Implement keyboard shortcuts for menu bar entries
+  - [ ] Implement action system (also, can be used for something like command palette)
 - [ ] Implement proper tile linking (portal ins/outs, monster respawn points, etc)
 - [ ] Implement necessary editing tools
   - [ ] Flood fill
-  - [ ] Select (with boolean operations tho)
+  - [ ] Select (with boolean operations)
   - [ ] Move
 - [ ] Implement copy-paste
 - [ ] Implement undo/redo buffer
-- [ ] Rewrite GUI in in-house cuteui toolkit
+- [ ] Rewrite GUI using in-house framework
